@@ -82,12 +82,6 @@ public class mBookController extends BaseWeb {
 		model.put("books", status);
 		return "cp.books";
 	}
-	/**
-	    * Add a book
-	    * @param model
-	    * @return 
-	    */
-	
 	
 	/**
 	    * view deital a book
@@ -96,10 +90,10 @@ public class mBookController extends BaseWeb {
 	    */
 	@RequestMapping("/bookdetail/{id}")
 	public String editAPaper(ModelMap model, @PathVariable("id") int bookId, HttpSession session){
-		List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
+		List<mAcademicYear> bookReportingAcademicDateList = academicYearService.list();
 		List<mFaculty> listFaculty = facultyService.loadFacultyList();
 		List<mStaff> staffList = staffService.listStaffs();
-		model.put("patentReportingAcademicDateList", patentReportingAcademicDateList);
+		model.put("bookReportingAcademicDateList", bookReportingAcademicDateList);
 		model.put("books", status);
 		model.put("listFaculty", listFaculty);
 		model.put("staffList", staffList);
@@ -120,6 +114,7 @@ public class mBookController extends BaseWeb {
 			model.put("bookFileUpload", fileUploadName);
 			model.put("bookFormEdit", new mBookValidation());
 			model.put("bookId", bookId);
+			model.put("bookReportingAcademicDate",book.getBOK_ReportingAcademicDate());
 			return "cp.editABook";
 		}
 		return "cp.notFound404";
@@ -158,6 +153,7 @@ public class mBookController extends BaseWeb {
 			model.put("bookAuthorList", bookFormEdit.getBookAuthorList());
 			model.put("listBookStaffs", listBookStaffs);
 			model.put("bookISBN", bookFormEdit.getBookISBN());
+			model.put("bookReportingAcademicDate",book.getBOK_ReportingAcademicDate());
 			//model.put("bookFileUpload", fileUploadName);
 			model.put("bookFormEdit", new mBookValidation());
 			System.out.println("1");
@@ -205,6 +201,7 @@ public class mBookController extends BaseWeb {
 	    	  	 * Prepare data for inserting DB
 	    	  	 */
 				String bookName= bookFormEdit.getBookName();
+				String bookReportingAcademicDate= bookFormEdit.getBookReportingAcademicDate();
 				String authors= bookFormEdit.getBookAuthorList();
 				String[] bookAuthorsList 	= authors.trim().split("\\,");
 				Integer numberOfAuthors 		= bookAuthorsList.length;
@@ -218,7 +215,7 @@ public class mBookController extends BaseWeb {
 				int bookMonth= Integer.parseInt(bookFormEdit.getBookMonth());
 				int bookYear= bookFormEdit.getBookYear();
 				int bookId= bookFormEdit.getBookId();
-				bookService.editABook(userRole,userCode,bookId,bookName,authors,publicationName,ISBN,bookMonth,bookYear,bookSourceUploadFileSrc,bookAuthorsList);
+				bookService.editABook(userRole,userCode,bookId,bookName,authors,publicationName,ISBN,bookMonth,bookYear,bookSourceUploadFileSrc,bookReportingAcademicDate,bookAuthorsList);
 				return "redirect:" + this.baseUrl + "/cp/books.html";
 		    	   } else{
 		    		   model.put("err", "Cần phải thêm tác giả của sách.");

@@ -1,8 +1,10 @@
 package vn.webapp.modules.researchdeclarationmanagement.validation;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,12 +24,16 @@ public class mBookValidation {
 	
 	private int bookId;
 
+
+
 	private String bookAuthorList;
 	
 	private String bookISBN;
 	
 	private MultipartFile bookFileUpload;
-	
+	@NotEmpty
+    @Pattern(regexp="^[0-9]{4}-[0-9]{4}$")
+    private String bookReportingAcademicDate;
 	
 	public MultipartFile getBookFileUpload() {
 		return bookFileUpload;
@@ -90,5 +96,12 @@ public class mBookValidation {
 
 	public void setBookId(Integer bookId) {
 		this.bookId = bookId;
+	}
+	public String getBookReportingAcademicDate() {
+		return bookReportingAcademicDate;
+	}
+
+	public void setBookReportingAcademicDate(String bookReportingAcademicDate) {
+		this.bookReportingAcademicDate = bookReportingAcademicDate;
 	}
 }

@@ -7,7 +7,7 @@ import vn.webapp.modules.researchdeclarationmanagement.model.mBooks;
 public interface mBookService {
 	public List<mBooks>  loadBookListByStaff(String userRole,String  userCode);
 	public mBooks loadABookByIdAndUserCode(String userRole,String userCode,int bookId);
-	public void editABook(String userRole,String userCode,int bookId,String bookName,String authors,String publicationName,String ISBN,int bookMonth,int bookYear,String bookSourceUploadFile,String[] projectMembers);
+	public void editABook(String userRole,String userCode,int bookId,String bookName,String authors,String publicationName,String ISBN,int bookMonth,int bookYear,String bookSourceUploadFile,String bookReportingAcademicDate,String[] projectMembers);
 	public int saveABook(String userCode, String bookName, String bookPublisher, int bookMonth, int bookYear, 
 			String bookAuthors, String bookISBN, String bookSourceFile, String[] projectMembers);
 	public mBooks loadABookById(int bookId);

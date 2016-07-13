@@ -54,6 +54,7 @@
 	                                    <form:input path="bookYear" value="${bookYear}" class="form-control year" data-validation="required" data-validation-error-msg="Trường thông tin này là bắt buộc"  name="bookYear" readonly="true" placeholder="YYYY"></form:input>
 	    								<form:errors path="bookYear" class="alert-danger"></form:errors>
 	                                </div>
+	                                
 	                                <div class="form-group">
 	                                	<label for="bookMonth">Tháng xuất bản*</label>
 		                                <form:select path="bookMonth" class="form-control" data-validation="required" data-validation-error-msg="Trường thông tin này là bắt buộc"  name="bookMonth" >
@@ -66,6 +67,15 @@
 	                            	</div>
 	                        </div>
 	                        <div class="col-lg-6">
+	                        		<div class="form-group">
+                                		<label for="bookReportingAcademicDate">Năm kê khai*</label>
+	                                	<form:select path="bookReportingAcademicDate" data-validation="required" data-validation-error-msg="Trường thông tin này là bắt buộc"  class="form-control" name="bookReportingAcademicDate" >
+	                                		<c:forEach items="${bookReportingAcademicDateList}" var="bookYear">
+	                                     		<option value="${bookYear.ACAYEAR_Code}" <c:if test="${bookYear.ACAYEAR_Code == bookReportingAcademicDate}">selected</c:if> >${bookYear.ACAYEAR_Code}</option>
+	                                   		</c:forEach>
+	                                	</form:select>
+	                                	<form:errors path="bookReportingAcademicDate" class="alert-danger"></form:errors>
+                            		</div>
 	                        		<div class="form-group">
 	                                    <label for="bookAuthorList">Tác giả (danh sách tác giả cách nhau bởi dấu phảy)</label>
 	                                    <form:input path="bookAuthorList"  value="${bookAuthorList}" class="form-control" name="bookAuthorList" placeholder="Authors"></form:input>

@@ -36,7 +36,7 @@ public class mBookServiceImpl implements mBookService {
 	}
 	@Override
 	public void editABook(String userRole, String userCode, int bookId,String bookName, String authors, String publicationName,
-			String ISBN, int bookMonth, int bookYear,String bookSourceUploadFile,String[] projectMembers) {
+			String ISBN, int bookMonth, int bookYear,String bookSourceUploadFile,String bookReportingAcademicDate,String[] projectMembers) {
 		// TODO Auto-generated method stub
 		mBooks book= bookDAO.loadABookByIdAndUserCode(userRole, userCode, bookId);
 		if(book!=null){
@@ -49,7 +49,7 @@ public class mBookServiceImpl implements mBookService {
 			book.setBOK_ISBN(ISBN);
 			book.setBOK_UserCode(userCode);
 			book.setBOK_Code(book.getBOK_Code());
-			book.setBOK_ReportingAcademicDate(book.getBOK_ReportingAcademicDate());
+			book.setBOK_ReportingAcademicDate(bookReportingAcademicDate);
 			if(bookSourceUploadFile.equals("")){
 				book.setBOK_SourceFile(book.getBOK_SourceFile());
 			} else {
