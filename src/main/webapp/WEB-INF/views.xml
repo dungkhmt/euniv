@@ -26,4 +26,5 @@
      
     <bean id="excel01CN02CN" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcel01CN02CNBuilder"/> 
     
+    <bean id="excelSummaryView02KVBook" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcelSummaryView02KVBook"/>
 </beans>

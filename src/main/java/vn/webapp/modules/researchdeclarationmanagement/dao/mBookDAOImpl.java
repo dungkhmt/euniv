@@ -152,5 +152,29 @@ public class mBookDAOImpl extends BaseDao implements mBookDAO {
 			close();
 		}
 	}
+	@Override
+	public List<mBooks> loadBookListByYear(String userRole, String userCode, String yearGenerate) {
+		try {
+            begin();
+            Criteria criteria = getSession().createCriteria(mBooks.class);
+            if(!userRole.equals("SUPER_ADMIN")){
+            	criteria.add(Restrictions.eq("BOK_UserCode", userCode));
+            }
+            criteria.add(Restrictions.eq("BOK_ReportingAcademicDate", yearGenerate));
+            criteria.addOrder(Order.asc("BOK_BookName"));
+            List<mBooks> books = criteria.list();
+            commit();
+            return books;
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            rollback();
+            close();
+            return null;
+        } finally {
+            flush();
+            close();
+        }
+	
+	}
 	
 }

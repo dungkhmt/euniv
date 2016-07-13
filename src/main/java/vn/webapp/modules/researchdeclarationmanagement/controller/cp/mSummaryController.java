@@ -24,18 +24,21 @@ import vn.webapp.modules.researchdeclarationmanagement.model.PaperStaffs;
 import vn.webapp.modules.researchdeclarationmanagement.model.SetPaperStaffs;
 import vn.webapp.modules.researchdeclarationmanagement.model.SetPapers;
 import vn.webapp.modules.researchdeclarationmanagement.model.mAcademicYear;
+import vn.webapp.modules.researchdeclarationmanagement.model.mBooks;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPapers;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPapersCategoryHourBudget;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPatents;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopics;
 import vn.webapp.modules.researchdeclarationmanagement.service.PaperStaffsService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mAcademicYearService;
+import vn.webapp.modules.researchdeclarationmanagement.service.mBookService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mJournalService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mPaperCategoryHourBudgetService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mPaperService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mPatentService;
 import vn.webapp.modules.researchdeclarationmanagement.service.tProjectCategoryService;
 import vn.webapp.modules.researchdeclarationmanagement.service.tProjectService;
+import vn.webapp.modules.researchdeclarationmanagement.validation.mBookExcellValidation;
 import vn.webapp.modules.researchdeclarationmanagement.validation.mExcel01CN02CNValidation;
 import vn.webapp.modules.researchdeclarationmanagement.validation.mPaperExcellValidation;
 import vn.webapp.modules.researchdeclarationmanagement.validation.mSummaryExcelValidation;
@@ -58,6 +61,9 @@ public class mSummaryController extends BaseWeb {
     
     @Autowired
     private mStaffService staffService;
+    
+    @Autowired
+    private mBookService bookService;
     
     @Autowired
     private mDepartmentService departmentService;
@@ -919,6 +925,56 @@ public class mSummaryController extends BaseWeb {
 		 		model.put("listPapers", listPapers);
 		 		
 		 		return new ModelAndView("excelSummaryViewISI02","",null);
+		     }
+		}
+		/**
+		 * generate A Summary book
+		 * 
+		 * @param model
+		 * @param session
+		 * @return
+		 */
+		@RequestMapping(value="/summary-kv02-book",method=RequestMethod.GET)
+		public String generateASummaryBookKV02(ModelMap model,HttpSession session){
+		/**
+			    * Get List Academic Year 
+			    */
+			List<mAcademicYear> bookReportingAcademicDateList = academicYearService.list();
+			  /**
+			    * Put back to a suitable view
+			    */
+			 model.put("reportingAcademicDate", bookReportingAcademicDateList);
+			 model.put("summaryFormExcel02KVBook", new mBookExcellValidation());
+			return "cp.generateSummary02KVBook";
+		}
+		
+		@RequestMapping(value = "/summaryExcel02KVBook", method = RequestMethod.POST)
+		public ModelAndView downloadSummary02KVBook(@Valid @ModelAttribute("summaryFormExcel02KVBook") mBookExcellValidation summaryFormExcel02KVBook, BindingResult result, Map model, HttpSession session) {
+			 
+		    // create some sample data
+			 if(result.hasErrors()) {
+				 List<mAcademicYear> bookReportingAcademicDateList = academicYearService.list();
+				 model.put("reportingAcademicDate", bookReportingAcademicDateList);
+				 model.put("mBookExcellValidation", new mBookExcellValidation());
+				 return new ModelAndView("cp.generateSummary02KVBook");
+		     }else
+		     {
+		    	/**
+		    	 * Get list of all Projects (Topics)
+		    	 */
+		    	 String yearGenerate = summaryFormExcel02KVBook.getReportingAcademicDate();
+		 		String userName = session.getAttribute("currentUserName").toString();
+		 		String userCode = session.getAttribute("currentUserCode").toString();
+		 		String userRole = session.getAttribute("currentUserRole").toString();
+		 		
+		 		System.out.println("ISIPapersExcelController::generateISIPaper, userName = " + userName + ".....");
+		 		
+		 		model.put("reportingAcademicYear", yearGenerate);
+		 		
+		 		List<mBooks> listBooks = bookService.loadBookListByYear("SUPER_ADMIN", userCode, yearGenerate);
+		 		model.put("listBooks", listBooks);
+		 		
+		 		return new ModelAndView("excelSummaryView02KVBook","",null);
 		     }
 		}
 }
