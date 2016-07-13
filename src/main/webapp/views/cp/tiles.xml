@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+    <definition name="layout.base" template="/views/cp/layout/base.jsp">           
+        <put-attribute name="header" value="/views/cp/widget/header.jsp" />
+        <!-- <put-attribute name="mainmenu" value="/views/cp/widget/mainmenu.jsp" /> -->                                       
+        <put-attribute name="footer" value="/views/cp/widget/footer.jsp" />        
+    </definition>
+
+    <!-- Error -->    
+    <definition name="layout.errorBase" template="/views/cp/layout/errorBase.jsp">           
+    </definition>  
+    
+    <!-- 404 -->
+    <definition name="cp.notFound404" extends="layout.errorBase">
+        <put-attribute name="title" value="404 Not found." />                                 
+        <put-attribute name="content" value="/views/cp/404.jsp" />
+    </definition>
+    
+    <definition name="cp.400" extends="layout.errorBase">
+        <put-attribute name="title" value="404 Not found." />                                 
+        <put-attribute name="content" value="/views/cp/400.jsp" />
+    </definition>
+    
+    <!-- 500 -->
+    <definition name="cp.500" extends="layout.errorBase">
+        <put-attribute name="title" value="500 Internal Server Error." />                                 
+        <put-attribute name="content" value="/views/cp/500.jsp" />
+    </definition>
+    
+    <!-- Actions -->    
+    <definition name="cp.actions" extends="layout.base">
+        <put-attribute name="title" value="Execute actions" />                                 
+        <put-attribute name="content" value="/views/cp/actions/actions.jsp" />
+    </definition>
+    
+    <!-- Testing -->
+    <definition name="cp.testing" extends="layout.base">
+        <put-attribute name="title" value="Testing" />                                 
+        <put-attribute name="content" value="/views/cp/testing.jsp" />
+    </definition>
+    
+    <!-- Index Module -->
+    <definition name="cp.index" extends="layout.base">
+        <put-attribute name="title" value="User - All users" />                                 
+        <put-attribute name="content" value="/views/cp/user/list.jsp" />
+    </definition>
+    
+    <!-- Home Module -->
+    <definition name="cp.home" extends="layout.base">
+        <put-attribute name="title" value="Home - eUniv" />                                 
+        <put-attribute name="content" value="/views/cp/home.jsp" />
+    </definition>
+    
+    <definition name="signin" template="/views/cp/signin.jsp">
+        <put-attribute name="title" value="Login" />        
+    </definition>
+    
+    <!-- User Module -->
+    <definition name="cp.users" extends="layout.base">
+        <put-attribute name="title" value="List all users" />                                 
+        <put-attribute name="content" value="/views/cp/user/list.jsp" />
+    </definition>
+
+    <!-- JuryResearchProject Module -->
+    <definition name="cp.juryOfResearchProjectManagement" extends="layout.base">
+        <put-attribute name="title" value="Show list of juries" />                                 
+        <put-attribute name="content" value="/views/cp/JuryResearchProject/list.jsp" />
+    </definition>
+
+    <definition name="cp.addAJuryOfResearchProject" extends="layout.base">
+        <put-attribute name="title" value="Add a Jury of research project" />                                 
+        <put-attribute name="content" value="/views/cp/JuryResearchProject/add.jsp" />
+    </definition>
+    
+    <definition name="cp.editAJuryResearchProject" extends="layout.base">
+        <put-attribute name="title" value="Edit a Jury of research project" />                                 
+        <put-attribute name="content" value="/views/cp/JuryResearchProject/edit.jsp" />
+    </definition>
+
+
+    <definition name="cp.generateProjectCodeParams" extends="layout.base">
+        <put-attribute name="title" value="Create an user" />                                 
+        <put-attribute name="content" value="/views/cp/projects/generate-project-code-params.jsp" />
+    </definition>
+    
+    <definition name="cp.addAnUser" extends="layout.base">
+        <put-attribute name="title" value="Create an user" />                                 
+        <put-attribute name="content" value="/views/cp/user/add.jsp" />
+    </definition>
+    
+    <definition name="cp.editAnUser" extends="layout.base">
+        <put-attribute name="title" value="Edit an user" />                                 
+        <put-attribute name="content" value="/views/cp/user/edit.jsp" />
+    </definition>
+    
+    <definition name="cp.profile" extends="layout.base">
+        <put-attribute name="title" value="User profile" />                                 
+        <put-attribute name="content" value="/views/cp/user/profile.jsp" />
+    </definition>
+    
+    <definition name="cp.changePass" extends="layout.base">
+        <put-attribute name="title" value="Change password" />                                 
+        <put-attribute name="content" value="/views/cp/user/settings.jsp" />
+    </definition>
+    
+    <!-- Papers Module -->
+    <definition name="cp.papers" extends="layout.base">
+        <put-attribute name="title" value="Show list papers" />                                 
+        <put-attribute name="content" value="/views/cp/papers/list.jsp" />
+    </definition>
+    
+    <definition name="cp.addAPaper" extends="layout.base">
+        <put-attribute name="title" value="Create a paper" />                                 
+        <put-attribute name="content" value="/views/cp/papers/add.jsp" />
+    </definition>
+    
+    <definition name="cp.generate" extends="layout.base">
+        <put-attribute name="title" value="Create a paper" />                                 
+        <put-attribute name="content" value="/views/cp/papers/generate.jsp" />
+    </definition>
+    
+    <definition name="cp.editAPaper" extends="layout.base">
+        <put-attribute name="title" value="Edit a paper" />                                 
+        <put-attribute name="content" value="/views/cp/papers/edit.jsp" />
+    </definition>
+    
+    <definition name="cp.summaryPaper" extends="layout.base">
+        <put-attribute name="title" value="Show list projects" />                                 
+        <put-attribute name="content" value="/views/cp/papers/papers-summary-filters.jsp" />
+    </definition>
+    
+    <definition name="cp.listPapersSummary" extends="layout.base">
+        <put-attribute name="title" value="Show list papers" />                                 
+        <put-attribute name="content" value="/views/cp/papers/list-papers-summary.jsp" />
+    </definition>
+    
+    <!-- Topics Module -->
+    <definition name="cp.topics" extends="layout.base">
+        <put-attribute name="title" value="Show list topics" />                                 
+        <put-attribute name="content" value="/views/cp/topics/list.jsp" />
+    </definition>
+    
+    <definition name="cp.addATopic" extends="layout.base">
+        <put-attribute name="title" value="Create a topic" />                                 
+        <put-attribute name="content" value="/views/cp/topics/add.jsp" />
+    </definition>
+    
+    <definition name="cp.generateTopics" extends="layout.base">
+        <put-attribute name="title" value="Create topics" />                                 
+        <put-attribute name="content" value="/views/cp/topics/generate.jsp" />
+    </definition>
+    
+    <definition name="cp.editATopic" extends="layout.base">
+        <put-attribute name="title" value="Edit a topic" />                                 
+        <put-attribute name="content" value="/views/cp/topics/edit.jsp" />
+    </definition>
+    
+    <!-- Patents Module -->
+    <definition name="cp.patents" extends="layout.base">
+        <put-attribute name="title" value="Show list patents" />                                 
+        <put-attribute name="content" value="/views/cp/patents/list.jsp" />
+    </definition>
+    
+    <definition name="cp.addAPatent" extends="layout.base">
+        <put-attribute name="title" value="Create a patent" />                                 
+        <put-attribute name="content" value="/views/cp/patents/add.jsp" />
+    </definition>
+    
+    <definition name="cp.generatePatents" extends="layout.base">
+        <put-attribute name="title" value="Create patents" />                                 
+        <put-attribute name="content" value="/views/cp/patents/generate.jsp" />
+    </definition>
+    
+    <definition name="cp.editAPatent" extends="layout.base">
+        <put-attribute name="title" value="Edit a patent" />                                 
+        <put-attribute name="content" value="/views/cp/patents/edit.jsp" />
+    </definition>
+    
+    <!-- Summary Module -->
+    <definition name="cp.generateSummary" extends="layout.base">
+        <put-attribute name="title" value="Create summary" />                                 
+        <put-attribute name="content" value="/views/cp/summary/generate.jsp" />
+    </definition>
+    
+    <definition name="cp.generateForm01CN02CN" extends="layout.base">
+        <put-attribute name="title" value="Create summary" />                                 
+        <put-attribute name="content" value="/views/cp/summary/cn01cn02.jsp" />
+    </definition>
+    
+    <definition name="cp.generateSummaryKV03" extends="layout.base">
+        <put-attribute name="title" value="Create summary" />                                 
+        <put-attribute name="content" value="/views/cp/summary/kv03.jsp" />
+    </definition>
+    
+    <definition name="cp.generateSummaryKV04" extends="layout.base">
+        <put-attribute name="title" value="Create summary" />                                 
+        <put-attribute name="content" value="/views/cp/summary/kv04.jsp" />
+    </definition>
+
+    <definition name="cp.generateListPapers" extends="layout.base">
+        <put-attribute name="title" value="Create summary" />                                 
+        <put-attribute name="content" value="/views/cp/summary/listpapers.jsp" />
+    </definition>
+    
+    <definition name="cp.generateSummaryKV01" extends="layout.base">
+        <put-attribute name="title" value="Create summary" />                                 
+        <put-attribute name="content" value="/views/cp/summary/kv01.jsp" />
+    </definition>
+    
+    <definition name="cp.generateSummaryISI02" extends="layout.base">
+        <put-attribute name="title" value="Create summary" />                                 
+        <put-attribute name="content" value="/views/cp/summary/isi02.jsp" />
+	</definition>
+	
+    <!-- Threads Module -->
+    <definition name="cp.threads" extends="layout.base">
+        <put-attribute name="title" value="Show list threads" />                                 
+        <put-attribute name="content" value="/views/cp/threads/list.jsp" />
+    </definition>
+    
+    <definition name="cp.threads-listadd" extends="layout.base">
+        <put-attribute name="title" value="Show list threads" />                                 
+        <put-attribute name="content" value="/views/cp/threads/listadd.jsp" />
+    </definition>
+    
+    <definition name="cp.threads-approve" extends="layout.base">
+        <put-attribute name="title" value="Show list threads" />                                 
+        <put-attribute name="content" value="/views/cp/threads/listapprove.jsp" />
+    </definition>
+    
+    <definition name="cp.threads-evaluate" extends="layout.base">
+        <put-attribute name="title" value="Show list threads" />                                 
+        <put-attribute name="content" value="/views/cp/threads/listevaluate.jsp" />
+    </definition>
+    
+    <definition name="cp.addAThread" extends="layout.base">
+        <put-attribute name="title" value="Create a thread" />                                 
+        <put-attribute name="content" value="/views/cp/threads/add.jsp" />
+    </definition>
+    
+    <definition name="cp.generateThreads" extends="layout.base">
+        <put-attribute name="title" value="Create threads" />                                 
+        <put-attribute name="content" value="/views/cp/threads/generate.jsp" />
+    </definition>
+    
+    <definition name="cp.editAThread" extends="layout.base">
+        <put-attribute name="title" value="Edit a thread" />                                 
+        <put-attribute name="content" value="/views/cp/threads/edit.jsp" />
+    </definition>
+    
+    <definition name="cp.showAThread" extends="layout.base">
+        <put-attribute name="title" value="Show a thread" />                                 
+        <put-attribute name="content" value="/views/cp/threads/show.jsp" />
+    </definition>
+
+    <definition name="cp.showAThreadToUpdate" extends="layout.base">
+        <put-attribute name="title" value="Show a thread" />                                 
+        <put-attribute name="content" value="/views/cp/threads/showtoupdate.jsp" />
+    </definition>
+
+    <definition name="cp.showAThreadToApprove" extends="layout.base">
+        <put-attribute name="title" value="Show a thread" />                                 
+        <put-attribute name="content" value="/views/cp/threads/showtoapprove.jsp" />
+    </definition>
+
+    <definition name="cp.showAThreadToEvaluate" extends="layout.base">
+        <put-attribute name="title" value="Show a thread" />                                 
+        <put-attribute name="content" value="/views/cp/threads/showtoevaluate.jsp" />
+    </definition>
+    
+    <!-- Products Module -->
+    <definition name="cp.products" extends="layout.base">
+        <put-attribute name="title" value="Show list products" />                                 
+        <put-attribute name="content" value="/views/cp/products/list.jsp" />
+    </definition>
+    
+    <definition name="cp.addAProduct" extends="layout.base">
+        <put-attribute name="title" value="Create a product" />                                 
+        <put-attribute name="content" value="/views/cp/products/add.jsp" />
+    </definition>
+    
+    <definition name="cp.editAProduct" extends="layout.base">
+        <put-attribute name="title" value="Edit a product" />                                 
+        <put-attribute name="content" value="/views/cp/products/edit.jsp" />
+    </definition>
+    
+    <!-- ProjectCalls Module -->
+    <definition name="cp.projectcalls" extends="layout.base">
+        <put-attribute name="title" value="Show list products" />                                 
+        <put-attribute name="content" value="/views/cp/projectcalls/list.jsp" />
+    </definition>
+    
+    <definition name="cp.addAProjectCall" extends="layout.base">
+        <put-attribute name="title" value="Create a project call" />                                 
+        <put-attribute name="content" value="/views/cp/projectcalls/add.jsp" />
+    </definition>
+    
+    <definition name="cp.editAProjectCall" extends="layout.base">
+        <put-attribute name="title" value="Edit a project call" />                                 
+        <put-attribute name="content" value="/views/cp/projectcalls/edit.jsp" />
+    </definition>
+    
+    <!-- Projects Module -->
+    <definition name="cp.projectsList" extends="layout.base">
+        <put-attribute name="title" value="Show list projects" />                                 
+        <put-attribute name="content" value="/views/cp/projects/list.jsp" />
+    </definition>
+    
+    <definition name="cp.projectsListStatisitics" extends="layout.base">
+        <put-attribute name="title" value="Show list projects" />                                 
+        <put-attribute name="content" value="/views/cp/projects/list-statistics.jsp" />
+    </definition>
+    <definition name="cp.projectsListStatisiticsParams" extends="layout.base">
+        <put-attribute name="title" value="Show list projects" />                                 
+        <put-attribute name="content" value="/views/cp/projects/list-statistics-params.jsp" />
+    </definition>
+
+    <definition name="cp.projectsListCommentsStatisiticsParams" extends="layout.base">
+        <put-attribute name="title" value="Show list projects" />                                 
+        <put-attribute name="content" value="/views/cp/CommentsOfSubmittedProjects/list-statistics-params.jsp" />
+    </definition>
+
+    <definition name="cp.addAProject" extends="layout.base">
+        <put-attribute name="title" value="Create a project" />    
+        <!-- Old form -->                             
+        <!-- <put-attribute name="content" value="/views/cp/projects/add.jsp" /> -->
+        
+        <!-- New form -->
+        <put-attribute name="content" value="/views/cp/projects/add-upload.jsp" />
+    </definition>
+    
+    <definition name="cp.editAProject" extends="layout.base">
+        <put-attribute name="title" value="Edit a project" />              
+        <!-- Old form -->                   
+        <!-- <put-attribute name="content" value="/views/cp/projects/edit.jsp" /> -->
+        <!-- New form -->
+        <put-attribute name="content" value="/views/cp/projects/edit-upload.jsp" />
+    </definition>
+    
+    <definition name="cp.projectsapprove" extends="layout.base">
+        <put-attribute name="title" value="Show list projects" />                                 
+        <put-attribute name="content" value="/views/cp/projects/listapprove.jsp" />
+    </definition>
+
+    <definition name="cp.approveaproject" extends="layout.base">
+        <put-attribute name="title" value="Edit a project" />                                 
+        <put-attribute name="content" value="/views/cp/projects/approve.jsp" />
+    </definition>
+    
+    <definition name="cp.listcomments" extends="layout.base">
+        <put-attribute name="title" value="Show list projects" />                                 
+        <put-attribute name="content" value="/views/cp/projects/listcomments.jsp" />
+    </definition>
+    
+    <definition name="cp.projectcomments" extends="layout.base">
+        <put-attribute name="title" value="Edit a project" />                                 
+        <put-attribute name="content" value="/views/cp/projects/comments.jsp" />
+    </definition>
+
+    <!-- Master Management module -->
+    <!-- Universities Module -->
+	<definition name="mm.partnerUniversities" extends="layout.base">
+		<put-attribute name="title" value="List universities" />
+		<put-attribute name="content" value="/views/cp/university/list.jsp" />
+	</definition>
+
+	<definition name="mm.addAnUniversity" extends="layout.base">
+		<put-attribute name="title" value="Create a university" />
+		<put-attribute name="content" value="/views/cp/university/add.jsp" />
+	</definition>
+
+	<definition name="mm.editAnUniversity" extends="layout.base">
+		<put-attribute name="title" value="Edit an university" />
+		<put-attribute name="content" value="/views/cp/university/edit.jsp" />
+	</definition>    
+    
+    <!-- Professors Module -->
+	<definition name="mm.professors" extends="layout.base">
+		<put-attribute name="title" value="List professors" />
+		<put-attribute name="content" value="/views/cp/professor/list.jsp" />
+	</definition>
+
+	<definition name="mm.addAProfessor" extends="layout.base">
+		<put-attribute name="title" value="Create a professor" />
+		<put-attribute name="content" value="/views/cp/professor/add.jsp" />
+	</definition>
+
+	<definition name="mm.editAProfessor" extends="layout.base">
+		<put-attribute name="title" value="Edit a professor" />
+		<put-attribute name="content" value="/views/cp/professor/edit.jsp" />
+	</definition>
+	
+	 <!-- External Professors Module -->
+	<definition name="mm.externalprofessors" extends="layout.base">
+		<put-attribute name="title" value="List external professors" />
+		<put-attribute name="content" value="/views/cp/externalprofessor/list.jsp" />
+	</definition>
+
+	<definition name="mm.addAnExternalProfessor" extends="layout.base">
+		<put-attribute name="title" value="Create an external professor" />
+		<put-attribute name="content" value="/views/cp/externalprofessor/add.jsp" />
+	</definition>
+
+	<definition name="mm.editAnExternalProfessor" extends="layout.base">
+		<put-attribute name="title" value="Edit an external professor" />
+		<put-attribute name="content" value="/views/cp/externalprofessor/edit.jsp" />
+	</definition>
+	
+    <!-- Students Module -->
+	<definition name="mm.students" extends="layout.base">
+		<put-attribute name="title" value="List students" />
+		<put-attribute name="content" value="/views/cp/student/list.jsp" />
+	</definition>
+
+	<definition name="mm.addAStudent" extends="layout.base">
+		<put-attribute name="title" value="Create a student" />
+		<put-attribute name="content" value="/views/cp/student/add.jsp" />
+	</definition>
+
+	<definition name="mm.editAStudent" extends="layout.base">
+		<put-attribute name="title" value="Edit a student" />
+		<put-attribute name="content" value="/views/cp/student/edit.jsp" />
+	</definition>
+	
+	<!-- Thesis Module -->
+	<definition name="mm.listToAssignThesis" extends="layout.base">
+		<put-attribute name="title" value="List students to assign thesis" />
+		<put-attribute name="content"
+			value="/views/cp/masterthesis/listToAssign.jsp" />
+	</definition>
+
+	<definition name="mm.assignThesis" extends="layout.base">
+		<put-attribute name="title" value="Assign thesis to student" />
+		<put-attribute name="content" value="/views/cp/masterthesis/assign.jsp" />
+	</definition>
+
+	<definition name="mm.listThesis" extends="layout.base">
+		<put-attribute name="title" value="List thesis" />
+		<put-attribute name="content" value="/views/cp/masterthesis/list.jsp" />
+	</definition>
+
+	<definition name="mm.editThesis" extends="layout.base">
+		<put-attribute name="title" value="Edit thesis" />
+		<put-attribute name="content" value="/views/cp/masterthesis/edit.jsp" />
+	</definition>
+	
+	<definition name="mm.scheduling" extends="layout.base">
+		<put-attribute name="title" value="Scheduling" />
+		<put-attribute name="content" value="/views/cp/schedule/scheduling.jsp" />
+	</definition>
+
+	<definition name="mm.settingjuries" extends="layout.base">
+		<put-attribute name="title" value="Setting juries" />
+		<put-attribute name="content"
+			value="/views/cp/schedule/settingjuries.jsp" />
+	</definition>
+
+	<!-- DefenseSession Module -->
+	<definition name="mm.defensesession" extends="layout.base">
+		<put-attribute name="title" value="List defensesession" />
+		<put-attribute name="content" value="/views/cp/defensesessions/list.jsp" />
+	</definition>
+
+	<definition name="mm.addADefenseSession" extends="layout.base">
+		<put-attribute name="title" value="Create a defensesession" />
+		<put-attribute name="content" value="/views/cp/defensesessions/add.jsp" />
+	</definition>
+
+	<definition name="mm.editADefenseSession" extends="layout.base">
+		<put-attribute name="title" value="Edit a defensesession" />
+		<put-attribute name="content" value="/views/cp/defensesessions/edit.jsp" />
+	</definition>
+
+	<!-- Classes Module -->
+	<definition name="mm.classes" extends="layout.base">
+		<put-attribute name="title" value="List classes" />
+		<put-attribute name="content" value="/views/cp/classes/list.jsp" />
+	</definition>
+	<definition name="mm.addAClass" extends="layout.base">
+		<put-attribute name="title" value="add a class" />
+		<put-attribute name="content" value="/views/cp/classes/add.jsp" />
+	</definition>
+	<definition name="mm.editAClass" extends="layout.base">
+		<put-attribute name="title" value="edit a class" />
+		<put-attribute name="content" value="/views/cp/classes/edit.jsp" />
+	</definition>
+
+	<!-- JuryMember Module -->
+	<definition name="mm.juryMembers" extends="layout.base">
+		<put-attribute name="title" value="list jurymembers" />
+		<put-attribute name="content"
+			value="/views/cp/schedule/listjurymembers.jsp" />
+	</definition>
+	
+	<definition name="mm.juryExternalMembers" extends="layout.base">
+		<put-attribute name="title" value="list jury external members" />
+		<put-attribute name="content"
+			value="/views/cp/schedule/listjuryexternalmembers.jsp" />
+	</definition>
+
+	<!-- JuryRooms Module -->
+	<definition name="mm.juryRooms" extends="layout.base">
+		<put-attribute name="title" value="list juryrooms" />
+		<put-attribute name="content"
+			value="/views/cp/schedule/listjuryrooms.jsp" />
+	</definition>
+
+	<!-- JurySlots Module -->
+	<definition name="mm.jurySlots" extends="layout.base">
+		<put-attribute name="title" value="list juryslots" />
+		<put-attribute name="content"
+			value="/views/cp/schedule/listjuryslots.jsp" />
+	</definition>
+	<!-- Master Management module end -->
+    
+
+    <definition name="cp.submittedProjectsList" extends="layout.base">
+        <put-attribute name="title" value="Show list projects" />                                 
+        <put-attribute name="content" value="/views/cp/projects/listsubmitted.jsp" />
+    </definition>
+    
+<!--     <definition name="cp.editASumittedProject" extends="layout.base">
+        <put-attribute name="title" value="Edit a project" />                                 
+        <put-attribute name="content" value="/views/cp/projects/editsubmitted.jsp" />
+    </definition>
+ -->
+    <definition name="cp.viewDetailCommentASumittedProject" extends="layout.base">
+        <put-attribute name="title" value="Edit a project" />                                 
+        <put-attribute name="content" value="/views/cp/projects/viewcommentssubmitted.jsp" />
+    </definition>
+    
+    <!-- Jury of announced project call -->    
+    <definition name="cp.addJuryOfAnnouncedProjectCall" extends="layout.base">
+        <put-attribute name="title" value="List juries of announced project calls " />                                 
+        <put-attribute name="content" value="/views/cp/JuryOfAnnouncedProjectCall/manage.jsp" />
+    </definition>
+    
+    <definition name="cp.listJuryOfAnnouncedProjectCall" extends="layout.base">
+        <put-attribute name="title" value="List juries of announced project calls " />                                 
+        <put-attribute name="content" value="/views/cp/JuryOfAnnouncedProjectCall/list-manage.jsp" />
+    </definition>
+    
+    <!-- Staff jury of submitted project -->    
+    <definition name="cp.addStaffJuryOfSubmittedProject" extends="layout.base">
+        <put-attribute name="title" value="List staff juries of submitted projects " />                                 
+        <put-attribute name="content" value="/views/cp/StaffJuryOfSubmittedProject/manage.jsp" />
+    </definition>
+    
+    <definition name="cp.listStaffJuryOfSubmittedProject" extends="layout.base">
+        <put-attribute name="title" value="List staff juries of submitted projects " />                                 
+        <put-attribute name="content" value="/views/cp/StaffJuryOfSubmittedProject/list-manage.jsp" />
+    </definition>
+    
+     <!-- Comments of submitted project -->    
+    <definition name="cp.listProjectsToBeReviewed" extends="layout.base">
+        <put-attribute name="title" value="List of projects to be reviewed " />                                 
+        <put-attribute name="content" value="/views/cp/CommentsOfSubmittedProjects/list.jsp" />
+    </definition>
+    
+    <definition name="cp.addCommentsOfSubmittedProjects" extends="layout.base">
+        <put-attribute name="title" value="Add comments for submitted projects " />                                 
+        <put-attribute name="content" value="/views/cp/CommentsOfSubmittedProjects/addComment.jsp" />
+    </definition> 
+            
+    <definition name="cp.detailsCommentsSubmittedProjects" extends="layout.base">
+        <put-attribute name="title" value="List of projects to be reviewed " />                                 
+        <put-attribute name="content" value="/views/cp/CommentsOfSubmittedProjects/list_detailcommentsubmitted_projects.jsp" />
+    </definition>
+    
+    <definition name="cp.addADetailCommentProject" extends="layout.base">
+        <put-attribute name="title" value="Add comments for submitted projects " />                                 
+        <put-attribute name="content" value="/views/cp/CommentsOfSubmittedProjects/addCommentSubmittedProjects.jsp" />
+    </definition> 
+    
+    <definition name="cp.commentsSubmittedProjectsResultSummary" extends="layout.base">
+        <put-attribute name="title" value="List of projects to be reviewed " />                                 
+        <put-attribute name="content" value="/views/cp/CommentsOfSubmittedProjects/comments-submitted-projects-result-summary.jsp" />
+    </definition>
+
+</tiles-definitions>

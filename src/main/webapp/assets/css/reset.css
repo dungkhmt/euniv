@@ -1,0 +1,77 @@
+/*--------------------------------------------------------------------------------------------
+# Author: Luu Duc Quang <quangld@peacesoft.net> - Mobile: 01 669 224 322 
+# @license - Copyrighted Commercial Software
+# Websites:  http://www.chodientu.vn - http://www.nganluong.vn - http://www.ebay.vn
+# Copyright (C) 2000-2012 PeaceSoft Solutions Corporation. All Rights Reserved.
+--------------------------------------------------------------------------------------------*/
+a, abbr, acronym, address, applet, article, aside, audio, b, blockquote, big, body, center, canvas, caption, cite, code, command, datalist, dd, del, details, dfn, dl, div, dt, em, embed, fieldset, figcaption, figure, font, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, keygen, label, legend, li, meter, nav, object, ol, output, p, pre, progress, q, s, samp, section, small, span, source, strike, strong, sub, sup, table, tbody, tfoot, thead, th, tr, tdvideo, tt, u, ul, var {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    font-size: 100%;
+    margin: 0;
+    outline: 0 none;
+    padding: 0;
+    vertical-align: top;
+}
+ol, ul {
+    list-style: none outside none;
+}
+blockquote, q {
+    quotes: none;
+}
+table, table td {
+    border: medium none;
+    border-collapse: collapse;
+    padding: 0;
+}
+img {
+    vertical-align: top;
+}
+embed {
+    vertical-align: top;
+}
+input[type="checkbox"], input[type="radio"] {
+    margin: 0 8px 0 0;
+    position: relative;
+    top: 0.15em;
+    }
+input[type="checkbox"] {
+    *top: 0.05em;
+    }
+input[type="radio"] {
+    *top: -0.2em;
+    }
+input:focus, select:focus { outline: none; }
+button, input[type="submit"], input[type="reset"], input[type="button"], input.button {
+    overflow: visible;
+    padding: 0 .25em;
+    width: 0; /* this is to fix IE 6 and 7 which create extra padding on buttons */
+}
+button, input[type="submit"], input[type="reset"], input[type="button"], input.button[class] { /*ie ignores [class]*/
+    width: auto;
+}
+.clear {
+    clear: both;
+    display: block;
+    height: 0;
+    overflow: hidden;
+}
+.clearfix:after {
+    clear: both;
+    content: " ";
+    display: block;
+    font-size: 0;
+    height: 0;
+    line-height: 0;
+    visibility: hidden;
+    width: 0;
+}
+.clearfix {
+    display: inline-block;
+}
+* html .clearfix {
+    height: 1%;
+}
+.clearfix {
+    display: block;
+}

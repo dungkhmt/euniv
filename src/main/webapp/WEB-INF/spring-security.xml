@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans    xmlns="http://www.springframework.org/schema/security"
+                xmlns:beans="http://www.springframework.org/schema/beans" 
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.springframework.org/schema/beans
+					                http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+					                http://www.springframework.org/schema/security
+					                http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+    <!-- Old -->
+    <!--finish security -->
+    <http auto-config="true" use-expressions="true">
+    	<!-- For one role -->
+    	<!-- <intercept-url pattern="/cp/users.html" access="hasRole('ROLE_ADMIN')" /> -->
+        
+        <!-- For many roles -->
+        <intercept-url pattern="/cp/users.html" access="hasAnyRole('ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY','ROLE_ADMIN', 'SUPER_ADMIN')" />
+               
+        <form-login login-page="/cp/auth/login.html" 
+        			default-target-url="/cp/home.html"
+                    authentication-failure-url="/cp/auth/accessdenied.html" />
+                                 
+        <logout logout-success-url="/cp/auth/login.html" 
+        		logout-url="/j_spring_security_logout" />
+        
+        <session-management invalid-session-url = "/cp/auth/login.html" > 
+            <concurrency-control max-sessions = "1" /> 
+        </session-management>
+
+    </http>
+    
+    
+    <authentication-manager alias="authenticationManager">
+        <!-- <authentication-provider ref="customAuthenticationProvider" /> -->
+        <authentication-provider>
+        
+        	<!-- Customise for encoding password
+        	<password-encoder ref="encoder" /> -->
+        	
+        	<!-- Set encoder for password -->
+        	<password-encoder hash="md5" />
+			<jdbc-user-service data-source-ref="myDataSource" 
+				users-by-username-query="select Username, Password, Enabled from tblusers where Username =?"
+				authorities-by-username-query="select Username, Role from tbluserroles where Username =?" />
+		</authentication-provider>
+    </authentication-manager>
+    
+    <!-- <beans:bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">  
+	  <beans:constructor-arg name="strength" value="10" />  
+	</beans:bean>  --> 
+    
+	
+</beans:beans>

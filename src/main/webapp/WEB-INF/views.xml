@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+     
+    <bean id="excelView" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcelBuilder" />
+    
+    <!-- <bean id="excelXssfView" class="vn.webapp.controller.cp.ExcelXSSFBuilder" /> -->
+    
+    <bean id="excelTopicsView" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcelTopicsBuilder" />
+    
+    <bean id="excelSummaryView" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcelSummaryBuilder" />
+    
+    <bean id="excelSummaryViewKV04" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcelKV04SummaryBuilder" />
+    
+    <bean id="excelSummaryViewKV03" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcelKV03SummaryBuilder" />
+    
+    <bean id="newExcelSummaryViewKV03" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.nExcelKV03SummaryBuilder" />
+    
+    <bean id="excelSummaryViewKV01" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcelKV01SummaryBuilder" />
+    
+    <bean id="excelSummaryViewISI02" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcelISI02SummaryBuilder" />
+	
+    <bean id="excelThreadsView" class="vn.webapp.modules.researchmanagement.controller.cp.mExcelThreadsBuilder" />
+     
+    <bean id="excel01CN02CN" class="vn.webapp.modules.researchdeclarationmanagement.controller.cp.mExcel01CN02CNBuilder"/> 
+    
+</beans>
