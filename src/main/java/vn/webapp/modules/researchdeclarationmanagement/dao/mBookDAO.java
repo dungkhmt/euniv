@@ -11,4 +11,5 @@ public interface mBookDAO {
 	public int saveABook(mBooks book);
 	public mBooks loadABookById(int bookId);
 	public int removeABook(int bookId);
+	public List<mBooks> loadBookListSummary(String bookStaff, String bookAcademicYear);
 }

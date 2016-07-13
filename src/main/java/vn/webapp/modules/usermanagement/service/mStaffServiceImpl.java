@@ -139,4 +139,11 @@ public class mStaffServiceImpl implements mStaffService {
     	staff.setStaff_Department_Code(staffDepartment);
     	return staffDAO.saveAStaff(staff);
     }
+
+	@Override
+	public List<mStaff> listStaffsByFalcutyAndDepartment(String facultyCode,
+			String departmentCode) {
+		// TODO Auto-generated method stub
+		return staffDAO.listStaffsByFalcutyAndDepartment(facultyCode, departmentCode);
+	}
 }

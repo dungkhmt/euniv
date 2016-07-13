@@ -35,6 +35,7 @@ import vn.webapp.modules.researchdeclarationmanagement.service.BookStaffsService
 import vn.webapp.modules.researchdeclarationmanagement.service.mAcademicYearService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mBookService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mPaperService;
+import vn.webapp.modules.researchdeclarationmanagement.validation.mBookSummaryValidation;
 import vn.webapp.modules.researchdeclarationmanagement.validation.mBookValidation;
 import vn.webapp.modules.usermanagement.model.mFaculty;
 import vn.webapp.modules.usermanagement.model.mStaff;
@@ -373,4 +374,77 @@ public class mBookController extends BaseWeb {
 		return "cp.books";
 	}
 	
+	
+	@RequestMapping(value="/summary-books")
+	public String getListTopics(ModelMap model, HttpSession session){
+		
+		String userCode = session.getAttribute("currentUserCode").toString();
+		String userRole = session.getAttribute("currentUserRole").toString();
+		String facultyCode = session.getAttribute("facultyCode").toString();
+		
+		List<mFaculty> threadFaculties = new ArrayList<mFaculty>();
+		if("ROLE_ADMIN".equals(userRole) || "SUPER_ADMIN".equals(userRole)){
+			threadFaculties = facultyService.loadFacultyList();
+		}else if("ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY".equals(userRole)){
+			mFaculty faculty = facultyService.loadAFacultyByCode(facultyCode);
+			if(faculty != null){
+				threadFaculties.add(faculty);
+			}
+		}
+		
+		List<mAcademicYear> bookReportingAcademicYearList = academicYearService.list();
+		
+		model.put("threadFaculties", threadFaculties);
+		model.put("bookReportingAcademicYearList", bookReportingAcademicYearList);
+		model.put("bookSummaryForm", new mBookSummaryValidation());
+		
+		return "cp.summaryBook";
+	}
+	
+	@RequestMapping(value = "/booksSummary", method = RequestMethod.POST)
+	public String booksSummary(@Valid @ModelAttribute("bookSummaryForm") mBookSummaryValidation bookSummaryValidation, ModelMap model){
+		String bookAcademicYear = bookSummaryValidation.getBookReportingAcademicYear();
+		String bookFaculty = bookSummaryValidation.getBookFaculty();
+		String bookDepartment = bookSummaryValidation.getThreadDepartment();
+		String bookStaff = bookSummaryValidation.getThreadStaff();
+		System.out.println(name()+"::booksSummary--bookAcademicYear"+bookAcademicYear);
+		System.out.println(name()+"::booksSummary--bookFaculty"+bookFaculty);
+		System.out.println(name()+"::booksSummary--bookDepartment"+bookDepartment);
+		System.out.println(name()+"::booksSummary--bookStaff"+bookStaff);
+		
+		List<mBooks> bookList = new ArrayList<mBooks>();
+		if(bookStaff != null && !(bookStaff.equals(""))){
+			bookList = bookService.loadBookListSummary(bookStaff, bookAcademicYear);
+		}else{
+			if(bookDepartment != null && !(bookDepartment.equals(""))){
+				List<mStaff> staffs = staffService.listStaffsByFalcutyAndDepartment(bookFaculty, bookDepartment);
+				for(mStaff staff : staffs){
+					List<mBooks> bookListTmp = bookService.loadBookListSummary(staff.getStaff_Code(), bookAcademicYear);
+					if(bookListTmp != null){
+						for(mBooks book : bookListTmp){
+							bookList.add(book);
+						}
+					}
+				}
+			}else{
+				if(bookFaculty != null && !(bookFaculty.equals(""))){
+					List<mStaff> staffs = staffService.listStaffsByFalcuty(bookFaculty);
+					for(mStaff staff : staffs){
+						List<mBooks> bookListTmp = bookService.loadBookListSummary(staff.getStaff_Code(), bookAcademicYear);
+						if(bookListTmp != null){
+							for(mBooks book : bookListTmp){
+								bookList.add(book);
+							}
+						}
+					}
+				}else{
+					bookList = bookService.loadBookListSummary(bookStaff, bookAcademicYear);
+				}
+			}
+		}
+		
+		model.put("bookList", bookList);
+		
+		return "cp.listBooksSummary";
+	}
 }

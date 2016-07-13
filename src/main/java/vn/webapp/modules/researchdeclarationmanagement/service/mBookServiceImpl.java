@@ -145,4 +145,10 @@ public class mBookServiceImpl implements mBookService {
 	String name(){
 		return "mBookServiceImpl";
 	}
+	@Override
+	public List<mBooks> loadBookListSummary(String bookStaff, String bookAcademicYear) {
+		// TODO Auto-generated method stub
+		
+		return bookDAO.loadBookListSummary(bookStaff, bookAcademicYear);
+	}
 }

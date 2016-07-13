@@ -24,8 +24,6 @@ public class mBookValidation {
 	
 	private int bookId;
 
-
-
 	private String bookAuthorList;
 	
 	private String bookISBN;
