@@ -65,6 +65,15 @@
 	                        </div>
 	                        <div class="col-lg-6">
 	                        		<div class="form-group">
+	                                	<label for="bookReportingAcademicDate">Năm kê khai*</label>
+		                                <form:select path="bookReportingAcademicDate" class="form-control" data-validation="required" data-validation-error-msg="Trường thông tin này là bắt buộc"  name="bookReportingAcademicDate">
+		                                	<c:forEach items="${bookReportingAcademicDateList}" var="bookDate">
+		                                     <option value="${bookDate.ACAYEAR_Code}">${bookDate.ACAYEAR_Code}</option>
+		                                   	</c:forEach>
+		                                </form:select>
+		                                <form:errors path="bookReportingAcademicDate" class="alert-danger"></form:errors>
+	                            	</div>
+	                        		<div class="form-group">
 	                                    <label for="bookAuthorList">Tác giả (danh sách tác giả cách nhau bởi dấu phảy)</label>
 	                                    <form:input path="bookAuthorList" class="form-control" name="bookAuthorList" placeholder="Authors"></form:input>
 	    								<form:errors path="bookAuthorList" class="alert-danger"></form:errors>
@@ -221,6 +230,7 @@ $(document).ready(function(){
 	// Init changing country
 	//v_fChangeCategory();
 });
+
 /*
 function v_fChangeCategory(){
 	var sCateCode = $("#paperCatCode").val();
@@ -241,8 +251,8 @@ function v_fChangeCategory(){
 		}
 	}
 	$("#paperPubConHours").val(iConvertedHours);
-}
-*/
+}*/
+
 function b_fCheckExistsMember(the_sz_StaffCode){
 	if(the_sz_StaffCode != "")
 	{

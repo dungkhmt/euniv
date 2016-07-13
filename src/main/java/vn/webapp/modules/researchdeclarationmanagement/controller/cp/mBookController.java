@@ -226,14 +226,22 @@ public class mBookController extends BaseWeb {
 		}
 		return "cp.editABook";
 	}
+	
+	/**
+	    * Add a book
+	    * @param model
+	    * @return 
+	    */
 	@RequestMapping(value = "/add-a-book")
 	public String addBook(ModelMap model){
 		
 		List<mFaculty> listFaculty = facultyService.loadFacultyList();
 		List<mStaff> listStaff = staffService.listStaffs();
+		List<mAcademicYear> bookReportingAcademicDateList = academicYearService.list();
 		
 		model.put("listFaculty", listFaculty);
 		model.put("staffList", listStaff);
+		model.put("bookReportingAcademicDateList", bookReportingAcademicDateList);
 		model.put("bookFormAdd", new mBookValidation());
 		
 		return "cp.addABook";
@@ -298,6 +306,9 @@ public class mBookController extends BaseWeb {
 			String bookISBN = bookValid.getBookISBN();
 			System.out.println(name()+"::saveABook--bookISBN "+bookISBN);
 			
+			String bookReportingAcademicDate = bookValid.getBookReportingAcademicDate();
+			System.out.println(name()+"::saveABook--bookReportingAcademicDate "+bookReportingAcademicDate);
+			
 			MultipartFile bookSourceUploadFile = bookValid.getBookFileUpload();
 			String fileName = bookSourceUploadFile.getOriginalFilename();
 			String bookSourceUploadFileSrc = "";
@@ -323,7 +334,7 @@ public class mBookController extends BaseWeb {
 				}
 				
 				int id_InsertABook = bookService.saveABook(userCode, bookName, bookPublisher, 
-						bookMonth, bookYear, bookAuthors, bookISBN, fileName, projectMembers);
+						bookMonth, bookYear, bookAuthors, bookISBN, fileName, projectMembers, bookReportingAcademicDate);
 				
 				if(id_InsertABook > 0){
 					return "redirect:" + this.baseUrl + "/cp/books.html";
