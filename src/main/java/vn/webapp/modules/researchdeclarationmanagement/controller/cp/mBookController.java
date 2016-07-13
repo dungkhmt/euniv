@@ -173,28 +173,27 @@ public class mBookController extends BaseWeb {
 			String bookSourceUploadFileSrc = "";
 			//String bookCate= bookFormEdit.get
 			try{
+				mBooks book = bookService.loadABookByIdAndUserCode(userRole, userCode, bookFormEdit.getBookId());
 				String[] projectMembers = request.getParameterValues("projectMembers");
 		    	   if(projectMembers != null && projectMembers.length > 0){
-				Date currentDate = new Date();
-				SimpleDateFormat dateformatyyyyMMdd= new SimpleDateFormat("HHmmssddMMyyyy");
-				String sCurrentDate = dateformatyyyyMMdd.format(currentDate);
+				
 				
 				byte[] bytes= bookSourceUploadFile.getBytes();
 				String path = request.getServletContext().getRealPath("uploads");
 				System.out.println("BookController::editABook, path = " + path);
-				File dir = new File(path+ "/books");
-				if (!dir.exists()){
-		        	   dir.mkdirs();
-		        }
+				
 				if(!fileName.equals("")){
-					String currentUserName 	= session.getAttribute("currentUserName").toString();
-					fileName = currentUserName + "_" + sCurrentDate + "_" + fileName;
-					File serverFile = new File(dir.getAbsolutePath()+ File.separator + fileName);
+					fileName = establishFileNameStoredDataBase(fileName);
+					String fullfilename = establishFullFileNameForUpload(fileName, userCode);
+					File serverFile = new File(fullfilename);
+					
 					BufferedOutputStream stream= new BufferedOutputStream(new FileOutputStream(serverFile));
 					stream.write(bytes);
 					stream.close();
-					serverFile = new File(dir.getAbsolutePath()+ File.separator + fileName);
-					bookSourceUploadFileSrc = dir.getAbsolutePath()+ File.separator + fileName;
+					
+					bookSourceUploadFileSrc = fileName;
+				} else {
+					bookSourceUploadFileSrc= book.getBOK_SourceFile();
 				}
 				System.out.println("BookController::editABook, bookCourseUpLoadFileSrc = " + bookSourceUploadFileSrc);
 				/**
@@ -203,19 +202,19 @@ public class mBookController extends BaseWeb {
 				String bookName= bookFormEdit.getBookName();
 				String bookReportingAcademicDate= bookFormEdit.getBookReportingAcademicDate();
 				String authors= bookFormEdit.getBookAuthorList();
-				String[] bookAuthorsList 	= authors.trim().split("\\,");
+				/*String[] bookAuthorsList 	= authors.trim().split("\\,");
 				Integer numberOfAuthors 		= bookAuthorsList.length;
 				for(int i=0; i<bookAuthorsList.length; i++){
 			   		   if(bookAuthorsList[i].equals("")){
 			   			   numberOfAuthors--;
 			   		   }
-		   	   		}
+		   	   		}*/
 				String publicationName= bookFormEdit.getBookPublisher();
 				String ISBN= bookFormEdit.getBookISBN();
 				int bookMonth= Integer.parseInt(bookFormEdit.getBookMonth());
 				int bookYear= bookFormEdit.getBookYear();
 				int bookId= bookFormEdit.getBookId();
-				bookService.editABook(userRole,userCode,bookId,bookName,authors,publicationName,ISBN,bookMonth,bookYear,bookSourceUploadFileSrc,bookReportingAcademicDate,bookAuthorsList);
+				bookService.editABook(userRole,userCode,bookId,bookName,authors,publicationName,ISBN,bookMonth,bookYear,bookSourceUploadFileSrc,bookReportingAcademicDate,projectMembers);
 				return "redirect:" + this.baseUrl + "/cp/books.html";
 		    	   } else{
 		    		   model.put("err", "Cần phải thêm tác giả của sách.");
