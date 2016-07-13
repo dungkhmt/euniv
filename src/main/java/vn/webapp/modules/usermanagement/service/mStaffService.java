@@ -37,6 +37,9 @@ public interface mStaffService {
 	 * @param userCode
 	 * @return
 	 */
+	
+	public List<mStaff> listStaffsByFalcutyAndDepartment(String facultyCode, String departmentCode);
+	
     public mStaff loadStaffByUserCode(final String userCode);
     
     /**

@@ -35,6 +35,7 @@ import vn.webapp.modules.researchdeclarationmanagement.service.BookStaffsService
 import vn.webapp.modules.researchdeclarationmanagement.service.mAcademicYearService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mBookService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mPaperService;
+import vn.webapp.modules.researchdeclarationmanagement.validation.mBookSummaryValidation;
 import vn.webapp.modules.researchdeclarationmanagement.validation.mBookValidation;
 import vn.webapp.modules.usermanagement.model.mFaculty;
 import vn.webapp.modules.usermanagement.model.mStaff;
@@ -372,5 +373,33 @@ public class mBookController extends BaseWeb {
 		System.out.println(name()+"::removeABook--done");
 		return "cp.books";
 	}
+	
+	
+	@RequestMapping(value="/summary-books")
+	public String getListTopics(ModelMap model, HttpSession session){
+		
+		String userCode = session.getAttribute("currentUserCode").toString();
+		String userRole = session.getAttribute("currentUserRole").toString();
+		String facultyCode = session.getAttribute("facultyCode").toString();
+		
+		List<mFaculty> threadFaculties = new ArrayList<mFaculty>();
+		if("ROLE_ADMIN".equals(userRole) || "SUPER_ADMIN".equals(userRole)){
+			threadFaculties = facultyService.loadFacultyList();
+		}else if("ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY".equals(userRole)){
+			mFaculty faculty = facultyService.loadAFacultyByCode(facultyCode);
+			if(faculty != null){
+				threadFaculties.add(faculty);
+			}
+		}
+		
+		List<mAcademicYear> bookReportingAcademicYearList = academicYearService.list();
+		
+		model.put("threadFaculties", threadFaculties);
+		model.put("bookReportingAcademicYearList", bookReportingAcademicYearList);
+		model.put("bookSummaryForm", new mBookSummaryValidation());
+		
+		return "cp.summaryBook";
+	}
+	
 	
 }

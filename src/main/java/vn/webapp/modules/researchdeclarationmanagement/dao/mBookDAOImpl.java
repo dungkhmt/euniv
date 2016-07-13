@@ -1,5 +1,6 @@
 package vn.webapp.modules.researchdeclarationmanagement.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -174,7 +175,6 @@ public class mBookDAOImpl extends BaseDao implements mBookDAO {
             flush();
             close();
         }
-	
-	}
-	
+	}	
+		
 }

@@ -579,6 +579,7 @@
         <put-attribute name="title" value="List of projects to be reviewed " />                                 
         <put-attribute name="content" value="/views/cp/CommentsOfSubmittedProjects/comments-submitted-projects-result-summary.jsp" />
     </definition>
+    
 	<!--  Books Modules -->
 	
 	<definition name="cp.books" extends="layout.base">
@@ -593,8 +594,11 @@
         <put-attribute name="title" value="Add A Book" />                                 
         <put-attribute name="content" value="/views/cp/books/add.jsp" />
     </definition>
+
     <definition name="cp.generateSummary02KVBook" extends="layout.base">
         <put-attribute name="title" value="Create Summary" />                                 
         <put-attribute name="content" value="/views/cp/summary/bookkv2.jsp" />
     </definition>
+
+
 </tiles-definitions>
