@@ -89,7 +89,7 @@ public class mBookServiceImpl implements mBookService {
 	@Override
 	public int saveABook(String userCode, String bookName,
 			String bookPublisher, int bookMonth, int bookYear,
-			String bookAuthors, String bookISBN, String bookSourceFile, String[] projectMembers) {
+			String bookAuthors, String bookISBN, String bookSourceFile, String[] projectMembers, String bookReportingAcademicDate) {
 		// TODO Auto-generated method stub
 		mUsers user = userDao.getByUsername(userCode);
 		
@@ -104,6 +104,7 @@ public class mBookServiceImpl implements mBookService {
 			book.setBOK_ISBN(bookISBN);
 			book.setBOK_PublishedMonth(bookMonth);
 			book.setBOK_PublishedYear(bookYear);
+			book.setBOK_ReportingAcademicDate(bookReportingAcademicDate);
 			
 			int id_saveABook = bookDAO.saveABook(book);
 			
