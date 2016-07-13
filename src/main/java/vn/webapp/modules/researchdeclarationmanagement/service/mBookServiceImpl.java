@@ -151,4 +151,10 @@ public class mBookServiceImpl implements mBookService {
 		// TODO Auto-generated method stub
 		return bookDAO.loadBookListByYear(userRole, userCode, yearGenerate) ;
 	}
+	@Override
+	public List<mBooks> loadBookListSummary(String bookStaff, String bookAcademicYear) {
+		// TODO Auto-generated method stub
+		
+		return bookDAO.loadBookListSummary(bookStaff, bookAcademicYear);
+	}
 }

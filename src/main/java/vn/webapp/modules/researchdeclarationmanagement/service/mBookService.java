@@ -13,6 +13,6 @@ public interface mBookService {
 			String bookAuthors, String bookISBN, String bookSourceFile, String[] projectMembers, String bookReportingAcademicDate);
 	public mBooks loadABookById(int bookId);
 	public int removeABook(int bookId);
-	
+	public List<mBooks> loadBookListSummary(String bookStaff, String bookAcademicYear);
 	
 }

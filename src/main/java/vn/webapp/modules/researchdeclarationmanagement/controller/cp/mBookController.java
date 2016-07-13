@@ -401,5 +401,50 @@ public class mBookController extends BaseWeb {
 		return "cp.summaryBook";
 	}
 	
-	
+	@RequestMapping(value = "/booksSummary", method = RequestMethod.POST)
+	public String booksSummary(@Valid @ModelAttribute("bookSummaryForm") mBookSummaryValidation bookSummaryValidation, ModelMap model){
+		String bookAcademicYear = bookSummaryValidation.getBookReportingAcademicYear();
+		String bookFaculty = bookSummaryValidation.getBookFaculty();
+		String bookDepartment = bookSummaryValidation.getThreadDepartment();
+		String bookStaff = bookSummaryValidation.getThreadStaff();
+		System.out.println(name()+"::booksSummary--bookAcademicYear"+bookAcademicYear);
+		System.out.println(name()+"::booksSummary--bookFaculty"+bookFaculty);
+		System.out.println(name()+"::booksSummary--bookDepartment"+bookDepartment);
+		System.out.println(name()+"::booksSummary--bookStaff"+bookStaff);
+		
+		List<mBooks> bookList = new ArrayList<mBooks>();
+		if(bookStaff != null && !(bookStaff.equals(""))){
+			bookList = bookService.loadBookListSummary(bookStaff, bookAcademicYear);
+		}else{
+			if(bookDepartment != null && !(bookDepartment.equals(""))){
+				List<mStaff> staffs = staffService.listStaffsByFalcutyAndDepartment(bookFaculty, bookDepartment);
+				for(mStaff staff : staffs){
+					List<mBooks> bookListTmp = bookService.loadBookListSummary(staff.getStaff_Code(), bookAcademicYear);
+					if(bookListTmp != null){
+						for(mBooks book : bookListTmp){
+							bookList.add(book);
+						}
+					}
+				}
+			}else{
+				if(bookFaculty != null && !(bookFaculty.equals(""))){
+					List<mStaff> staffs = staffService.listStaffsByFalcuty(bookFaculty);
+					for(mStaff staff : staffs){
+						List<mBooks> bookListTmp = bookService.loadBookListSummary(staff.getStaff_Code(), bookAcademicYear);
+						if(bookListTmp != null){
+							for(mBooks book : bookListTmp){
+								bookList.add(book);
+							}
+						}
+					}
+				}else{
+					bookList = bookService.loadBookListSummary(bookStaff, bookAcademicYear);
+				}
+			}
+		}
+		
+		model.put("bookList", bookList);
+		
+		return "cp.listBooksSummary";
+	}
 }
