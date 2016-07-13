@@ -95,6 +95,7 @@ public class mBookServiceImpl implements mBookService {
 		
 		if(user.getUser_Code() != null){
 			mBooks book = new mBooks();
+			book.setBOK_Code("tmp-code");
 			book.setBOK_BookName(bookName);
 			book.setBOK_UserCode(userCode);
 			book.setBOK_Publisher(bookPublisher);
