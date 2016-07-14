@@ -111,7 +111,7 @@
                                     		<form:input path="paperFileUpload" name="paperFileUpload" type="file" placeholder="Source File" data-validation-allowing="doc,docx,pdf,xls,xlsx" data-validation-error-msg-extension="Định dạng file không đúng" data-validation-error-msg-mime="Định dạng file không đúng" data-validation-max-size="20M" data-validation-error-msg-size="Kích thước file không được vượt quá 20MB"></form:input>	
                                     	</c:when>
                                     	<c:otherwise>
-                                    		<form:input path="paperFileUpload" name="paperFileUpload" type="file" placeholder="Source File" data-validation="required extension size" data-validation-error-msg-required="File upload là bắt buộc" data-validation-allowing="doc,docx,pdf,xls,xlsx" data-validation-error-msg-extension="Định dạng file không đúng" data-validation-error-msg-mime="Định dạng file không đúng" data-validation-max-size="20M" data-validation-error-msg-size="Kích thước file không được vượt quá 20MB"></form:input>
+                                    		<form:input path="paperFileUpload" name="paperFileUpload" type="file" placeholder="Source File" data-validation="required extension size" data-validation-error-msg-required="File upload là bắt buộc" data-validation-allowing="doc,docx,pdf,xls,xlsx,zip,rar,tar.gz" data-validation-error-msg-extension="Định dạng file không đúng" data-validation-error-msg-mime="Định dạng file không đúng" data-validation-max-size="20M" data-validation-error-msg-size="Kích thước file không được vượt quá 20MB"></form:input>
                                     	</c:otherwise>
                                     </c:choose>
                                     
