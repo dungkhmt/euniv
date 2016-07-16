@@ -1,8 +1,18 @@
 package vn.webapp.modules.researchdeclarationmanagement.controller.cp;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -16,20 +26,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.itextpdf.text.DocumentException;
+
 import vn.webapp.controller.BaseWeb;
+import vn.webapp.libraries.DateUtil;
+import vn.webapp.libraries.FileUtil;
+import vn.webapp.libraries.Money2StringConvertor;
 import vn.webapp.modules.researchdeclarationmanagement.model.mAcademicYear;
+import vn.webapp.modules.researchdeclarationmanagement.model.mPapers;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPatents;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopicCategory;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopics;
 import vn.webapp.modules.researchdeclarationmanagement.service.mAcademicYearService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mJournalService;
+import vn.webapp.modules.researchdeclarationmanagement.service.mPaperService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mPatentService;
 import vn.webapp.modules.researchdeclarationmanagement.service.tProjectCategoryService;
 import vn.webapp.modules.researchdeclarationmanagement.service.tProjectService;
 import vn.webapp.modules.researchdeclarationmanagement.validation.mTopicExcellValidation;
 import vn.webapp.modules.researchdeclarationmanagement.validation.mTopicValidation;
+import vn.webapp.modules.researchmanagement.controller.cp.PDFGenerator;
+import vn.webapp.modules.researchmanagement.controller.cp.nProjectController;
 import vn.webapp.modules.researchmanagement.model.ProjectParticipationRoles;
+import vn.webapp.modules.researchmanagement.model.ProjectTasks;
+import vn.webapp.modules.researchmanagement.model.Projects;
+import vn.webapp.modules.researchmanagement.model.mProjectCalls;
 import vn.webapp.modules.researchmanagement.service.ProjectParticipationRolesService;
+import vn.webapp.modules.researchmanagement.service.ProjectTasksService;
+import vn.webapp.modules.researchmanagement.service.nProjectService;
+import vn.webapp.modules.researchmanagement.validation.ProjectsValidation;
 import vn.webapp.modules.researchmanagement.validation.mThreadExcellValidation;
 import vn.webapp.modules.usermanagement.model.mDepartment;
 import vn.webapp.modules.usermanagement.model.mStaff;
@@ -63,7 +88,20 @@ public class oProjectController extends BaseWeb {
     @Autowired
 	private ProjectParticipationRolesService projectParticipationRolesService;
     
+    @Autowired
+	private nProjectService threadService;
+    
+	@Autowired
+	private ProjectTasksService projectTasksService;
+	
+	@Autowired
+    private mPaperService paperService;
+    
     static final String status = "active";
+    
+    public static final String _sHTMLTemplate2 = "html/profile_template.html";
+	public static final String _sHTMLCompletedContent2 = "html/completed.html";
+	public static final String _sOutPutFile2 = "results/science-profile.pdf";
     
     /**
     * Show list all topics
@@ -322,4 +360,191 @@ public class oProjectController extends BaseWeb {
 	   return "cp.notFound404";
    }
    
+   /**
+	 * Generating PDF
+	 * 
+	 * @param model
+	 * @param threadId
+	 * @param session
+	 * @return
+	 * @throws DocumentException
+	 * @throws IOException
+	 */
+	@RequestMapping("/profile-science")
+	public String generatePDFProfileProject(HttpServletRequest request, HttpServletResponse response, ModelMap model, HttpSession session) throws IOException, DocumentException {
+		String userRole = session.getAttribute("currentUserRole").toString();
+		String userCode = session.getAttribute("currentUserCode").toString();
+
+		// Projects project =
+		// threadService.loadAProjectByIdAndUserCode(userRole,userCode,
+		// projectId);
+		//Projects project = threadService.loadProjectsById(80);
+		mStaff staff = staffService.loadStaffByUserCode(userCode);
+		List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
+		List<mPatents> patentsList = patentService.loadPatentListByStaff(userRole, userCode);
+		
+		final ServletContext servletContext = request.getSession().getServletContext();
+		final File tempDirectory = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+		final String temperotyFilePath = tempDirectory.getAbsolutePath();
+		String sProjectPDFFileName = staff.getStaff_Code() + "_" + staff.getStaff_ID() + ".pdf";
+		List<Projects> projects = threadService.loadProjectsListByStaff(userRole,userCode);
+		model.put("projects", status);
+		
+		// Put journal list and topic category to view
+
+		model.put("projectFormEdit", new ProjectsValidation());
+		model.put("projectId", 1);
+
+		this.prepareContent(projects, staff, papersList, patentsList);
+		PDFGenerator.v_fGenerator(temperotyFilePath + "\\"+ sProjectPDFFileName);
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			baos = convertPDFToByteArrayOutputStream(temperotyFilePath+ "\\" + sProjectPDFFileName);
+			// response.setContentType("application/pdf");
+			// response.setHeader("Content-Disposition",
+			// "attachment:filename=report.pdf");
+			OutputStream os = response.getOutputStream();
+			baos.writeTo(os);
+			os.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "cp.editAProject";
+	}
+
+	/**
+	 * 
+	 * @param fileName
+	 * @return
+	 */
+	private ByteArrayOutputStream convertPDFToByteArrayOutputStream(
+			String fileName) {
+
+		FileInputStream inputStream = null;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+
+			inputStream = new FileInputStream(fileName);
+			byte[] buffer = new byte[1024];
+			baos = new ByteArrayOutputStream();
+
+			int bytesRead;
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				baos.write(buffer, 0, bytesRead);
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return baos;
+	}
+	
+	/**
+	 * 
+	 * @param project
+	 * @throws IOException
+	 */
+	private void prepareContent(List<Projects> projects, mStaff staff, List<mPapers> papersList, List<mPatents> patentsList) throws IOException {
+		
+		try {
+			ClassLoader classLoader = getClass().getClassLoader();
+			// Getting content from template file
+			File o_FontFile = new File(classLoader.getResource(oProjectController._sHTMLTemplate2).getFile());
+			String sFilePath = o_FontFile.getAbsolutePath();
+			StringBuilder sTemplateContent = FileUtil.sGetFileContent(sFilePath);
+
+			int iCounter = 0;
+			String staffName = "";
+			String staffGender = "";
+			String staffBOD = "";
+			String staffDegree = "";
+			String staffEmail = "";
+			String staffPhoneNo = "";
+			String staffPapers = "";
+			String staffPatents = "";
+			String staffProjects = "";
+			if(staff != null){
+				staffName = staff.getStaff_Name();
+				staffGender = "male".equalsIgnoreCase(staff.getStaff_Gender()) ? "Nam" : "Nữ";
+				staffBOD = staff.getStaff_DateOfBirth();
+				staffDegree = staff.getAcademicRank().getAcademicRank_VNAbbr();
+				staffEmail = staff.getStaff_Email();
+				staffPhoneNo = staff.getStaff_Phone();
+			}
+			
+			/* Personal info */
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___USER_NAME___", staffName);
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___GENDER___", staffGender);
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___BIRTH_OF_DATE___", staffBOD);
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___DEGREE___", staffDegree);
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___EMAIL___", staffEmail);
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___PHONE___", staffPhoneNo);
+
+			/* Papers info */
+			if(papersList != null && papersList.size() > 0)
+			{
+				iCounter = 0;
+				for (mPapers mPapers : papersList) {
+					iCounter++;
+					staffPapers += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
+					staffPapers += "<td class='col-2'><p class='content'><br />"+mPapers.getPDECL_PublicationName()+"</p></td>";
+					staffPapers += "<td class='col-3'><p class='content'><br />"+mPapers.getPaperCategory().getPCAT_Name()+"</p></td>";
+					staffPapers += "<td class='col-4'><p class='content'><br />"+mPapers.getPDECL_Year()+"</p></td></tr>";
+				}
+			}
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_PAPERS___", staffPapers);
+			
+			/* Books info */
+			//TODO
+			
+			/* Patents info */
+			if(patentsList != null && patentsList.size() > 0)
+			{
+				iCounter = 0;
+				for (mPatents patent : patentsList) {
+					iCounter++;
+					staffPatents += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
+					staffPatents += "<td class='col-2'><p class='content'><br />"+patent.getPAT_Name()+"</p></td>";
+					staffPatents += "<td class='col-3'><p class='content'><br />"+patent.getPAT_Type()+"</p></td>";
+					staffPatents += "<td class='col-4'><p class='content'><br />"+patent.getPAT_DateOfIssue()+"</p></td>";
+					staffPatents += "<td class='col-5'><p class='content'><br />N/A</p></td></tr>";
+				}
+			}
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_PATENTS___", staffPatents);
+			
+			/* Projects info */
+			if(projects != null && projects.size() > 0){
+				iCounter = 0;
+				for (Projects project : projects) {
+					iCounter++;
+					staffProjects += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
+					staffProjects += "<td class='col-2'><p class='content'><br />"+project.getPROJ_Name()+"</p></td>";
+					staffProjects += "<td class='col-3'><p class='content'><br />N/A</p></td>";
+					staffProjects += "<td class='col-4'><p class='content'><br />N/A</p></td>";
+					staffProjects += "<td class='col-5'><p class='content'><br />"+project.getPROJ_StartDate()+" - "+project.getPROJ_EndDate()+"</p></td></tr>";
+				}
+			}
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_PROJECTS___", staffProjects);
+			
+			// Write completed content into file
+			File o_CompletedContentFile = new File(classLoader.getResource(oProjectController._sHTMLCompletedContent2).getFile());
+
+			FileUtil.v_fWriteContentIntoAFile(o_CompletedContentFile,sTemplateContent);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		
+	}
 }
