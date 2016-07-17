@@ -141,7 +141,7 @@
                         <div class="col-lg-12">
                         	 	<label for="projectMembers">Chọn Khoa/Viện</label>
                                 <select class="form-control" name="faculty" onchange="showDepartment(this);" >
-                                	<option value="">Chọn Khoa/Viện</option>
+                                	<!-- <option value="">Chọn Khoa/Viện</option> -->
                                 	<c:forEach items="${listFaculty}" var="faculty">
                                      	<option value="${faculty.faculty_Code}">${faculty.faculty_Name}</option>
                                    </c:forEach>
@@ -150,8 +150,11 @@
                                 <br>
                                 <div id="department">
                                  <label for="projectMembers">Chọn Bộ môn</label>
-                                 <select class="form-control" name="department">
-									<option value="">Chọn Bộ môn</option>
+                                 <select class="form-control" name="department" onchange="showStaff(this)">
+									<!-- <option value="">Chọn Bộ môn</option> -->
+									<c:forEach items="${listDepartments}" var="department">
+                                     	<option value="${department.department_Code}">${department.department_Name}</option>
+                                   </c:forEach>
                                  </select>
                                 </div>
                                 

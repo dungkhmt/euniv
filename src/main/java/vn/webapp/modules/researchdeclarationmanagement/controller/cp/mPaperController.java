@@ -140,11 +140,23 @@ public class mPaperController extends BaseWeb {
 	   /*
 	    * Get paper's category
 	    */
+	   String facultyCode = (String)session.getAttribute("facultyCode");
+	   System.out.println(name() + "::addPaper, facultyCode = " + facultyCode);
+	   
 	   List<mPaperCategory> paperCategory = paperCategoryService.list();
 	   List<mJournal> journalList = journalService.list();
 	   List<mPapersCategoryHourBudget> papersCategoryHourBudget = paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
-	   List<mFaculty> listFaculty = facultyService.loadFacultyList();
-	   List<mStaff> staffList = staffService.listStaffs();
+	   //List<mFaculty> listFaculty = facultyService.loadFacultyList();
+	   List<mFaculty> listFaculty = new ArrayList<mFaculty>();
+	   mFaculty F = facultyService.loadAFacultyByCode(facultyCode);
+	   listFaculty.add(F);
+	   
+	   List<mDepartment> departments = departmentService.loadADepartmentByFaculty(facultyCode);
+	   for(mDepartment dept: departments){
+		   System.out.println(name() + "::addPaper, department " + dept.getDepartment_Name());
+	   }
+	   
+	   //List<mStaff> staffList = staffService.listStaffs();
 	   
 	   // Get list reportingYear
 	   List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
@@ -157,6 +169,7 @@ public class mPaperController extends BaseWeb {
 	   model.put("paperConvertedHours", paperConvertedHours);
 	   model.put("paperCategory", paperCategory);
 	   model.put("listFaculty", listFaculty);
+	   model.put("listDepartments", departments);
 	   model.put("journalList", journalList);
 	   model.put("paperFormAdd", new mPaperValidation());
 	   model.put("papers", status);
