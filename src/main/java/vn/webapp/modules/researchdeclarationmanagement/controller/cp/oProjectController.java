@@ -471,9 +471,10 @@ public class oProjectController extends BaseWeb {
 			String staffDegree = "";
 			String staffEmail = "";
 			String staffPhoneNo = "";
-			String staffPapers = "";
-			String staffPatents = "";
-			String staffProjects = "";
+			String staffPapers = ""; // Bai bao
+			String staffBooks = ""; // Giao trinh
+			String staffPatents = ""; // Bang sang che
+			String staffProjects = ""; // De tai
 			if(staff != null){
 				staffName = staff.getStaff_Name();
 				staffGender = "male".equalsIgnoreCase(staff.getStaff_Gender()) ? "Nam" : "Nữ";
@@ -507,6 +508,13 @@ public class oProjectController extends BaseWeb {
 			
 			/* Books info */
 			//TODO
+			staffBooks += "<tr><td class='col-1'><p class='content'>1</p></td>";
+			staffBooks += "<td class='col-2'><p class='content'><br />Tìm kiếm cục bộ dựa trên ràng buộc</p></td>";
+			staffBooks += "<td class='col-3'><p class='content'><br />Trường ĐHBKHN</p></td>";
+			staffBooks += "<td class='col-4'><p class='content'><br />2017</p></td>";
+			staffBooks += "<td class='col-5'><p class='content'><br />Chủ biên</p></td></tr>";
+			
+			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_BOOKS___", staffBooks);
 			
 			/* Patents info */
 			if(patentsList != null && patentsList.size() > 0)
@@ -518,7 +526,7 @@ public class oProjectController extends BaseWeb {
 					staffPatents += "<td class='col-2'><p class='content'><br />"+patent.getPAT_Name()+"</p></td>";
 					staffPatents += "<td class='col-3'><p class='content'><br />"+patent.getPAT_Type()+"</p></td>";
 					staffPatents += "<td class='col-4'><p class='content'><br />"+patent.getPAT_DateOfIssue()+"</p></td>";
-					staffPatents += "<td class='col-5'><p class='content'><br />N/A</p></td></tr>";
+					staffPatents += "<td class='col-5'><p class='content'><br />Chủ nhiệm</p></td></tr>";
 				}
 			}
 			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_PATENTS___", staffPatents);
@@ -530,8 +538,8 @@ public class oProjectController extends BaseWeb {
 					iCounter++;
 					staffProjects += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
 					staffProjects += "<td class='col-2'><p class='content'><br />"+project.getPROJ_Name()+"</p></td>";
-					staffProjects += "<td class='col-3'><p class='content'><br />N/A</p></td>";
-					staffProjects += "<td class='col-4'><p class='content'><br />N/A</p></td>";
+					staffProjects += "<td class='col-3'><p class='content'><br />"+project.getPROJ_ProjCat_Code()+"</p></td>";
+					staffProjects += "<td class='col-4'><p class='content'><br />Chủ nhiệm</p></td>";
 					staffProjects += "<td class='col-5'><p class='content'><br />"+project.getPROJ_StartDate()+" - "+project.getPROJ_EndDate()+"</p></td></tr>";
 				}
 			}
