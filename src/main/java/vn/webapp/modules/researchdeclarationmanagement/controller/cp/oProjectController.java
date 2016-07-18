@@ -33,11 +33,13 @@ import vn.webapp.libraries.DateUtil;
 import vn.webapp.libraries.FileUtil;
 import vn.webapp.libraries.Money2StringConvertor;
 import vn.webapp.modules.researchdeclarationmanagement.model.mAcademicYear;
+import vn.webapp.modules.researchdeclarationmanagement.model.mBooks;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPapers;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPatents;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopicCategory;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopics;
 import vn.webapp.modules.researchdeclarationmanagement.service.mAcademicYearService;
+import vn.webapp.modules.researchdeclarationmanagement.service.mBookService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mJournalService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mPaperService;
 import vn.webapp.modules.researchdeclarationmanagement.service.mPatentService;
@@ -93,6 +95,9 @@ public class oProjectController extends BaseWeb {
     
 	@Autowired
 	private ProjectTasksService projectTasksService;
+	
+	@Autowired
+	private mBookService bookService;
 	
 	@Autowired
     private mPaperService paperService;
@@ -382,6 +387,7 @@ public class oProjectController extends BaseWeb {
 		mStaff staff = staffService.loadStaffByUserCode(userCode);
 		List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
 		List<mPatents> patentsList = patentService.loadPatentListByStaff(userRole, userCode);
+		List<mBooks> booksList = bookService.loadBookListByStaff(userRole, userCode);
 		
 		final ServletContext servletContext = request.getSession().getServletContext();
 		final File tempDirectory = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
@@ -395,7 +401,7 @@ public class oProjectController extends BaseWeb {
 		model.put("projectFormEdit", new ProjectsValidation());
 		model.put("projectId", 1);
 
-		this.prepareContent(projects, staff, papersList, patentsList);
+		this.prepareContent(projects, staff, papersList, patentsList, booksList);
 		PDFGenerator.v_fGenerator(temperotyFilePath + "\\"+ sProjectPDFFileName);
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -455,7 +461,7 @@ public class oProjectController extends BaseWeb {
 	 * @param project
 	 * @throws IOException
 	 */
-	private void prepareContent(List<Projects> projects, mStaff staff, List<mPapers> papersList, List<mPatents> patentsList) throws IOException {
+	private void prepareContent(List<Projects> projects, mStaff staff, List<mPapers> papersList, List<mPatents> patentsList, List<mBooks> booksList) throws IOException {
 		
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
@@ -507,12 +513,17 @@ public class oProjectController extends BaseWeb {
 			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_PAPERS___", staffPapers);
 			
 			/* Books info */
-			//TODO
-			staffBooks += "<tr><td class='col-1'><p class='content'>1</p></td>";
-			staffBooks += "<td class='col-2'><p class='content'><br />Tìm kiếm cục bộ dựa trên ràng buộc</p></td>";
-			staffBooks += "<td class='col-3'><p class='content'><br />Trường ĐHBKHN</p></td>";
-			staffBooks += "<td class='col-4'><p class='content'><br />2017</p></td>";
-			staffBooks += "<td class='col-5'><p class='content'><br />Chủ biên</p></td></tr>";
+			if(booksList != null && booksList.size() > 0){
+				iCounter = 0;
+				for (mBooks books : booksList) {
+					iCounter++;
+					staffBooks += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
+					staffBooks += "<td class='col-2'><p class='content'><br />"+books.getBOK_BookName()+"</p></td>";
+					staffBooks += "<td class='col-3'><p class='content'><br />"+books.getBOK_Publisher()+"</p></td>";
+					staffBooks += "<td class='col-4'><p class='content'><br />"+books.getBOK_PublishedYear()+"</p></td>";
+					staffBooks += "<td class='col-5'><p class='content'><br />Chủ biên</p></td></tr>";
+				}
+			}
 			
 			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_BOOKS___", staffBooks);
 			
