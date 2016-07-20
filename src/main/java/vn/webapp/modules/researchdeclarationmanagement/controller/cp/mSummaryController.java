@@ -42,6 +42,7 @@ import vn.webapp.modules.researchdeclarationmanagement.validation.mBookExcellVal
 import vn.webapp.modules.researchdeclarationmanagement.validation.mExcel01CN02CNValidation;
 import vn.webapp.modules.researchdeclarationmanagement.validation.mPaperExcellValidation;
 import vn.webapp.modules.researchdeclarationmanagement.validation.mSummaryExcelValidation;
+import vn.webapp.modules.usermanagement.controller.cp.mUserController;
 import vn.webapp.modules.usermanagement.model.mDepartment;
 import vn.webapp.modules.usermanagement.model.mStaff;
 import vn.webapp.modules.usermanagement.service.mDepartmentService;
@@ -240,8 +241,21 @@ public class mSummaryController extends BaseWeb {
 	   /**
 	    * Get List Academic Year and DepartmentList
 	    */
+	   String userCode = (String)session.getAttribute("currentUserCode");
+	   String facultyCode = (String)session.getAttribute("facultyCode");
+	   String userRole = (String)session.getAttribute("currentUserRole");
+	   
+	   System.out.println(name() + "::generateASummany, userCode = " + userCode + 
+			   ", userRole = " + userRole + ", facultyCode = " + facultyCode);
+	   
 	   List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
-	   List<mDepartment> departmentList = departmentService.loadDepartmentList();
+	   //List<mDepartment> departmentList = departmentService.loadDepartmentList();
+	   List<mDepartment> departmentList = null;
+	   
+	   if(userRole.equals(mUserController.ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY))
+		   departmentList = departmentService.loadADepartmentByFaculty(facultyCode);
+	   else if(userRole.equals(mUserController.ROLE_ADMIN))
+		   departmentList = departmentService.loadDepartmentList();
 	   
 	   /**
 	    * Put back to a suitable view
@@ -412,6 +426,7 @@ public class mSummaryController extends BaseWeb {
 		    {
 			    for(mPapers oPaper : papersList)
 			    {
+			    	
 			    	if(oPaper.getPaperCategory().getPCAT_Code().equals("CINT_Other")){
 			    		papersListCINT_Other.add(oPaper);
 			    	}else if(oPaper.getPaperCategory().getPCAT_Code().equals("CDOM_Other"))
@@ -565,7 +580,8 @@ public class mSummaryController extends BaseWeb {
 		    
 		    List<mPapers> papersList = paperService.loadPaperSummaryListByYear(yearForGenerating);
 		    for(mPapers p: papersList){
-		    	System.out.println(name() + "::downloadSummaryExcelKV04, GET paper " + p.getPDECL_PublicationName());
+		    	System.out.println(name() + "::downloadSummaryExcelKV04, GET paper " + p.getPDECL_PublicationName() + 
+		    			", volumn = " + p.getPDECL_Volumn());
 		    }
 		    List<mPapersCategoryHourBudget> papersCategoryHourBudgets = paperCategoryHourBudgetService.loadPaperCategoryHourBudgetByYear(yearForGenerating);
 		    
@@ -769,8 +785,20 @@ public class mSummaryController extends BaseWeb {
 	 */
 	@RequestMapping(value = "/summaryExcelKV01", method = RequestMethod.POST)
 	public ModelAndView downloadSummaryExcelKV01(@Valid @ModelAttribute("summaryExcelFormKV01") mPaperExcellValidation summaryValidExcell, BindingResult result, Map model, HttpSession session) {
+		
+		String userCode = (String)session.getAttribute("currentUserCode");
+		String userRole = (String)session.getAttribute("currentUserRole");
+		String facultyCode = (String)session.getAttribute("facultyCode");
+		
 		List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
-		List<mDepartment> departmentList = departmentService.loadDepartmentList();
+		List<mDepartment> departmentList = null;
+		if(userRole.equals(mUserController.ROLE_ADMIN) || userRole.equals(mUserController.SUPER_ADMIN) )
+			departmentList = departmentService.loadDepartmentList();
+		else 
+			departmentList = departmentService.loadADepartmentByFaculty(facultyCode);
+		
+		
+		
 		/**
 	    * Put back to a suitable view
 	    */
@@ -791,7 +819,11 @@ public class mSummaryController extends BaseWeb {
 			List<mTopics> topicList = tProjectService.loadTopicSummaryListByYear(yearForGenerating);
 			
 			Map<String, Map<String, List<Integer>>> summaryAllDepartmentStaffList = new HashMap<String, Map<String, List<Integer>>>();
-		    List<mDepartment> departments = departmentService.loadDepartmentList();
+		    List<mDepartment> departments = null;//departmentService.loadDepartmentList();
+			if(userRole.equals(mUserController.ROLE_ADMIN) || userRole.equals(mUserController.SUPER_ADMIN) )
+				departments = departmentService.loadDepartmentList();
+			else 
+				departments = departmentService.loadADepartmentByFaculty(facultyCode);
 		    
 		    /**
 		     * Preparing data for generating
@@ -814,6 +846,7 @@ public class mSummaryController extends BaseWeb {
 				   Map<String, List<Integer>> summaryAllStaffsListTemp = new HashMap<String, List<Integer>>();
 				   for(mStaff staff : staffs)
 				   {
+					   //System.out.println(name() + "::downloadSummaryExcelKV01, department " + department.getDepartment_Name() + ", staff " + staff.getStaff_Name());
 					   // Set and reset info for a staff
 					   staffName = staff.getStaff_Name();
 					   iTotalPaperOfAStaffConvertedHours = 0;
@@ -863,7 +896,7 @@ public class mSummaryController extends BaseWeb {
 			
 			String currentUserName = session.getAttribute("currentUserName").toString();
 			String currentUserCode = session.getAttribute("currentUserCode").toString();
-		    String userRole = session.getAttribute("currentUserRole").toString();
+		    //String userRole = session.getAttribute("currentUserRole").toString();
 		    
 		    /**
 		     * Preparing data for papers summary view 

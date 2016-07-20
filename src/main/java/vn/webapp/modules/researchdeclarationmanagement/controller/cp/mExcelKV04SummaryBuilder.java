@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
+import vn.webapp.libraries.Money2StringConvertor;
 import vn.webapp.modules.researchdeclarationmanagement.model.SetPaperStaffs;
 import vn.webapp.modules.researchdeclarationmanagement.model.SetPapers;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPapers;
@@ -28,6 +29,13 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 	
 	public String name(){
 		return "mExcelKV04SummaryBuilder";
+	}
+	
+	private String standardizeMoney(int money){
+		return Money2StringConvertor.addDauPhay2Moyney(money + "");
+	}
+	private String standardizeMoney(String money){
+		return Money2StringConvertor.addDauPhay2Moyney(money + "");
 	}
 	protected void buildExcelDocument(Map<String, Object> model, HSSFWorkbook workbook, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -49,6 +57,22 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 		int i_CDOMOther_Budget = (int) model.get("i_CDOMOther_Budget");
 		int i_JINT_Budget = (int) model.get("i_JINT_Budget");
 
+		
+		int totalBudget = 0;
+		for(SetPapers p: SetPapersListJINT){
+			totalBudget += p.getPaperBudgetOfInternalAuthors();
+		}
+		for(SetPapers p: SetPapersListJDOM_Other){
+			totalBudget += p.getPaperBudgetOfInternalAuthors();
+		}
+		for(SetPapers p: SetPapersListCINT_Other){
+			totalBudget += p.getPaperBudgetOfInternalAuthors();
+		}
+		for(SetPapers p: SetPapersListCDOM_Other){
+			totalBudget += p.getPaperBudgetOfInternalAuthors();
+		}
+		
+		
 		// create a new Excel sheet
 		HSSFSheet sheet = workbook.createSheet("04-KV");
 		sheet.setDefaultColumnWidth(15);
@@ -397,7 +421,9 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 				boxFisrtCatContent.createCell(6).setCellValue(ASetPaper.getPaperISSN()); // Chi so ISSN
 				boxFisrtCatContent.getCell(6).setCellStyle(styleContentBox);
 				
-				boxFisrtCatContent.createCell(7).setCellValue(ASetPaper.getPaperGeneralBudget()); // Muc ho tro bai bao
+				
+				//boxFisrtCatContent.createCell(7).setCellValue(ASetPaper.getPaperGeneralBudget()); // Muc ho tro bai bao
+				boxFisrtCatContent.createCell(7).setCellValue(standardizeMoney(ASetPaper.getPaperGeneralBudget()));
 				boxFisrtCatContent.getCell(7).setCellStyle(styleContentBox);
 				
 				boxFisrtCatContent.createCell(8).setCellValue(ASetPaper.getPaperTotalNumberOfAuthors()); // So dong tac gia bai bao
@@ -406,7 +432,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 				boxFisrtCatContent.createCell(9).setCellValue(ASetPaper.getPaperTotalNumberOfInternalAuthors()); // So nguoi thuoc don vi bai bao
 				boxFisrtCatContent.getCell(9).setCellStyle(styleContentBox);
 				
-				boxFisrtCatContent.createCell(10).setCellValue(ASetPaper.getPaperBudgetOfInternalAuthors()); // Kinh phi duoc ho tro bai bao
+				//boxFisrtCatContent.createCell(10).setCellValue(ASetPaper.getPaperBudgetOfInternalAuthors()); // Kinh phi duoc ho tro bai bao
+				boxFisrtCatContent.createCell(10).setCellValue(standardizeMoney(ASetPaper.getPaperBudgetOfInternalAuthors()));
 				boxFisrtCatContent.getCell(10).setCellStyle(styleContentBox);
 				
 				//iTotalConvertedHours += aPaper.getPDECL_AuthorConvertedHours();
@@ -424,7 +451,9 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 						boxFisrtCatContent.createCell(11).setCellValue(ASetPaperStaff.getPaperStaffName()); // Ten nguoi duoc nhan
 						boxFisrtCatContent.getCell(11).setCellStyle(styleContentBox);
 						
-						boxFisrtCatContent.createCell(12).setCellValue(ASetPaper.getPaperBudgetForOneAuthor()); // So tien nhan/nguoi/bai bao
+						//boxFisrtCatContent.createCell(12).setCellValue(ASetPaper.getPaperBudgetForOneAuthor()); // So tien nhan/nguoi/bai bao
+						boxFisrtCatContent.createCell(12).setCellValue(standardizeMoney(ASetPaper.getPaperBudgetForOneAuthor()));
+						
 						boxFisrtCatContent.getCell(12).setCellStyle(styleContentBox);
 						/*
 						if(iCounter > 0){
@@ -599,7 +628,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 				boxSecondCatContent.createCell(6).setCellValue(ASetPaper.getPaperISSN()); // Chi so ISSN
 				boxSecondCatContent.getCell(6).setCellStyle(styleContentBox);
 				
-				boxSecondCatContent.createCell(7).setCellValue(ASetPaper.getPaperGeneralBudget()); // Muc ho tro bai bao
+				//boxSecondCatContent.createCell(7).setCellValue(ASetPaper.getPaperGeneralBudget()); // Muc ho tro bai bao
+				boxSecondCatContent.createCell(7).setCellValue(standardizeMoney(ASetPaper.getPaperGeneralBudget()));
 				boxSecondCatContent.getCell(7).setCellStyle(styleContentBox);
 				
 				boxSecondCatContent.createCell(8).setCellValue(ASetPaper.getPaperTotalNumberOfAuthors()); // So dong tac gia bai bao
@@ -608,7 +638,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 				boxSecondCatContent.createCell(9).setCellValue(ASetPaper.getPaperTotalNumberOfInternalAuthors()); // So nguoi thuoc don vi bai bao
 				boxSecondCatContent.getCell(9).setCellStyle(styleContentBox);
 				
-				boxSecondCatContent.createCell(10).setCellValue(ASetPaper.getPaperBudgetOfInternalAuthors()); // Kinh phi duoc ho tro bai bao
+				//boxSecondCatContent.createCell(10).setCellValue(ASetPaper.getPaperBudgetOfInternalAuthors()); // Kinh phi duoc ho tro bai bao
+				boxSecondCatContent.createCell(10).setCellValue(standardizeMoney(ASetPaper.getPaperBudgetOfInternalAuthors()));
 				boxSecondCatContent.getCell(10).setCellStyle(styleContentBox);
 				
 				//iTotalConvertedHours += aPaper.getPDECL_AuthorConvertedHours();
@@ -626,7 +657,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 						boxSecondCatContent.createCell(11).setCellValue(ASetPaperStaff.getPaperStaffName()); // Ten nguoi duoc nhan
 						boxSecondCatContent.getCell(11).setCellStyle(styleContentBox);
 						
-						boxSecondCatContent.createCell(12).setCellValue(ASetPaper.getPaperBudgetForOneAuthor()); // So tien nhan/nguoi/bai bao
+						//boxSecondCatContent.createCell(12).setCellValue(ASetPaper.getPaperBudgetForOneAuthor()); // So tien nhan/nguoi/bai bao
+						boxSecondCatContent.createCell(12).setCellValue(standardizeMoney(ASetPaper.getPaperBudgetForOneAuthor()));
 						boxSecondCatContent.getCell(12).setCellStyle(styleContentBox);
 						/*
 						if(iCounter > 0){
@@ -800,7 +832,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 				boxThirdCatContent.createCell(6).setCellValue(ASetPaper.getPaperISSN()); // Chi so ISSN
 				boxThirdCatContent.getCell(6).setCellStyle(styleContentBox);
 				
-				boxThirdCatContent.createCell(7).setCellValue(ASetPaper.getPaperGeneralBudget()); // Muc ho tro bai bao
+				//boxThirdCatContent.createCell(7).setCellValue(ASetPaper.getPaperGeneralBudget()); // Muc ho tro bai bao
+				boxThirdCatContent.createCell(7).setCellValue(standardizeMoney(ASetPaper.getPaperGeneralBudget()));
 				boxThirdCatContent.getCell(7).setCellStyle(styleContentBox);
 				
 				boxThirdCatContent.createCell(8).setCellValue(ASetPaper.getPaperTotalNumberOfAuthors()); // So dong tac gia bai bao
@@ -809,7 +842,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 				boxThirdCatContent.createCell(9).setCellValue(ASetPaper.getPaperTotalNumberOfInternalAuthors()); // So nguoi thuoc don vi bai bao
 				boxThirdCatContent.getCell(9).setCellStyle(styleContentBox);
 				
-				boxThirdCatContent.createCell(10).setCellValue(ASetPaper.getPaperBudgetOfInternalAuthors()); // Kinh phi duoc ho tro bai bao
+				//boxThirdCatContent.createCell(10).setCellValue(ASetPaper.getPaperBudgetOfInternalAuthors()); // Kinh phi duoc ho tro bai bao
+				boxThirdCatContent.createCell(10).setCellValue(standardizeMoney(ASetPaper.getPaperBudgetOfInternalAuthors()));
 				boxThirdCatContent.getCell(10).setCellStyle(styleContentBox);
 				
 				//iTotalConvertedHours += aPaper.getPDECL_AuthorConvertedHours();
@@ -827,7 +861,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 						boxThirdCatContent.createCell(11).setCellValue(ASetPaperStaff.getPaperStaffName()); // Ten nguoi duoc nhan
 						boxThirdCatContent.getCell(11).setCellStyle(styleContentBox);
 						
-						boxThirdCatContent.createCell(12).setCellValue(ASetPaper.getPaperBudgetForOneAuthor()); // So tien nhan/nguoi/bai bao
+						//boxThirdCatContent.createCell(12).setCellValue(ASetPaper.getPaperBudgetForOneAuthor()); // So tien nhan/nguoi/bai bao
+						boxThirdCatContent.createCell(12).setCellValue(standardizeMoney(ASetPaper.getPaperBudgetForOneAuthor()));
 						boxThirdCatContent.getCell(12).setCellStyle(styleContentBox);
 						/*
 						if(iCounter > 0){
@@ -1003,7 +1038,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 				boxFourthCatContent.createCell(6).setCellValue(ASetPaper.getPaperISSN()); // Chi so ISSN
 				boxFourthCatContent.getCell(6).setCellStyle(styleContentBox);
 				
-				boxFourthCatContent.createCell(7).setCellValue(ASetPaper.getPaperGeneralBudget()); // Muc ho tro bai bao
+				//boxFourthCatContent.createCell(7).setCellValue(ASetPaper.getPaperGeneralBudget()); // Muc ho tro bai bao
+				boxFourthCatContent.createCell(7).setCellValue(standardizeMoney(ASetPaper.getPaperGeneralBudget()));
 				boxFourthCatContent.getCell(7).setCellStyle(styleContentBox);
 				
 				boxFourthCatContent.createCell(8).setCellValue(ASetPaper.getPaperTotalNumberOfAuthors()); // So dong tac gia bai bao
@@ -1012,7 +1048,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 				boxFourthCatContent.createCell(9).setCellValue(ASetPaper.getPaperTotalNumberOfInternalAuthors()); // So nguoi thuoc don vi bai bao
 				boxFourthCatContent.getCell(9).setCellStyle(styleContentBox);
 				
-				boxFourthCatContent.createCell(10).setCellValue(ASetPaper.getPaperBudgetOfInternalAuthors()); // Kinh phi duoc ho tro bai bao
+				//boxFourthCatContent.createCell(10).setCellValue(ASetPaper.getPaperBudgetOfInternalAuthors()); // Kinh phi duoc ho tro bai bao
+				boxFourthCatContent.createCell(10).setCellValue(standardizeMoney(ASetPaper.getPaperBudgetOfInternalAuthors())); 
 				boxFourthCatContent.getCell(10).setCellStyle(styleContentBox);
 				
 				//iTotalConvertedHours += aPaper.getPDECL_AuthorConvertedHours();
@@ -1030,7 +1067,8 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 						boxFourthCatContent.createCell(11).setCellValue(ASetPaperStaff.getPaperStaffName()); // Ten nguoi duoc nhan
 						boxFourthCatContent.getCell(11).setCellStyle(styleContentBox);
 						
-						boxFourthCatContent.createCell(12).setCellValue(ASetPaper.getPaperBudgetForOneAuthor()); // So tien nhan/nguoi/bai bao
+						//boxFourthCatContent.createCell(12).setCellValue(ASetPaper.getPaperBudgetForOneAuthor()); // So tien nhan/nguoi/bai bao
+						boxFourthCatContent.createCell(12).setCellValue(standardizeMoney(ASetPaper.getPaperBudgetForOneAuthor()));
 						boxFourthCatContent.getCell(12).setCellStyle(styleContentBox);
 						/*
 						if(iCounter > 0){
@@ -1068,6 +1106,14 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 				iCurrentRow++;
 			}
 		}
+		
+		
+		iCurrentRow += 2;
+		HSSFRow rowTotal = sheet.createRow(iCurrentRow);
+		HSSFCell c = rowTotal.createCell(10);
+		c.setCellValue("Tổng cộng");
+		c = rowTotal.createCell(12);
+		c.setCellValue(standardizeMoney(totalBudget));
 		
 		/**
 		 * Confirmation and Signature

@@ -796,8 +796,15 @@ public class mPaperController extends BaseWeb {
     	String paperFaculty = paperSummaryValidation.getPaperFaculty();
     	String paperDepartment = paperSummaryValidation.getPaperDepartment();
     	String paperStaff = paperSummaryValidation.getThreadStaff();
-
+    	List<mStaff> staffs = staffService.listStaffs();
+    	HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+    	for(mStaff st: staffs)
+    		mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+    	
  	    List<mPapers> papersList = paperService.loadPaperListSummary(paperStaff, paperCategory, paperAcagemicYear);
+ 	    for(mPapers p: papersList)
+ 	    	p.setPDECL_User_Code(mStaffCode2Name.get(p.getPDECL_User_Code()));
+ 	    
  	    model.put("papersList", papersList);
  	    model.put("papers", status);
  	    return "cp.listPapersSummary";

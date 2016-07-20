@@ -246,4 +246,15 @@ public class Money2StringConvertor {
 		}
 		return s;
 	}
+	public static String addDauPhay2Moyney(String money){
+		String s = "";
+		int c = 0;
+		for(int i = money.length()-1; i >= 0; i--){
+			s = money.charAt(i) + s;
+			c++;
+			if(c%3==0 && i > 0) s = '.' + s;
+		}
+		return s;
+	}
+
 }

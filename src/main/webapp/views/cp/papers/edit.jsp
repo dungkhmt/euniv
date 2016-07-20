@@ -143,7 +143,8 @@
             
             <div class="panel panel-default">
             	<div class="panel-heading">
-                    Thêm tác giả của bài báo là cán bộ ĐHBK
+                    Nhập thông tin tác giả bài báo là cán bộ của ĐHBK
+
                 </div>
             	<div class="panel-body">
                     <div class="row">
