@@ -388,12 +388,12 @@ public class oProjectController extends BaseWeb {
 		List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
 		List<mPatents> patentsList = patentService.loadPatentListByStaff(userRole, userCode);
 		List<mBooks> booksList = bookService.loadBookListByStaff(userRole, userCode);
+		List<mTopics> topicsList = tProjectService.loadTopicListByStaff(userRole, userCode);
 		
 		final ServletContext servletContext = request.getSession().getServletContext();
 		final File tempDirectory = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
 		final String temperotyFilePath = tempDirectory.getAbsolutePath();
 		String sProjectPDFFileName = staff.getStaff_Code() + "_" + staff.getStaff_ID() + ".pdf";
-		List<Projects> projects = threadService.loadProjectsListByStaff(userRole,userCode);
 		model.put("projects", status);
 		
 		// Put journal list and topic category to view
@@ -401,7 +401,7 @@ public class oProjectController extends BaseWeb {
 		model.put("projectFormEdit", new ProjectsValidation());
 		model.put("projectId", 1);
 
-		this.prepareContent(projects, staff, papersList, patentsList, booksList);
+		this.prepareContent(topicsList, staff, papersList, patentsList, booksList);
 		PDFGenerator.v_fGenerator(temperotyFilePath + "\\"+ sProjectPDFFileName);
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -461,7 +461,7 @@ public class oProjectController extends BaseWeb {
 	 * @param project
 	 * @throws IOException
 	 */
-	private void prepareContent(List<Projects> projects, mStaff staff, List<mPapers> papersList, List<mPatents> patentsList, List<mBooks> booksList) throws IOException {
+	private void prepareContent(List<mTopics> projects, mStaff staff, List<mPapers> papersList, List<mPatents> patentsList, List<mBooks> booksList) throws IOException {
 		
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
@@ -545,13 +545,15 @@ public class oProjectController extends BaseWeb {
 			/* Projects info */
 			if(projects != null && projects.size() > 0){
 				iCounter = 0;
-				for (Projects project : projects) {
+				String projectPaperCateName = "";
+				for (mTopics project : projects) {
 					iCounter++;
+					projectPaperCateName = (project.getTopicCategory() != null) ? project.getTopicCategory().getPROJCAT_Name() : "N/A";
 					staffProjects += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
-					staffProjects += "<td class='col-2'><p class='content'><br />"+project.getPROJ_Name()+"</p></td>";
-					staffProjects += "<td class='col-3'><p class='content'><br />"+project.getPROJ_ProjCat_Code()+"</p></td>";
+					staffProjects += "<td class='col-2'><p class='content'><br />"+project.getPROJDECL_Name()+"</p></td>";
+					staffProjects += "<td class='col-3'><p class='content'><br />"+projectPaperCateName+"</p></td>";
 					staffProjects += "<td class='col-4'><p class='content'><br />Chủ nhiệm</p></td>";
-					staffProjects += "<td class='col-5'><p class='content'><br />"+project.getPROJ_StartDate()+" - "+project.getPROJ_EndDate()+"</p></td></tr>";
+					staffProjects += "<td class='col-5'><p class='content'><br />"+project.getPROJDECL_StartDate()+" - "+project.getPROJDECL_EndDate()+"</p></td></tr>";
 				}
 			}
 			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_PROJECTS___", staffProjects);
