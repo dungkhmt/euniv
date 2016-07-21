@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,7 +118,19 @@ public class oProjectController extends BaseWeb {
    public String topicsList(ModelMap model, HttpSession session) {
 	   String userCode = session.getAttribute("currentUserCode").toString();
 	   String userRole = session.getAttribute("currentUserRole").toString();
+	   List<mStaff> staffs = staffService.listStaffs();
+	   HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+	   for(mStaff st: staffs)
+		   mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+	   
 	   List<mTopics> topicsList = tProjectService.loadTopicListByStaff(userRole, userCode);
+	   System.out.println(name() + "::topicsList"
+	   		+ ", staffs.sz = " + staffs.size() + ", topicsList.sz = " + topicsList.size());
+	   for(mTopics p: topicsList){
+		   p.setPROJDECL_User_Code(mStaffCode2Name.get(p.getPROJDECL_User_Code()));
+		   System.out.println(name() + "::topicsList, userName = " + p.getPROJDECL_User_Code());
+	   }
+	   
 	   model.put("topicsList", topicsList);
 	   model.put("topics", status);
 	   return "cp.topics";
