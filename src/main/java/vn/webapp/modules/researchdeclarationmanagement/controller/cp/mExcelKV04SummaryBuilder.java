@@ -1149,6 +1149,6 @@ public class mExcelKV04SummaryBuilder extends AbstractExcelView {
 		Note3.createCell(1).setCellValue("- Cột 9, 10, 11: chỉ tính đối với cán bộ thuộc đơn vị, không tính các cán bộ thuộc đơn vị khác trong trường.");
 		Note3.getCell(1).setCellStyle(styleNormal);		
 
-		response.setHeader("Content-Disposition", "attachement; filename=\"" + "Mau-03-KV-tong-hop-bai-bao-toan-don-vi.xls\"");
+		response.setHeader("Content-Disposition", "attachement; filename=\"" + "Mau-04-KV-danh-muc-bai-bao-tinh-hinh-ho-tro.xls\"");
 	}
 }
