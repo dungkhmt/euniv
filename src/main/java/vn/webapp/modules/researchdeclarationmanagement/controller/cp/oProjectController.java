@@ -394,6 +394,7 @@ public class oProjectController extends BaseWeb {
 		final String temperotyFilePath = tempDirectory.getAbsolutePath();
 		String sProjectPDFFileName = staff.getStaff_Code() + "_" + staff.getStaff_ID() + ".pdf";
 		List<Projects> projects = threadService.loadProjectsListByStaff(userRole,userCode);
+		
 		model.put("projects", status);
 		
 		// Put journal list and topic category to view
@@ -461,6 +462,10 @@ public class oProjectController extends BaseWeb {
 	 * @param project
 	 * @throws IOException
 	 */
+	public String name(){
+		return "oProjectController";
+	}
+	
 	private void prepareContent(List<Projects> projects, mStaff staff, List<mPapers> papersList, List<mPatents> patentsList, List<mBooks> booksList) throws IOException {
 		
 		try {
@@ -503,6 +508,8 @@ public class oProjectController extends BaseWeb {
 			{
 				iCounter = 0;
 				for (mPapers mPapers : papersList) {
+					System.out.println(name() + "::prepareContent, paper " + mPapers.getPDECL_PublicationName() + " userCode = " + mPapers.getPDECL_User_Code());
+					
 					iCounter++;
 					staffPapers += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
 					staffPapers += "<td class='col-2'><p class='content'><br />"+mPapers.getPDECL_PublicationName()+"</p></td>";
@@ -516,6 +523,8 @@ public class oProjectController extends BaseWeb {
 			if(booksList != null && booksList.size() > 0){
 				iCounter = 0;
 				for (mBooks books : booksList) {
+					System.out.println(name() + "::prepareContent, book " + books.getBOK_BookName() + ", userCode = " + books.getBOK_UserCode());
+					
 					iCounter++;
 					staffBooks += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
 					staffBooks += "<td class='col-2'><p class='content'><br />"+books.getBOK_BookName()+"</p></td>";
@@ -532,6 +541,8 @@ public class oProjectController extends BaseWeb {
 			{
 				iCounter = 0;
 				for (mPatents patent : patentsList) {
+					System.out.println(name() + "::prepareContent, patent = " + patent.getPAT_Name() + ", userCode = " + patent.getPAT_User_Code());
+							
 					iCounter++;
 					staffPatents += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
 					staffPatents += "<td class='col-2'><p class='content'><br />"+patent.getPAT_Name()+"</p></td>";
@@ -544,8 +555,11 @@ public class oProjectController extends BaseWeb {
 			
 			/* Projects info */
 			if(projects != null && projects.size() > 0){
+				
+				
 				iCounter = 0;
 				for (Projects project : projects) {
+					//System.out.println(name() + "::prepareContent, project = " + project.getPROJ_Name() + ", "
 					iCounter++;
 					staffProjects += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
 					staffProjects += "<td class='col-2'><p class='content'><br />"+project.getPROJ_Name()+"</p></td>";
