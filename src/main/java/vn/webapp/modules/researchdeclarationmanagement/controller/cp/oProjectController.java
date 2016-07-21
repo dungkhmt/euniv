@@ -161,6 +161,7 @@ public class oProjectController extends BaseWeb {
     */
    @RequestMapping(value="save-a-topic", method=RequestMethod.POST)
    public String saveATopic(@Valid @ModelAttribute("topicFormAdd") mTopicValidation topicValid, BindingResult result,  Map model, HttpSession session) {
+	   System.out.println(name() + "::saveATopic");
 	   
 	   // Get topic's category
 	   List<mTopicCategory> topicCategoryList = tProjectCategoryService.list();
@@ -172,7 +173,8 @@ public class oProjectController extends BaseWeb {
 	   model.put("topicCategory", topicCategoryList);
 	   model.put("topics", status);
 	   if(result.hasErrors()) {
-           return "cp.addATopic";
+		   System.out.println(name() + "::saveATopic hasError ");
+		   return "cp.addATopic";
        }else
        {
     	   // Prepare data for inserting DB
@@ -182,16 +184,17 @@ public class oProjectController extends BaseWeb {
     	   String topicReportingAcademicDate 	= topicValid.getTopicReportingAcademicDate();
     	   int topicConVertedHours 				= topicValid.getTopicConHours();
     	   int topicAutConHours 				= topicValid.getTopicAutConHours();
-    	   int topicYear 						= topicValid.getTopicYear();
+    	   int topicYear 						= 0;//topicValid.getTopicYear();
     	   int topicBudget	 					= topicValid.getBudget();
     	   String topicMemberRole				= topicValid.getTopicMemberRole();
     	   String topicStartDate				= topicValid.getTopicStartDate();
     	   String topicEndDate				    = topicValid.getTopicEndDate();
     	   String topicSponsor				    = topicValid.getTopicSponsor();
-    	   String topicApprover				    = topicValid.getTopicApproveUser();
+    	   String topicApprover				    = "";//topicValid.getTopicApproveUser();
     	   
     	   int i_InsertATopic = tProjectService.saveATopic(userCode, topicPubName, topicCategory, topicConVertedHours, topicAutConHours, 
     			   											topicYear, topicBudget, topicReportingAcademicDate, topicMemberRole, topicSponsor, topicApprover, topicStartDate, topicEndDate);
+    	   System.out.println(name() + "::save-a-topic, i_InertATopic = " + i_InsertATopic);
     	   if(i_InsertATopic > 0){
     		   //model.put("status", "Successfully saved a topic.");
     		   return "redirect:" + this.baseUrl + "/cp/topics.html";
@@ -314,7 +317,8 @@ public class oProjectController extends BaseWeb {
 		   model.put("topicName", topicFormEdit.getTopicName());
 		   model.put("topicConHours", topicFormEdit.getTopicConHours());
 		   model.put("topicAutConHours", topicFormEdit.getTopicAutConHours());
-		   model.put("topicYear", topicFormEdit.getTopicYear());
+		   //model.put("topicYear", topicFormEdit.getTopicYear());
+		   model.put("topicYear", "0");
 		   model.put("budget", topicFormEdit.getBudget());
 		   
           return "cp.editATopic";
@@ -329,14 +333,14 @@ public class oProjectController extends BaseWeb {
 	   	  String topicReportingAcademicDate = topicFormEdit.getTopicReportingAcademicDate();
 	   	  int topicConVertedHours 			= topicFormEdit.getTopicConHours();
 	   	  int topicAutConHours 				= (topicFormEdit.getTopicAutConHours() != null) ? topicFormEdit.getTopicAutConHours() : 0;
-	   	  int topicYear 					= topicFormEdit.getTopicYear();
+	   	  int topicYear 					= 0;//topicFormEdit.getTopicYear();
 	   	  int topicBudget	 				= (topicFormEdit.getBudget() != null) ? topicFormEdit.getBudget() : 0;
     	  int topicId 						= topicFormEdit.getTopicId();
     	  String topicMemberRole			= topicFormEdit.getTopicMemberRole();
    	   	  String topicStartDate				= topicFormEdit.getTopicStartDate();
    	   	  String topicEndDate				= topicFormEdit.getTopicEndDate();
    	      String topicSponsor				= topicFormEdit.getTopicSponsor();
-   	      String topicApprover				= topicFormEdit.getTopicApproveUser();
+   	      String topicApprover				= "";//topicFormEdit.getTopicApproveUser();
           
     	  tProjectService.editATopic(userRole, userCode, topicId, topicPubName, topicCategory, topicConVertedHours, topicAutConHours, topicYear, topicBudget, 
     			  						topicReportingAcademicDate, topicMemberRole, topicSponsor, topicApprover, topicStartDate, topicEndDate);

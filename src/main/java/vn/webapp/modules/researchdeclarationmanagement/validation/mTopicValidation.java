@@ -21,9 +21,10 @@ public class mTopicValidation {
     
     private int budget;
     
-    @DateTimeFormat(pattern="YYYY")
-	@NotNull
-    private Integer topicYear;
+    //@DateTimeFormat(pattern="YYYY")
+	
+    //@NotNull
+   // private Integer topicYear;
     
     @NotNull
     @NumberFormat(style = Style.NUMBER)
@@ -40,7 +41,7 @@ public class mTopicValidation {
     private String topicEndDate;
     private String topicMemberRole;
     private String topicSponsor;
-    private String topicApproveUser;
+    //private String topicApproveUser;
 
 	public String getTopicCatCode() {
 		return topicCatCode;
@@ -74,13 +75,13 @@ public class mTopicValidation {
 		this.budget = budget;
 	}
 
-	public Integer getTopicYear() {
-		return topicYear;
-	}
+	//public Integer getTopicYear() {
+	//	return topicYear;
+	//}
 
-	public void setTopicYear(Integer topicYear) {
-		this.topicYear = topicYear;
-	}
+	//public void setTopicYear(Integer topicYear) {
+	//	this.topicYear = topicYear;
+	//}
 
 	public Integer getTopicConHours() {
 		return topicConHours;
@@ -146,6 +147,7 @@ public class mTopicValidation {
 		this.topicSponsor = topicSponsor;
 	}
 
+	/*
 	public String getTopicApproveUser() {
 		return topicApproveUser;
 	}
@@ -153,4 +155,5 @@ public class mTopicValidation {
 	public void setTopicApproveUser(String topicApproveUser) {
 		this.topicApproveUser = topicApproveUser;
 	}
+	*/
 }
