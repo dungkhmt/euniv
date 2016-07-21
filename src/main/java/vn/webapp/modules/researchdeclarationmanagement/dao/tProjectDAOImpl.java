@@ -32,9 +32,9 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
         try {
             begin();
             Criteria criteria = getSession().createCriteria(mTopics.class, "topics");
-            if(!userRole.equals("ROLE_ADMIN")){
-            	criteria.add(Restrictions.eq("topics.PROJDECL_User_Code", userCode));
-            }
+            //if(!userRole.equals("ROLE_ADMIN")){
+            criteria.add(Restrictions.eq("topics.PROJDECL_User_Code", userCode));
+            //}
             criteria.addOrder(Order.desc("topics.PROJDECL_ID"));
             List<mTopics> topics = criteria.list();
             commit();

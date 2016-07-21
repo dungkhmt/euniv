@@ -556,19 +556,25 @@ public class oProjectController extends BaseWeb {
 			}
 			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_PATENTS___", staffPatents);
 			
+			
+			//ProjectParticipationRoles roles = projectParticipationRolesService.loadAProjectParticipationRolesByCode(sCode);
 			/* Projects info */
 			if(projects != null && projects.size() > 0){
 				
 				
 				iCounter = 0;
-				String projectPaperCateName = "";
+				//String projectPaperCateName = "";
 				for (mTopics project : projects) {
 					iCounter++;
-					projectPaperCateName = (project.getTopicCategory() != null) ? project.getTopicCategory().getPROJCAT_Name() : "N/A";
+					//projectPaperCateName = (project.getTopicCategory() != null) ? project.getTopicCategory().getPROJCAT_Name() : "N/A";
+					String projectPaperCateName = project.getPROJDECL_Sponsor();
+					String roleCode = project.getPROJDECL_RoleCode();
+					ProjectParticipationRoles role = projectParticipationRolesService.loadAProjectParticipationRolesByCode(roleCode);
+					
 					staffProjects += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
 					staffProjects += "<td class='col-2'><p class='content'><br />"+project.getPROJDECL_Name()+"</p></td>";
 					staffProjects += "<td class='col-3'><p class='content'><br />"+projectPaperCateName+"</p></td>";
-					staffProjects += "<td class='col-4'><p class='content'><br />Chủ nhiệm</p></td>";
+					staffProjects += "<td class='col-4'><p class='content'><br />" + role.getPROJPARTIROLE_Description() + "</p></td>";
 					staffProjects += "<td class='col-5'><p class='content'><br />"+project.getPROJDECL_StartDate()+" - "+project.getPROJDECL_EndDate()+"</p></td></tr>";
 				}
 			}

@@ -93,11 +93,13 @@
                                     <form:input path="topicAutConHours" class="form-control" data-validation="custom required" data-validation-regexp="^[0-9]*[1-9][0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên" name="topicAutConHours" placeholder="Author Converted Hours"></form:input>
     								<form:errors path="topicAutConHours" class="alert-danger"></form:errors>
                                 </div>
-                                <div class="form-group">
+                                
+                                <div class="form-group" style="display:none;">
                                     <label for="topicYear">Năm bắt đầu*<i style="font-weight: normal; font-size: .9em; color: #bdbdbd;">(format : YYYY)</i></label>
                                     <form:input path="topicYear" class="form-control" data-validation="required date" data-validation-format="yyyy" data-validation-error-msg="Giá trị phải là năm" name="topicYear" placeholder="YYYY"></form:input>
     								<form:errors path="topicYear" class="alert-danger"></form:errors>
                                 </div>
+                                 
                                 <div class="form-group">
                                     <label for="budget">Kinh phí (triệu VNĐ)</label>
                                     <form:input path="budget" class="form-control" data-validation="custom" data-validation-optional="true" data-validation-regexp="^[0-9]*[1-9][0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên" name="budget" placeholder="Budget"></form:input>
@@ -113,11 +115,13 @@
                                     <form:input path="topicEndDate" class="form-control" data-validation="required" data-validation-error-msg="Trường thông tin này là bắt buộc" name="topicYear" readonly="true" placeholder="DD/MM/YYYY"></form:input>
     								<form:errors path="topicEndDate" class="alert-danger"></form:errors>
                                 </div>
-                                <div class="form-group">
+                                
+                                <div class="form-group" style="display:none;">
                                     <label for="topicApproveUser">Người phê duyệt*</label>
                                     <form:input path="topicApproveUser" class="form-control" data-validation="required" data-validation-error-msg="Trường thông tin này là bắt buộc" name="topicApproveUser" placeholder="Approver"></form:input>
     								<form:errors path="topicApproveUser" class="alert-danger"></form:errors>
                                 </div>
+                                
 	                        </div>
 	                        <!-- /.col-lg-6 (nested) -->
 	                    </div>
