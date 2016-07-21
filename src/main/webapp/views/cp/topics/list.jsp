@@ -43,8 +43,8 @@
 									<th title="Publication converted hours">Giờ quy đổi</th>
 									<th title="Authors converted hours">Giờ quy đổi của người kê khai</th>
 									<th title="Budget">Kinh phí (triệu VNĐ)</th>
-									<th title="Year">Năm</th>
-									<th>Edit</th>
+									<!-- <th title="Year">Năm</th> -->
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -57,7 +57,7 @@
 										<td><c:out value="${topic.PROJDECL_ConvertedHours}"/></td>
 										<td><c:out value="${topic.PROJDECL_AuthorConvertedHours}"/></td>
 										<td><c:out value="${topic.PROJDECL_Budget}"/></td>
-										<td><c:out value="${topic.PROJDECL_Year}"/></td>
+										<%-- <td><c:out value="${topic.PROJDECL_Year}"/></td> --%>
 										<td class="center">
 											<button type="button" onclick="v_fViewDetailATopic(${topic.PROJDECL_ID});" class="btn btn-info btn-xs" title="Edit">Info</button>
 											<br/>
