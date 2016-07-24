@@ -611,19 +611,33 @@ public class mPaperController extends BaseWeb {
 		           	
 		           	if(!fileName.equals("")){
 		        	   // Create a file
-		           	   String currentUserName 	= session.getAttribute("currentUserName").toString();
+		           	   /*
+		           		String currentUserName 	= session.getAttribute("currentUserName").toString();
 		 	           fileName = currentUserName + "_" + sCurrentDate + "_" + fileName; 
 			           File serverFile = new File(dir.getAbsolutePath()+ File.separator + fileName);
+			           */
+		           		fileName = establishFileNameStoredDataBase(fileName);
+						String fullfilename = establishFullFileNameForUpload(
+								fileName, userCode, request);
+
+						File serverFile = new File(fullfilename);
+						System.out
+								.println(name()
+										+ "::editAPaper, upload file with fileName (stored in DataBase) = "
+										+ fileName + ", fullfilename = "
+										+ fullfilename);
+			           
 			           // Save data into file
 			           BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 			           stream.write(bytes);
 			           stream.close();
 			           
+			           paperSourceUploadFileSrc = fileName;
 			           
-			           serverFile = new File(dir.getAbsolutePath()+ File.separator + fileName);
+			           //serverFile = new File(dir.getAbsolutePath()+ File.separator + fileName);
 			           
 			           //if(serverFile.exists()){
-		           	   		paperSourceUploadFileSrc = dir.getAbsolutePath()+ File.separator + fileName;
+		           	   		//paperSourceUploadFileSrc = dir.getAbsolutePath()+ File.separator + fileName;
 			           //}else{
 			        	   //System.out.println("PaperController::editAPaper, fileName = " + fileName + ", serverFile not exists");
 			           //}
