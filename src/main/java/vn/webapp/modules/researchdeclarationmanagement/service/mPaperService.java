@@ -10,6 +10,9 @@ public interface mPaperService {
 	 * @param userCode
 	 * @return
 	 */
+	
+	public List<mPapers> loadPaperListByStaffYear(String userCode, String year);
+	
 	public List<mPapers> loadPaperListByStaff(String userRole, String userCode);
 	
 	/**

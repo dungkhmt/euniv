@@ -1,6 +1,7 @@
 package vn.webapp.modules.researchdeclarationmanagement.service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,35 @@ public class mPaperServiceImpl implements mPaperService{
      * @throws UsernameNotFoundException
      */
     @Override
+    public List<mPapers> loadPaperListByStaffYear(String userCode, String year) {
+        try {
+        	//return paperDAO.loadPaperListByStaff(userRole, userCode);
+        	List<mPapers> papers = paperDAO.loadPaperSummaryListByYear(year);
+        	ArrayList<mPapers> retList = new ArrayList<mPapers>();
+        	for(mPapers p: papers){
+        		String paperCode = p.getPDECL_Code();
+        		List<PaperStaffs> paperStaffs = paperStaffsDAO.loadPaperListByPaperCode(paperCode);
+        		for(PaperStaffs ps: paperStaffs){
+        			if(ps.getPPSTF_StaffCode().equals(userCode)){
+        				retList.add(p);
+        			}
+        		}
+        	}
+        	return retList;
+        } catch (Exception e) {
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+        	return null;
+        }
+    }
+    @Override
     public List<mPapers> loadPaperListByStaff(String userRole, String userCode) {
         try {
         	return paperDAO.loadPaperListByStaff(userRole, userCode);
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     
@@ -47,8 +71,9 @@ public class mPaperServiceImpl implements mPaperService{
         try {
         	return paperDAO.loadPaperListSummary(paperStaff, paperCategory, paperAcademicYear);
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     
@@ -58,15 +83,35 @@ public class mPaperServiceImpl implements mPaperService{
      * @return object
      * @throws UsernameNotFoundException
      */
+    public String name(){
+    	return "mPaperService";
+    }
     @Override
     public List<mPapers> loadPaperListByYear(String userRole, String currentUserCode, String reportingrYear){
     	try {
+    		/*
         	if(currentUserCode != null){
         		return paperDAO.loadPaperListByYear(userRole, currentUserCode, reportingrYear);
         	}
+        	
         	return null;
+        	*/
+    		List<mPapers> papers = paperDAO.loadPaperSummaryListByYear(reportingrYear);
+    		List<mPapers> retList = new ArrayList<mPapers>();
+    		for(mPapers p: papers){
+    			String paperCode = p.getPDECL_Code();
+    			List<PaperStaffs> paperStaffs = paperStaffsDAO.loadPaperListByPaperCode(paperCode);
+    			for(PaperStaffs ps: paperStaffs){
+    				//System.out.println(name() + "::loadPaperListByYear, paper " + p.getPDECL_PublicationName() + ", staff " + ps.getPPSTF_StaffCode());
+    				if(ps.getPPSTF_StaffCode().equals(currentUserCode)){
+    					retList.add(p);
+    				}
+    			}
+    		}
+    		return retList;
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
+           // System.out.println("Exception: " + e.getMessage());
+        	e.printStackTrace();
             return null;
         }
     }
@@ -85,8 +130,9 @@ public class mPaperServiceImpl implements mPaperService{
         	}
         	return null;
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     
@@ -155,8 +201,9 @@ public class mPaperServiceImpl implements mPaperService{
     	try {
     		return paperDAO.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
     	} catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+    		return null;
         }
     }
     

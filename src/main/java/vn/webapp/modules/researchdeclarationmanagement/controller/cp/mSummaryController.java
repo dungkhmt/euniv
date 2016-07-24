@@ -161,6 +161,20 @@ public class mSummaryController extends BaseWeb {
 		    		// Set data papers
 		    		for(mPapers paper : papersList)
 		    		{
+		    			List<PaperStaffs> paperStaffs = paperStaffsService.loadPaperListByPaperCode(paper.getPDECL_Code());
+		    			for(PaperStaffs ps: paperStaffs){
+		    				if(ps.getPPSTF_StaffCode().equals(staff.getStaff_Code())){
+		    					iTotalPaperConvertedHours += paper.getPDECL_AuthorConvertedHours();
+			    				if(paper.getPDECL_PaperCategory_Code().equals("JINT_SCI") || paper.getPDECL_PaperCategory_Code().equals("JINT_Other") || paper.getPDECL_PaperCategory_Code().equals("JINT_SCIE"))
+			    				{
+			    					iTotalPaperJournal++;
+			    				}else{
+			    					iTotalPaperConferenceJournal++;
+			    				}
+			    				summaryStaff.add(paper);
+		    				}
+		    			}
+		    			/*
 		    			if(staff.getStaff_User_Code().equals(paper.getPDECL_User_Code())){
 		    				iTotalPaperConvertedHours += paper.getPDECL_AuthorConvertedHours();
 		    				if(paper.getPDECL_PaperCategory_Code().equals("JINT_SCI") || paper.getPDECL_PaperCategory_Code().equals("JINT_Other") || paper.getPDECL_PaperCategory_Code().equals("JINT_SCIE"))
@@ -171,6 +185,7 @@ public class mSummaryController extends BaseWeb {
 		    				}
 		    				summaryStaff.add(paper);
 		    			}
+		    			*/
 		    		}
 		    		// Build a paper summary
 		    		summaryPaper.add(staffName);
@@ -954,7 +969,8 @@ public class mSummaryController extends BaseWeb {
 		 		
 		 		model.put("year", yearGenerate);
 		 		
-		 		List<mPapers> listPapers = paperService.loadPaperListByYear("SUPER_ADMIN", userCode, yearGenerate);
+		 		//List<mPapers> listPapers = paperService.loadPaperListByYear("SUPER_ADMIN", userCode, yearGenerate);
+		 		List<mPapers> listPapers = paperService.loadPaperSummaryListByYear(yearGenerate);
 		 		model.put("listPapers", listPapers);
 		 		
 		 		return new ModelAndView("excelSummaryViewISI02","",null);
