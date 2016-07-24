@@ -64,6 +64,7 @@ public interface mPaperService {
      * 
      */
     public mPapers loadAPaperByIdAndUserCode(String userRole, String userCode, int paperId);
+    public mPapers loadAPaperById(int paperId);
     
     /**
      * 

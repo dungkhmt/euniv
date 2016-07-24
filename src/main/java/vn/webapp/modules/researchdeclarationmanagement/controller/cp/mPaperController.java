@@ -712,12 +712,15 @@ public class mPaperController extends BaseWeb {
 	   String userCode = session.getAttribute("currentUserCode").toString();
 	   String userRole = session.getAttribute("currentUserRole").toString();
 	   model.put("papers", status);
-	   mPapers paper = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
+	   //mPapers paper = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
+	   mPapers paper = paperService.loadAPaperById(paperId);
+	   String auth_user_code = paper.getPDECL_User_Code();
 	   if(paper.getPDECL_SourceFile() != null){
 		   ServletContext context = request.getServletContext();
 		   
 		   System.out.println(name() + "::downloadPaper, SourceFile = " + paper.getPDECL_SourceFile());
-		   String fullfilename = establishFullFileNameForDownload(paper.getPDECL_SourceFile(), userCode, request);
+		   //String fullfilename = establishFullFileNameForDownload(paper.getPDECL_SourceFile(), userCode, request);
+		   String fullfilename = establishFullFileNameForDownload(paper.getPDECL_SourceFile(), auth_user_code, request);
 		   System.out.println(name() + "::downloadPaper, SourceFile = " + paper.getPDECL_SourceFile() + ", fullfilname = " + fullfilename);
 		   //File downloadFile = new File(paper.getPDECL_SourceFile());
 		   File downloadFile = new File(fullfilename);

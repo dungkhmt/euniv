@@ -206,6 +206,17 @@ public class mPaperServiceImpl implements mPaperService{
     		return null;
         }
     }
+    @Override
+    public mPapers loadAPaperById(int paperId){
+    	try {
+    		//return paperDAO.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
+    		return paperDAO.loadAPaperById(paperId);
+    	} catch (Exception e) {
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+    		return null;
+        }
+    }
     
     
     /**

@@ -174,9 +174,9 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
             begin();
             Criteria criteria = getSession().createCriteria(mPapers.class);
             criteria.add(Restrictions.eq("PDECL_ID", paperId));
-            if(!userRole.equals("ROLE_ADMIN")){
+            //if(!userRole.equals("ROLE_ADMIN")){
             	criteria.add(Restrictions.eq("PDECL_User_Code", userCode));
-            }
+            //}
             mPapers paper = (mPapers) criteria.uniqueResult();
             commit();
             return paper;
