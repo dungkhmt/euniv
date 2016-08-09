@@ -1,6 +1,7 @@
 package vn.webapp.modules.researchdeclarationmanagement.service;
 
 import java.util.List;
+
 import vn.webapp.modules.researchdeclarationmanagement.model.mPapers;
 
 public interface mPaperService {
@@ -87,6 +88,9 @@ public interface mPaperService {
     public void editAPaper(String userRole, String userCode, int paperId, String paperCate, String publicationName, String journalName, String ISSN, int publicConvertedHours, 
     						int authorConvertedHours, int paperYear, String volumn, String authors, String journalIndex, String paperReportingAcademicDate, String paperSourceUploadFile, String[] projectMembers, String paperMonth );
     
+    public void editAPaper(int paperId, String paperCate, String publicationName, String journalName, String ISSN, int publicConvertedHours, int authorConvertedHours, int paperYear, 
+			String volumn, String authors, String journalIndex, String paperReportingAcademicDate, String paperSourceUploadFile, String[] projectMembers, String paperMonth );
+
     /**
      * 
      * @param paperId

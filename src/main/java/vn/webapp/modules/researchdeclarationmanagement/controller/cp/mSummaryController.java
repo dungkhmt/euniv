@@ -291,6 +291,9 @@ public class mSummaryController extends BaseWeb {
    public String generateExcel01CN02CN(ModelMap model, HttpSession session){
 	   String userRole = session.getAttribute("currentUserRole").toString();
 	   String userCode = session.getAttribute("currentUserCode").toString();
+	   String facultyCode = session.getAttribute("facultyCode").toString();
+	   
+	   System.out.println(name() + "::generateExcel01CN02CN, userCode = " + userCode + ", facultyCode = " + facultyCode);
 	   mStaff staff = staffService.loadStaffByUserCode(userCode);
 	   
 	   List<mAcademicYear> lstYears = academicYearService.list();
@@ -299,7 +302,10 @@ public class mSummaryController extends BaseWeb {
 		   lstStaffs = new ArrayList<mStaff>();		   
 		   lstStaffs.add(staff);
 	   }else{
-		   lstStaffs = staffService.listStaffs();
+		   if(userRole.equals(mUserController.ROLE_ADMIN) || userRole.equals(mUserController.SUPER_ADMIN))
+			   lstStaffs = staffService.listStaffs();
+		   else if(userRole.equals(mUserController.ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY))
+				   lstStaffs = staffService.listStaffsByFalcuty(facultyCode);
 	   }
 	   model.put("reportingYear", lstYears);
 	   model.put("listStaffs", lstStaffs);

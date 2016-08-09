@@ -116,6 +116,7 @@ public class mPaperController extends BaseWeb {
    public String paperList(ModelMap model, HttpSession session) {
 	   String userCode = session.getAttribute("currentUserCode").toString();
 	   String userRole = session.getAttribute("currentUserRole").toString();
+	   
 	   List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
 	   List<mStaff> staffs = staffService.listStaffs();
 	   HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
@@ -494,7 +495,8 @@ public class mPaperController extends BaseWeb {
 	   model.put("staffList", staffList);
 	   String userRole = session.getAttribute("currentUserRole").toString();
 	   String userCode = session.getAttribute("currentUserCode").toString();
-	   mPapers papers = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
+	   //mPapers papers = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
+	   mPapers papers = paperService.loadAPaperById(paperId);
 	   if(papers != null)
 	   {
 		   List<PaperStaffs> listPaperStaffs = paperStaffsService.loadPaperListByPaperCode(papers.getPDECL_Code());
@@ -549,7 +551,8 @@ public class mPaperController extends BaseWeb {
 	   List<mFaculty> listFaculty = facultyService.loadFacultyList();
 	   List<mStaff> staffList = staffService.listStaffs();
 	   int paperId = paperFormEdit.getPaperId();
-	   mPapers paper = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
+	   //mPapers paper = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
+	   mPapers paper = paperService.loadAPaperById(paperId);
 	   List<PaperStaffs> listPaperStaffs = new ArrayList();
 	   if(paper != null){
 		   listPaperStaffs = paperStaffsService.loadPaperListByPaperCode(paper.getPDECL_Code());
@@ -675,9 +678,14 @@ public class mPaperController extends BaseWeb {
 		   	   		String volumn 				= paperFormEdit.getPaperVolumn();
 		   	   		String journalIndex = paperCategory.getPCAT_Journal();
 		   	   		
-		   	   		paperService.editAPaper(userRole, userCode, paperId, paperCate, publicationName, 
-		   	   								journalName, ISSN, publicConvertedHours, authorConvertedHours, paperYear, volumn, 
-		   	   								authors, journalIndex, paperReportingAcademicDate, paperSourceUploadFileSrc, projectMembers, paperMonth);
+		   	   		//paperService.editAPaper(userRole, userCode, paperId, paperCate, publicationName, 
+		   	   		//						journalName, ISSN, publicConvertedHours, authorConvertedHours, paperYear, volumn, 
+		   	   		//						authors, journalIndex, paperReportingAcademicDate, paperSourceUploadFileSrc, projectMembers, paperMonth);
+		   	   		
+		   	   		paperService.editAPaper(paperId, paperCate, publicationName, 
+								journalName, ISSN, publicConvertedHours, authorConvertedHours, paperYear, volumn, 
+								authors, journalIndex, paperReportingAcademicDate, paperSourceUploadFileSrc, projectMembers, paperMonth);
+		
 		   	   		return "redirect:" + this.baseUrl + "/cp/papers.html";
 	    	   }else{
 	    		   model.put("err", "Cần phải thêm tác giả của bài báo.");
@@ -699,7 +707,8 @@ public class mPaperController extends BaseWeb {
 	   String userCode = session.getAttribute("currentUserCode").toString();
 	   String userRole = session.getAttribute("currentUserRole").toString();
 	   model.put("papers", status);
-	   mPapers paper = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
+	   //mPapers paper = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
+	   mPapers paper = paperService.loadAPaperById(paperId);
 	   if(paper != null){
 		   paperService.removeAPaper(paperId);
 		   List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
@@ -809,16 +818,21 @@ public class mPaperController extends BaseWeb {
 	public String papersSummary(@Valid @ModelAttribute("paperSummaryForm") mPaperSummaryValidation paperSummaryValidation, BindingResult result, Map model, HttpSession session){
 		
     	String paperCategory = paperSummaryValidation.getPaperCategory();
-    	String paperAcagemicYear = paperSummaryValidation.getPaperReportingAcademicYear();
+    	String paperAcademicYear = paperSummaryValidation.getPaperReportingAcademicYear();
     	String paperFaculty = paperSummaryValidation.getPaperFaculty();
     	String paperDepartment = paperSummaryValidation.getPaperDepartment();
     	String paperStaff = paperSummaryValidation.getThreadStaff();
+    	
+    	System.out.println(name() + "::papersSummary, paperCategory = " + paperCategory + ", paperFaculty = " + paperFaculty + 
+    			", paperDepartment = " + paperDepartment + ", paperStaff = " + paperStaff + ", paperYear = " + paperAcademicYear);
+    	
     	List<mStaff> staffs = staffService.listStaffs();
     	HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
     	for(mStaff st: staffs)
     		mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
     	
- 	    List<mPapers> papersList = paperService.loadPaperListSummary(paperStaff, paperCategory, paperAcagemicYear);
+ 	    List<mPapers> papersList = paperService.loadPaperListSummary(paperStaff, paperCategory, paperAcademicYear);
+ 	    
  	    for(mPapers p: papersList)
  	    	p.setPDECL_User_Code(mStaffCode2Name.get(p.getPDECL_User_Code()));
  	    

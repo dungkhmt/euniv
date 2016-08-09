@@ -11,6 +11,8 @@ public interface mPaperDAO {
 	 * @param userCode
 	 * @return
 	 */
+	public List<mPapers> listAll();
+	
 	public List<mPapers> loadPaperListByStaff(String userRole, String userCode);
 	
 	/**

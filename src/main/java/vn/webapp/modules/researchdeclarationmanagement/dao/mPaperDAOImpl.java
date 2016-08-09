@@ -29,6 +29,26 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
      * @return List
      */
     @Override
+    public List<mPapers> listAll() {
+        try {
+            begin();
+            Criteria criteria = getSession().createCriteria(mPapers.class, "papers");
+            criteria.addOrder(Order.desc("papers.PDECL_ID"));
+            List<mPapers> papers = criteria.list();
+            commit();
+            return papers;
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            rollback();
+            close();
+            return null;
+        } finally {
+            flush();
+            close();
+        }
+    }
+
+    @Override
     public List<mPapers> loadPaperListByStaff(String userRole, String userCode) {
         try {
             begin();

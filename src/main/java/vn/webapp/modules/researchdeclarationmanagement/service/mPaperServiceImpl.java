@@ -40,11 +40,15 @@ public class mPaperServiceImpl implements mPaperService{
         	List<mPapers> papers = paperDAO.loadPaperSummaryListByYear(year);
         	ArrayList<mPapers> retList = new ArrayList<mPapers>();
         	for(mPapers p: papers){
+        		//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName());
         		String paperCode = p.getPDECL_Code();
         		List<PaperStaffs> paperStaffs = paperStaffsDAO.loadPaperListByPaperCode(paperCode);
         		for(PaperStaffs ps: paperStaffs){
+        			//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName() + ", staff = " + ps.getPPSTF_StaffCode());
         			if(ps.getPPSTF_StaffCode().equals(userCode)){
+        					
         				retList.add(p);
+        				//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName() + ", ADD, list = " + retList.size());
         			}
         		}
         	}
@@ -58,7 +62,23 @@ public class mPaperServiceImpl implements mPaperService{
     @Override
     public List<mPapers> loadPaperListByStaff(String userRole, String userCode) {
         try {
-        	return paperDAO.loadPaperListByStaff(userRole, userCode);
+        	//return paperDAO.loadPaperListByStaff(userRole, userCode);
+        	List<mPapers> papers = paperDAO.listAll();// paperDAO.loadPaperSummaryListByYear(year);
+        	ArrayList<mPapers> retList = new ArrayList<mPapers>();
+        	for(mPapers p: papers){
+        		//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName());
+        		String paperCode = p.getPDECL_Code();
+        		List<PaperStaffs> paperStaffs = paperStaffsDAO.loadPaperListByPaperCode(paperCode);
+        		for(PaperStaffs ps: paperStaffs){
+        			//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName() + ", staff = " + ps.getPPSTF_StaffCode());
+        			if(ps.getPPSTF_StaffCode().equals(userCode)){
+        					
+        				retList.add(p);
+        				//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName() + ", ADD, list = " + retList.size());
+        			}
+        		}
+        	}
+        	return retList;
         } catch (Exception e) {
             //System.out.println("Exception: " + e.getMessage());
             e.printStackTrace();
@@ -236,6 +256,61 @@ public class mPaperServiceImpl implements mPaperService{
 	    	paper.setPDECL_ISSN(ISSN);
 	    	paper.setPDECL_PublicationConvertedHours(publicConvertedHours);
 	    	paper.setPDECL_User_Code(userCode);
+	    	paper.setPDECL_Volumn(volumn);
+	    	paper.setPDECL_Year(paperYear);
+	    	paper.setPDECL_JournalConferenceName(journalName);
+	    	paper.setPDECL_IndexCode(journalIndex);
+	    	paper.setPDECL_PublicationName(publicationName);
+	    	paper.setPDECL_AuthorList(authors);
+	    	paper.setPDECL_ReportingAcademicDate(paperReportingAcademicDate);
+	    	paper.setPDECL_Month(paperMonth);
+	    	if(paperSourceUploadFile.equals(""))
+	    	{
+	    		paper.setPDECL_SourceFile(paper.getPDECL_SourceFile());
+	    	}else{
+	    		
+	    		String sOldSourceFile = paper.getPDECL_SourceFile();
+		   		if((sOldSourceFile != null)){
+		   			File oldFile = new File(sOldSourceFile);
+			   		oldFile.delete();
+		   		}
+		   		paper.setPDECL_SourceFile(paperSourceUploadFile);
+	    	}
+	    	paperDAO.editAPaper(paper);
+	    	
+	    	if(projectMembers.length > 0){
+	    		String PPSTF_PaperCode = paper.getPDECL_Code();
+	    		String PPSTF_Code = "";
+	    		List<PaperStaffs> oldPaperStaffsList = paperStaffsDAO.loadPaperListByPaperCode(PPSTF_PaperCode);
+	    		if(oldPaperStaffsList != null && oldPaperStaffsList.size() > 0)
+	    		{
+	    			for (PaperStaffs paperStaff : oldPaperStaffsList) {
+	    				paperStaffsDAO.removeAPaperStaff(paperStaff.getPPSTF_ID());
+					}
+	    		}
+		    	PaperStaffs paperStaffs = new PaperStaffs();
+	            for (String projectMember : projectMembers) {
+	            	PPSTF_Code = projectMember+PPSTF_PaperCode;
+	            	paperStaffs.setPPSTF_Code(PPSTF_Code);
+	            	paperStaffs.setPPSTF_PaperCode(PPSTF_PaperCode);
+	            	paperStaffs.setPPSTF_StaffCode(projectMember);
+		    	    paperStaffsDAO.saveAPaperStaff(paperStaffs);
+		    	}
+	    	}
+    	}
+    }
+
+    @Override
+    public void editAPaper(int paperId, String paperCate, String publicationName, String journalName, String ISSN, int publicConvertedHours, int authorConvertedHours, int paperYear, 
+    						String volumn, String authors, String journalIndex, String paperReportingAcademicDate, String paperSourceUploadFile, String[] projectMembers, String paperMonth ){
+    	mPapers paper = paperDAO.loadAPaperById(paperId);
+    	if(paper != null){
+	    	paper.setPDECL_ID(paperId);;
+	    	paper.setPDECL_PaperCategory_Code(paperCate);;
+	    	paper.setPDECL_AuthorConvertedHours(authorConvertedHours);
+	    	paper.setPDECL_ISSN(ISSN);
+	    	paper.setPDECL_PublicationConvertedHours(publicConvertedHours);
+	    	//paper.setPDECL_User_Code(userCode);
 	    	paper.setPDECL_Volumn(volumn);
 	    	paper.setPDECL_Year(paperYear);
 	    	paper.setPDECL_JournalConferenceName(journalName);

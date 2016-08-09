@@ -43,6 +43,7 @@
 			                        	<label for="topicCategory">Nhóm bài báo</label>
 		                        		<div class="form-group">
 		                                   	<form:select class="form-control"  path="paperCategory">
+		                                   		<option value="">Tất cả</option>
 					                        	<c:forEach items="${paperCategory}" var="paperCate">
 				                                 	<option value="${paperCate.PCAT_Code}">${paperCate.PCAT_Name}</option>
 				                               	</c:forEach>
