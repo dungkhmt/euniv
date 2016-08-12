@@ -28,6 +28,7 @@ public class BookStaffsDAOImpl extends BaseDao implements BookStaffsDAO {
 		// TODO Auto-generated method stub
 		try {
             begin();
+            
             Criteria criteria = getSession().createCriteria(BookStaffs.class);
             criteria.add(Restrictions.eq("BOKSTF_BookCode", bookCode));
             criteria.addOrder(Order.desc("BOKSTF_StaffCode"));

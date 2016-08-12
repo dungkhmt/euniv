@@ -878,8 +878,13 @@ public class mSummaryController extends BaseWeb {
 					   for(mPapers paper : papersList)
 					   {
 			    			if(staff.getStaff_User_Code().equals(paper.getPDECL_User_Code())){
-			    				iTotalPaperConvertedHours += paper.getPDECL_AuthorConvertedHours();
-			    				iTotalPaperOfAStaffConvertedHours += paper.getPDECL_AuthorConvertedHours();
+			    				if(paper.getPDECL_User_Code().equals("trung.tranviet@hust.edu.vn")){
+			    					System.out.println(name() + "::downloadSummaryExcelKV01, paper " + paper.getPDECL_User_Code() + 
+			    							", " + paper.getPDECL_PublicationName() + ", hour = " + paper.getPDECL_AuthorConvertedHours());
+			    					
+			    					iTotalPaperConvertedHours += paper.getPDECL_AuthorConvertedHours();
+			    					iTotalPaperOfAStaffConvertedHours += paper.getPDECL_AuthorConvertedHours();
+			    				}
 			    			}
 					   }
 					   
