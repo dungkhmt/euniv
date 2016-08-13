@@ -811,6 +811,7 @@ public class mSummaryController extends BaseWeb {
 		String userRole = (String)session.getAttribute("currentUserRole");
 		String facultyCode = (String)session.getAttribute("facultyCode");
 		
+		
 		List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
 		List<mDepartment> departmentList = null;
 		if(userRole.equals(mUserController.ROLE_ADMIN) || userRole.equals(mUserController.SUPER_ADMIN) )
@@ -819,7 +820,7 @@ public class mSummaryController extends BaseWeb {
 			departmentList = departmentService.loadADepartmentByFaculty(facultyCode);
 		
 		
-		
+		System.out.println(name() + "::downloadSummaryExcelKV01, userCode = " + userCode);
 		/**
 	    * Put back to a suitable view
 	    */
@@ -867,7 +868,8 @@ public class mSummaryController extends BaseWeb {
 				   Map<String, List<Integer>> summaryAllStaffsListTemp = new HashMap<String, List<Integer>>();
 				   for(mStaff staff : staffs)
 				   {
-					   //System.out.println(name() + "::downloadSummaryExcelKV01, department " + department.getDepartment_Name() + ", staff " + staff.getStaff_Name());
+					   //if(staff.getStaff_Code().equals("khanh.nguyenkim@hust.edu.vn"))
+						//	   System.out.println(name() + "::downloadSummaryExcelKV01, department " + department.getDepartment_Name() + ", staff " + staff.getStaff_Name());
 					   // Set and reset info for a staff
 					   staffName = staff.getStaff_Name();
 					   iTotalPaperOfAStaffConvertedHours = 0;
@@ -877,14 +879,27 @@ public class mSummaryController extends BaseWeb {
 					   List<Integer> listConvertedHours = new ArrayList<>();
 					   for(mPapers paper : papersList)
 					   {
-			    			if(staff.getStaff_User_Code().equals(paper.getPDECL_User_Code())){
-			    				if(paper.getPDECL_User_Code().equals("trung.tranviet@hust.edu.vn")){
-			    					System.out.println(name() + "::downloadSummaryExcelKV01, paper " + paper.getPDECL_User_Code() + 
-			    							", " + paper.getPDECL_PublicationName() + ", hour = " + paper.getPDECL_AuthorConvertedHours());
+						   	List<PaperStaffs>  paperStaffs = paperStaffsService.loadPaperListByPaperCode(paper.getPDECL_Code());
+						    boolean ok = false;
+						    for(PaperStaffs ps: paperStaffs)
+						    	if(ps.getPPSTF_StaffCode().equals(staff.getStaff_Code())) ok = true;
+						    
+						    //if(paper.getPDECL_Code().equals("nga.nguyenthithanh@hust.edu.vn233")){
+						    //	System.out.println(name() + "::downloadSummaryExcelKV01, paperStaffs.sz = " + paperStaffs.size());
+						    //	for(PaperStaffs ps: paperStaffs)
+						    //		System.out.println(ps.getPPSTF_StaffCode() + " staff " + staff.getStaff_Code() + ", ok = " + ok);
+						    //}
+						    
+						    	//if(staff.getStaff_User_Code().equals(paper.getPDECL_User_Code())){
+						    if(ok){
+			    				//if(paper.getPDECL_User_Code().equals("trung.tranviet@hust.edu.vn")){
+			    				//if(paper.getPDECL_User_Code().equals("khanh.nguyenkim@hust.edu.vn")){
+			    				//	System.out.println(name() + "::downloadSummaryExcelKV01, paper " + paper.getPDECL_User_Code() + 
+			    				//			", " + paper.getPDECL_PublicationName() + ", hour = " + paper.getPDECL_AuthorConvertedHours());
 			    					
 			    					iTotalPaperConvertedHours += paper.getPDECL_AuthorConvertedHours();
 			    					iTotalPaperOfAStaffConvertedHours += paper.getPDECL_AuthorConvertedHours();
-			    				}
+			    				//}
 			    			}
 					   }
 					   
