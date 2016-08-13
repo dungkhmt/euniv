@@ -46,8 +46,9 @@
 									<th title="Journal Name of a paper">Tên tạp chí</th>
 									<th title="Volumn of a paper">Vol</th>
 									<th title="Public Year of a paper">Năm</th>
+									<th title="Public Year of a paper">Tháng</th>
 									<th title="ISSN Index of a paper">ISSN</th>
-									<th title="Journal Index of a paper">Index</th>
+									<!-- <th title="Journal Index of a paper">Index</th> -->
 									<!-- <th title="Publication converted hours">Giờ quy đổi</th> -->
 									<th title="Authors converted hours">Giờ quy đồi</th>
 									<th>Edit</th>
@@ -65,14 +66,15 @@
 										<td><c:out value="${paper.PDECL_JournalConferenceName}"/></td>
 										<td><c:out value="${paper.PDECL_Volumn}"/></td>
 										<td><c:out value="${paper.PDECL_Year}"/></td>
+										<td><c:out value="${paper.PDECL_Month}"/></td>
 										<td><c:out value="${paper.PDECL_ISSN}"/></td>
-										<td><c:out value="${paper.PDECL_IndexCode}"/></td>
+										<%-- <td><c:out value="${paper.PDECL_IndexCode}"/></td> --%>
 										<%-- <td><c:out value="${paper.PDECL_PublicationConvertedHours}"/></td> --%>
 										<td><c:out value="${paper.PDECL_AuthorConvertedHours}"/></td>
 										<td class="center">
-										<%-- 
+										 
 											<button type="button" onclick="v_fViewDetailAPaper(${paper.PDECL_ID});" class="btn btn-info btn-xs" title="Edit">Chi tiết</button>
-										 --%>
+										
 											<br>
 											<c:choose>
 					                            <c:when test="${paper.PDECL_SourceFile != '' && paper.PDECL_SourceFile != null}">
