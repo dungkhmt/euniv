@@ -380,6 +380,7 @@ public class mUserController extends BaseWeb {
    	   String username = userFormEdit.getUsername();
    	   String password = (userFormEdit.getEpassword() != "") ? DigestUtils.md5Hex(userFormEdit.getEpassword()) : "";
    	   String role = userFormEdit.getRole();
+   	   String fullname = userFormEdit.getStaffFullName();
    	   String email = userFormEdit.getEmail();
    	   int activated = userFormEdit.getActivated();
    	   int userId = userFormEdit.getUserId();
@@ -393,7 +394,7 @@ public class mUserController extends BaseWeb {
    		   model.put("err", "The username is exists.");
    		   return "cp.editAnUser";
    	   }
-   	   userService.editAnUser(userId, username, password, email, role, activated, userRoleId, staffId, userDepartment, aFunctionsPermitted);
+   	   userService.editAnUser(userId, username, fullname, password, email, role, activated, userRoleId, staffId, userDepartment, aFunctionsPermitted);
    	   model.put("status", "Successfully edited user: " + username);
    	   return "redirect:" + this.baseUrl + "/cp/users.html";
           //return "cp.editAnUser";

@@ -145,6 +145,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
     		mStaff staff = staffDAO.getByUserCode(user.getUser_Code());
     		if(staff != null)
     		{
+    			userInfo.put("fullname",staff.getStaff_Name());
     			userInfo.put("staffId", String.valueOf(staff.getStaff_ID()));
     			userInfo.put("staffFacultyCode", String.valueOf(staff.getStaff_Faculty_Code()));
     			userInfo.put("staffDepartmentCode", String.valueOf(staff.getStaff_Department_Code()));
@@ -224,7 +225,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @return void
      */
     @Override
-    public void editAnUser(int userId, String username, String password, String email, 
+    public void editAnUser(int userId, String username, String fullname, String password, String email, 
     						String role, int activated, int userRoleId, int staffId, String userDepartment, String[] aFunctionsPermitted){
     	// Set User to update
     	mUsers user = userDAO.loadUserById(userId);
@@ -248,7 +249,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
         
         // Set Staff to update
         mStaff staff = staffDAO.getStaffById(staffId);
-        //staff.setStaff_Name(username);
+        staff.setStaff_Name(fullname);
         staff.setStaff_User_Code(sUserCode);
         staff.setStaff_Code(sUserCode);
         //staff.setStaff_AsciiName(sUserCode);

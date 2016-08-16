@@ -40,6 +40,17 @@ public class mUserValidation {
     @NotEmpty
     private String staffDepartment;
 
+    @NotEmpty
+    private String staffFullName;
+    
+	public String getStaffFullName() {
+		return staffFullName;
+	}
+
+	public void setStaffFullName(String staffFullName) {
+		this.staffFullName = staffFullName;
+	}
+
 	public String getUsername() {
 		return username;
 	}

@@ -88,11 +88,19 @@
                                 <form:input path="username" class="form-control" name="username" value="${dataUser['username']}" type="text" placeholder="Username"></form:input>
 								<form:errors path="username" class="alert-danger"></form:errors>
                             </div>
+                            
                             <div class="form-group">
                                 <label for="epassword">Mật khẩu</label>
                                 <form:input path="epassword" class="form-control" name="epassword" type="password" placeholder="Password"></form:input>
 								<form:errors path="epassword" class="alert-danger"></form:errors>
                             </div>
+                            
+                            <div class="form-group">
+                                <label for="staffFullName">Họ tên đầy đủ</label>
+                                <form:input path="staffFullName" class="form-control" name="staffFullName" value="${dataUser['fullname']}" type="text" placeholder="StaffFullName"></form:input>
+								<form:errors path="staffFullName" class="alert-danger"></form:errors>
+                            </div>
+                            
                             <div class="form-group">
 								<label>Khoa/Viện</label>
 								<form:select path="staffFaculty" class="form-control" name="staffFaculty" onchange="showDepartment(this);">

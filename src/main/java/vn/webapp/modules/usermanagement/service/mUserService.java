@@ -78,7 +78,7 @@ public interface mUserService {
      * @param staffId
      * @param userDepartment
      */
-    public void editAnUser(int userId, String username, String password, String email, String role, int activated, int userRoleId, int staffId, String userDepartment, String[] aFunctionsPermitted);
+    public void editAnUser(int userId, String username, String fullname, String password, String email, String role, int activated, int userRoleId, int staffId, String userDepartment, String[] aFunctionsPermitted);
     
     /**
      * 
