@@ -74,7 +74,9 @@
 										<td class="center">
 										 
 											<button type="button" onclick="v_fViewDetailAPaper(${paper.PDECL_ID});" class="btn btn-info btn-xs" title="Edit">Chi tiết</button>
-										
+											<br>
+											<button type="button" id="removePaper" onclick="v_fRemoveAPaper(${paper.PDECL_ID});" class="btn btn-danger btn-xs" title="Remove">Xoá</button>
+											
 											<br>
 											<c:choose>
 					                            <c:when test="${paper.PDECL_SourceFile != '' && paper.PDECL_SourceFile != null}">
