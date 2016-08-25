@@ -31,6 +31,9 @@ public class nExcelKV03SummaryBuilder extends AbstractExcelView {
 		return paper;
 	}
 
+	public String name(){
+		return "nExcelKV03SammaryBuilder";
+	}
 	private void buildSheetListPaper(Map<String, Object> model, HSSFWorkbook workbook, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		// get data model which is passed by the Spring container
@@ -302,39 +305,101 @@ public class nExcelKV03SummaryBuilder extends AbstractExcelView {
 		int iCount = 1;
 		iCurrentRow++;
 		int iTotalConvertedHours = 0;
+		List<mPapers> SCI = new ArrayList<mPapers>();
+		List<mPapers> SCIE = new ArrayList<mPapers>();
+		List<mPapers> IJ = new ArrayList<mPapers>();
+		for (mPapers aPaper : papersListJINT) {
+			//System.out.println(name() + "::buildSheetListPaper aPaper.category = " + aPaper.getPDECL_PaperCategory_Code());
+			if(aPaper.getPaperCategory().getPCAT_Code().equals("JINT_SCI"))
+				SCI.add(aPaper);
+		}
+		for (mPapers aPaper : papersListJINT) {
+			if(aPaper.getPaperCategory().getPCAT_Code().equals("JINT_SCIE"))
+				SCIE.add(aPaper);
+		}
+		for (mPapers aPaper : papersListJINT) {
+			if(aPaper.getPaperCategory().getPCAT_Code().equals("JINT_Other"))
+				IJ.add(aPaper);
+		}
+		
 		if(papersListJINT != null)
 		{
-			for (mPapers aPaper : papersListJINT) { 
-				HSSFRow boxFisrtCatContent = sheet.createRow(iCurrentRow);
+			//for (mPapers aPaper : papersListJINT) {
+		
+			// list of SCI
+			HSSFRow row = sheet.createRow(iCurrentRow);
+			row.createCell(1).setCellValue("");
+			row.getCell(1).setCellStyle(styleContentBox);
+			row.createCell(2).setCellValue("SCI");
+			row.getCell(2).setCellStyle(styleBox2);
+			
+			iCurrentRow++;
+			
+			for(mPapers aPaper: SCI){
+				row = sheet.createRow(iCurrentRow);
 				
-				boxFisrtCatContent.createCell(1).setCellValue(iCount++);
-				boxFisrtCatContent.getCell(1).setCellStyle(styleContentBox);
+				row.createCell(1).setCellValue(iCount++);
+				row.getCell(1).setCellStyle(styleContentBox);
 				
 				String paper = getFullPaperDescription(aPaper);
 				
-				boxFisrtCatContent.createCell(2).setCellValue(paper);
-				boxFisrtCatContent.getCell(2).setCellStyle(styleContentBox);
+				row.createCell(2).setCellValue(paper);
+				row.getCell(2).setCellStyle(styleContentBox);
 				
-				/*
-				boxFisrtCatContent.createCell(2).setCellValue(aPaper.getPDECL_AuthorList());
-				boxFisrtCatContent.getCell(2).setCellStyle(styleContentBox);
-				
-				
-				boxFisrtCatContent.createCell(3).setCellValue(aPaper.getPDECL_PublicationName());
-				boxFisrtCatContent.getCell(3).setCellStyle(styleContentBox);
-				
-				boxFisrtCatContent.createCell(4).setCellValue(aPaper.getPDECL_JournalConferenceName());
-				boxFisrtCatContent.getCell(4).setCellStyle(styleContentBox);
-				
-				boxFisrtCatContent.createCell(5).setCellValue(aPaper.getPDECL_Year());
-				boxFisrtCatContent.getCell(5).setCellStyle(styleContentBox);
-				
-				boxFisrtCatContent.createCell(6).setCellValue(aPaper.getPDECL_ISSN());
-				boxFisrtCatContent.getCell(6).setCellStyle(styleContentBox);
-				*/
 				iTotalConvertedHours += aPaper.getPDECL_AuthorConvertedHours();
 				iCurrentRow++;
 			}
+			
+		
+			// list of SCIE
+			row = sheet.createRow(iCurrentRow);
+			row.createCell(1).setCellValue("");
+			row.getCell(1).setCellStyle(styleContentBox);
+			row.createCell(2).setCellValue("SCIE");
+			row.getCell(2).setCellStyle(styleBox2);
+			
+			iCurrentRow++;
+			
+			for(mPapers aPaper: SCIE){
+				row = sheet.createRow(iCurrentRow);
+				
+				row.createCell(1).setCellValue(iCount++);
+				row.getCell(1).setCellStyle(styleContentBox);
+				
+				String paper = getFullPaperDescription(aPaper);
+				
+				row.createCell(2).setCellValue(paper);
+				row.getCell(2).setCellStyle(styleContentBox);
+				
+				iTotalConvertedHours += aPaper.getPDECL_AuthorConvertedHours();
+				iCurrentRow++;
+			}
+		
+			
+			// list of other internaltional journals
+			row = sheet.createRow(iCurrentRow);
+			row.createCell(1).setCellValue("");
+			row.getCell(1).setCellStyle(styleContentBox);
+			row.createCell(2).setCellValue("Other International Journal");
+			row.getCell(2).setCellStyle(styleBox2);
+			
+			iCurrentRow++;
+			
+			for(mPapers aPaper: IJ){
+				row = sheet.createRow(iCurrentRow);
+				
+				row.createCell(1).setCellValue(iCount++);
+				row.getCell(1).setCellStyle(styleContentBox);
+				
+				String paper = getFullPaperDescription(aPaper);
+				
+				row.createCell(2).setCellValue(paper);
+				row.getCell(2).setCellStyle(styleContentBox);
+				
+				iTotalConvertedHours += aPaper.getPDECL_AuthorConvertedHours();
+				iCurrentRow++;
+			}
+		
 		}
 		
 		/**
