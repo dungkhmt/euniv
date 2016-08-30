@@ -165,7 +165,10 @@ public class mSummaryController extends BaseWeb {
 		    			for(PaperStaffs ps: paperStaffs){
 		    				if(ps.getPPSTF_StaffCode().equals(staff.getStaff_Code())){
 		    					iTotalPaperConvertedHours += paper.getPDECL_AuthorConvertedHours();
-			    				if(paper.getPDECL_PaperCategory_Code().equals("JINT_SCI") || paper.getPDECL_PaperCategory_Code().equals("JINT_Other") || paper.getPDECL_PaperCategory_Code().equals("JINT_SCIE"))
+			    				if(paper.getPDECL_PaperCategory_Code().equals("JINT_SCI") || 
+			    						paper.getPDECL_PaperCategory_Code().equals("JINT_Other") ||
+			    						paper.getPDECL_PaperCategory_Code().equals("JDOM_Other") ||
+			    						paper.getPDECL_PaperCategory_Code().equals("JINT_SCIE"))
 			    				{
 			    					iTotalPaperJournal++;
 			    				}else{
