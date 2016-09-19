@@ -44,11 +44,11 @@ public class mStaff implements Serializable{
     @JoinColumn(name="Staff_Category_Code", referencedColumnName = "Staff_Category_Code", insertable = false, updatable = false)
     public mStaffCategory staffCategory;
     
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "Staff_Department_Code", referencedColumnName = "Department_Code",insertable = false, updatable = false)
     private mDepartment department;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="Staff_AcademicRank", referencedColumnName = "AcademicRank_Code", insertable=false, updatable = false)
     public mAcademicRank academicRank;
 

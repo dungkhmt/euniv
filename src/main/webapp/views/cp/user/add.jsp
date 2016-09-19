@@ -93,6 +93,13 @@
                                 <form:input path="password" class="form-control" name="password" type="password" placeholder="Password"></form:input>
 								<form:errors path="password" class="alert-danger"></form:errors>
                            	</div>
+                           	
+                           	<div class="form-group">
+                                <label for="staffFullName">Họ tên đầy đủ</label>
+                                <form:input path="staffFullName" class="form-control" name="staffFullName" type="text" placeholder="StaffFullName"></form:input>
+								<form:errors path="staffFullName" class="alert-danger"></form:errors>
+                            </div>
+                            
                            	<div class="form-group">
 								<label>Khoa/Viện</label>
 								<form:select path="staffFaculty" class="form-control" name="staffFaculty" onchange="showDepartment(this);">

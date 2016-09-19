@@ -70,5 +70,5 @@ public interface mStaffDAO {
      * @param staffId
      * @return
      */
-    public int removeAStaff(int staffId);
+    public int removeAStaff(mStaff staff);
 }

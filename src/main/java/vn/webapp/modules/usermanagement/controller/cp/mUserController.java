@@ -91,24 +91,19 @@ public class mUserController extends BaseWeb {
     public String name(){
     	return "mUserController";
 	}
+    
    @RequestMapping(value = "/users", method = RequestMethod.GET)
    public String listUsers(ModelMap model, HttpSession session) {
-   	//DataPage<Users> usersData = userService.list();
-   	//List<Users> usersList = usersData.getData();
    	List<mStaff> staffsList = new ArrayList<mStaff>();
    	String userRole = session.getAttribute("currentUserRole").toString();
-   	if(userRole.equals(mUserController.SUPER_ADMIN) ||
-   			userRole.equals(mUserController.ROLE_ADMIN)){
+   	if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN)){
    		staffsList = staffService.listStaffs();
    	}else{
    		String facultyCode = session.getAttribute("facultyCode").toString();
     	String currentUserFaculty = session.getAttribute("currentUserFaculty").toString();
-    	System.out.println(name() + "::listUsers, facultyCode = " + currentUserFaculty + ", facultyCode = " + facultyCode);
-    	//staffsList = staffService.listStaffsByFalcuty(currentUserFaculty);
     	staffsList = staffService.listStaffsByFalcuty(facultyCode);
    	}
    	
-   	//model.put("listUsers", usersList);
    	model.put("staffsList", staffsList);
    	model.put("users", status);
        return "cp.users";
@@ -132,7 +127,6 @@ public class mUserController extends BaseWeb {
 	   model.put("funcsChildrenPermissionList", funcsChildrenPermissionList);
 	   model.put("funcsParentsPermissionList", funcsParentsPermissionList);
 	   model.put("listShowedPermission", funcsPermissionList);
-	   //model.put("permissionList", BaseWeb.mFuncsPermissionList);
 	   model.put("facultyList", facultyList);
 	   model.put("departmentList", departmentList);
 	   model.put("currentUserName", BaseWeb.sUserName);
@@ -157,6 +151,7 @@ public class mUserController extends BaseWeb {
 	   model.put("facultyList", facultyList);
 	   model.put("departmentList", departmentList);
       if(result.hasErrors()) {
+    	  System.out.println(result.getFieldError());
           return "cp.addAnUser";
       }else
       {
@@ -397,7 +392,6 @@ public class mUserController extends BaseWeb {
    	   userService.editAnUser(userId, username, fullname, password, email, role, activated, userRoleId, staffId, userDepartment, aFunctionsPermitted);
    	   model.put("status", "Successfully edited user: " + username);
    	   return "redirect:" + this.baseUrl + "/cp/users.html";
-          //return "cp.editAnUser";
      }
  }
  

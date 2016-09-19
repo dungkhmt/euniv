@@ -32,21 +32,14 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public List<mStaff> listStaffs(){
     	try {
-    		begin();
-            Criteria criteria = getSession().createCriteria(mStaff.class);
+    		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
             criteria.setFirstResult(0);
             criteria.addOrder(Order.asc("Staff_Name"));
             List<mStaff> staff = criteria.list();
-            commit();
             return staff;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -58,22 +51,15 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public List<mStaff> listStaffsByFalcuty(String staffFaculty){
     	try {
-    		begin();
-            Criteria criteria = getSession().createCriteria(mStaff.class);
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
             criteria.setFirstResult(0);
             criteria.add(Restrictions.eq("Staff_Faculty_Code", staffFaculty));
             criteria.addOrder(Order.asc("Staff_Name"));
             List<mStaff> staff = criteria.list();
-            commit();
             return staff;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -82,30 +68,18 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
      * @param String
      * @return object
      */
-    
-    public String name(){
-    	return "mStaffDAOImpl";
-    }
     @Override
     public List<mStaff> listStaffsByDepartment(String departmentCode){
-    	//System.out.println(name() + "::listStaffsByDepartment, departmentCode = " + departmentCode);
     	try {
-    		begin();
-            Criteria criteria = getSession().createCriteria(mStaff.class);
+    		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
             criteria.setFirstResult(0);
             criteria.add(Restrictions.eq("Staff_Department_Code", departmentCode));
             criteria.addOrder(Order.asc("Staff_Name"));
             List<mStaff> staff = criteria.list();
-            commit();
             return staff;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -117,8 +91,7 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public List<mStaff> listStaffsByFalcutyAndDepartment(String staffFaculty, String departmentCode){
     	try {
-    		begin();
-            Criteria criteria = getSession().createCriteria(mStaff.class);
+    		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
             criteria.setFirstResult(0);
             if(null != staffFaculty && !staffFaculty.equals("")){
             	criteria.add(Restrictions.eq("Staff_Faculty_Code", staffFaculty));
@@ -128,16 +101,10 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
             }
             criteria.addOrder(Order.asc("Staff_Name"));
             List<mStaff> staff = criteria.list();
-            commit();
             return staff;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -148,21 +115,14 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
      */
     @Override
     public mStaff getByUserCode(String userCode) {
-        try {
-            begin();
-            Criteria criteria = getSession().createCriteria(mStaff.class);
+    	try {
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
             criteria.add(Restrictions.eq("Staff_User_Code", userCode));
             mStaff staff = (mStaff) criteria.uniqueResult();
-            commit();
             return staff;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -174,20 +134,13 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public mStaff getStaffById(int staffId){
     	try {
-            begin();
-            Criteria criteria = getSession().createCriteria(mStaff.class);
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
             criteria.add(Restrictions.eq("Staff_ID", staffId));
             mStaff staff = (mStaff) criteria.uniqueResult();
-            commit();
             return staff;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -199,16 +152,9 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public void editAStaff(mStaff staff){
     	try {
-            begin();
-            getSession().update(staff);
-            commit();
+            sessionFactory.getCurrentSession().update(staff);
          } catch (HibernateException e) {
              e.printStackTrace();
-             rollback();
-             close();
-         } finally {
-             flush();
-             close();
          }
     }
     
@@ -220,19 +166,11 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public int saveAStaff(mStaff staff){
     	try {
-            begin();
-            int id = 0; 
-            id = (int)getSession().save(staff);
-            commit();
+            int id = (int)sessionFactory.getCurrentSession().save(staff);
             return id;           
          } catch (HibernateException e) {
              e.printStackTrace();
-             rollback();
-             close();
              return 0;
-         } finally {
-             flush();
-             close();
          }
     }
     
@@ -242,26 +180,13 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
      * @return int
      */
     @Override
-    public int removeAStaff(int staffId) {
-    	if(staffId > 0)
-    	{
-	    	mStaff staff = new mStaff();
-	    	staff.setStaff_ID(staffId);
-			try {
-				begin();
-				getSession().delete(staff);
-				commit();
-				return 1;
-			} catch (HibernateException e) {
-				e.printStackTrace();
-				rollback();
-				close();
-				return 0;
-			} finally {
-				flush();
-				close();
-			}
-    	}
+    public int removeAStaff(mStaff staff) {
+		try {
+			sessionFactory.getCurrentSession().delete(staff);
+			return 1;
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		}
     	return 0;
     }
     

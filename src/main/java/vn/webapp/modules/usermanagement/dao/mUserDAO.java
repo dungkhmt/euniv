@@ -61,6 +61,13 @@ public interface mUserDAO {
     
     /**
      * 
+     * @param id
+     * @return
+     */
+    public int removeAnUserRole(mUserRoles userRole);
+    
+    /**
+     * 
      * @param user
      * @return
      */

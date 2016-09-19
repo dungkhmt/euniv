@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import vn.webapp.modules.usermanagement.dao.mStaffDAO;
 import vn.webapp.modules.usermanagement.model.mAcademicRank;
@@ -26,6 +27,7 @@ public class mStaffServiceImpl implements mStaffService {
      * @return object
      */
     @Override
+    @Transactional
     public List<mStaff> listStaffs(){
     	try {
             return staffDAO.listStaffs();
@@ -41,6 +43,7 @@ public class mStaffServiceImpl implements mStaffService {
      * @return object
      */
     @Override
+    @Transactional
     public List<mStaff> listStaffsByFalcuty(String staffFaculty){
     	try {
     		if(!staffFaculty.equals(null)){
@@ -59,6 +62,7 @@ public class mStaffServiceImpl implements mStaffService {
      * @return object
      */
     @Override
+    @Transactional
     public List<mStaff> listStaffsByDepartment(String departmentCode){
     	try {
     		if(departmentCode != null){
@@ -77,6 +81,7 @@ public class mStaffServiceImpl implements mStaffService {
      * @return object
      */
     @Override
+    @Transactional
     public mStaff loadStaffByUserCode(final String userCode) {
         try {
             return staffDAO.getByUserCode(userCode);
@@ -94,6 +99,7 @@ public class mStaffServiceImpl implements mStaffService {
      * @return int
      */
     @Override
+    @Transactional
     public void editAStaff(int StaffId, String staffName, String staffEmail, String staffPhone, String staffDepartment, 
     						String userCode, String staffCatCode, String userFacultyCode, String staffGender, String staffDateOfBirth, mAcademicRank academicRank){
     	
@@ -123,6 +129,7 @@ public class mStaffServiceImpl implements mStaffService {
      * @return int
      */
     @Override
+    @Transactional
     public int saveAStaff(String staffName, String staffEmail, String staffPhone, 
     						String staffDepartment, String userCode, String staffCatCode, String staffFaculty){
     	

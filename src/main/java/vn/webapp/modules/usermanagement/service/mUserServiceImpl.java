@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import vn.webapp.modules.usermanagement.dao.mFuncsPermissionDAO;
 import vn.webapp.modules.usermanagement.dao.mStaffDAO;
@@ -45,6 +46,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @throws UsernameNotFoundException
      */
     @Override
+    @Transactional
     public mUsers loadUserById(int userId){
         try {
             return userDAO.loadUserById(userId);
@@ -61,6 +63,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @throws UsernameNotFoundException
      */
     @Override
+    @Transactional
     public mUser loadUserByUsername(String username){
         try {
         	mUsers users = userDAO.getByUsername(username);
@@ -92,6 +95,8 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @return object
      * @throws UsernameNotFoundException
      */
+    @Override
+    @Transactional
     public mUsers loadUserByUsernameAndId(String username, int id){
         try {
         	if(!username.equals("") && id > 0){
@@ -112,6 +117,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @return List
      */
     @Override
+    @Transactional
     public List<mUsers> list() {
         return userDAO.list();
     }
@@ -122,6 +128,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @return object
      */
     @Override
+    @Transactional
     public HashMap<String, String> viewDetail(int id) {
     	mUsers user = userDAO.viewDetail(id);
     	if(user != null)
@@ -162,17 +169,35 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @return int
      */
     @Override
+    @Transactional
     public int removeAnUser(String loginUserRole, int id, String userCode) {
-    	
     	if(id > 0){
-    	   int isRemoveUser = userDAO.removeAnUser(loginUserRole, id);
-    	   mStaff staff = staffDAO.getByUserCode(userCode);
-    	   if(staff != null)
-    	   {
-    		   staffDAO.removeAStaff(staff.getStaff_ID());
-    	   }
-    	   return isRemoveUser;
-    	}
+     	   // 1. Remove user info in tblusers
+     	   int isRemoveUser = userDAO.removeAnUser(loginUserRole, id);
+     	   
+     	   // 2. Remove user role 
+     	   mUserRoles userRole = userDAO.viewDetailUserRole(userCode);
+     	   if(userRole != null){
+     		   int isRemoveRole = userDAO.removeAnUserRole(userRole);
+     	   }
+     	   
+     	   // 3. Remove user info in tblstaffs
+     	   mStaff staff = staffDAO.getByUserCode(userCode);
+     	   if(staff != null)
+     	   {
+     		   staffDAO.removeAStaff(staff);
+     	   }
+     	   
+     	   // 4. Remove user info in tbluserfunctions
+     	   List<mFuncsPermission> functionList =  funcsPermissionDAO.loadFunctionsPermissionByUserList(userCode);
+     	   if(functionList != null)
+     	   {
+     		   for (mFuncsPermission funcsPermission : functionList) {
+     			   funcsPermissionDAO.removeAFunction(funcsPermission);
+     		   }
+     	   }
+     	   return isRemoveUser;
+     	}
         return 0;
     }
 
@@ -185,6 +210,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @return int
      */
     @Override
+    @Transactional
     public int saveAUser(String username, String password, String salt, String email, String role, int enabled, String[] aFunctionsPermitted)
     {
         mUsers user = new mUsers();
@@ -225,6 +251,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @return void
      */
     @Override
+    @Transactional
     public void editAnUser(int userId, String username, String fullname, String password, String email, 
     						String role, int activated, int userRoleId, int staffId, String userDepartment, String[] aFunctionsPermitted){
     	// Set User to update
@@ -290,6 +317,7 @@ public class mUserServiceImpl implements mUserService, UserDetailsService{
      * @return void
      */
     @Override
+    @Transactional
     public void saveSettings(String username, String password){
     	mUsers newSetting = new mUsers();
     	if(!password.equals("")){
