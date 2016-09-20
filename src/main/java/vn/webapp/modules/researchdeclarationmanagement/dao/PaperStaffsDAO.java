@@ -16,5 +16,5 @@ public interface PaperStaffsDAO {
     
     public int saveAPaperStaff(PaperStaffs paperStaff);
 
-    public int removeAPaperStaff(int paperStaffId);
+    public int removeAPaperStaff(PaperStaffs paperStaff);
 }

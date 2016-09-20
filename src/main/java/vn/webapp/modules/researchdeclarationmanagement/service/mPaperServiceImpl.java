@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import vn.webapp.modules.researchdeclarationmanagement.controller.cp.mPaperController;
 import vn.webapp.modules.researchdeclarationmanagement.dao.PaperStaffsDAO;
@@ -34,64 +35,61 @@ public class mPaperServiceImpl implements mPaperService{
      * @throws UsernameNotFoundException
      */
     @Override
+    @Transactional
     public List<mPapers> loadPaperListByStaffYear(String userCode, String year) {
         try {
-        	//return paperDAO.loadPaperListByStaff(userRole, userCode);
         	List<mPapers> papers = paperDAO.loadPaperSummaryListByYear(year);
         	ArrayList<mPapers> retList = new ArrayList<mPapers>();
         	for(mPapers p: papers){
-        		//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName());
         		String paperCode = p.getPDECL_Code();
         		List<PaperStaffs> paperStaffs = paperStaffsDAO.loadPaperListByPaperCode(paperCode);
         		for(PaperStaffs ps: paperStaffs){
-        			//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName() + ", staff = " + ps.getPPSTF_StaffCode());
         			if(ps.getPPSTF_StaffCode().equals(userCode)){
-        					
         				retList.add(p);
-        				//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName() + ", ADD, list = " + retList.size());
         			}
         		}
         	}
         	return retList;
         } catch (Exception e) {
-            //System.out.println("Exception: " + e.getMessage());
-            e.printStackTrace();
-        	return null;
-        }
-    }
-    @Override
-    public List<mPapers> loadPaperListByStaff(String userRole, String userCode) {
-        try {
-        	//return paperDAO.loadPaperListByStaff(userRole, userCode);
-        	List<mPapers> papers = paperDAO.listAll();// paperDAO.loadPaperSummaryListByYear(year);
-        	ArrayList<mPapers> retList = new ArrayList<mPapers>();
-        	for(mPapers p: papers){
-        		//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName());
-        		String paperCode = p.getPDECL_Code();
-        		List<PaperStaffs> paperStaffs = paperStaffsDAO.loadPaperListByPaperCode(paperCode);
-        		for(PaperStaffs ps: paperStaffs){
-        			//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName() + ", staff = " + ps.getPPSTF_StaffCode());
-        			if(ps.getPPSTF_StaffCode().equals(userCode)){
-        					
-        				retList.add(p);
-        				//System.out.println(name() + "::loadPaperListByStaffYear, userCode = " + userCode + ", p = " + p.getPDECL_PublicationName() + ", ADD, list = " + retList.size());
-        			}
-        		}
-        	}
-        	return retList;
-        } catch (Exception e) {
-            //System.out.println("Exception: " + e.getMessage());
             e.printStackTrace();
         	return null;
         }
     }
     
+    /**
+     * 
+     */
     @Override
+    @Transactional
+    public List<mPapers> loadPaperListByStaff(String userRole, String userCode) {
+        try {
+        	List<mPapers> papers = paperDAO.listAll();
+        	ArrayList<mPapers> retList = new ArrayList<mPapers>();
+        	for(mPapers p: papers){
+        		String paperCode = p.getPDECL_Code();
+        		List<PaperStaffs> paperStaffs = paperStaffsDAO.loadPaperListByPaperCode(paperCode);
+        		for(PaperStaffs ps: paperStaffs){
+        			if(ps.getPPSTF_StaffCode().equals(userCode)){
+        				retList.add(p);
+        			}
+        		}
+        	}
+        	return retList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        	return null;
+        }
+    }
+    
+    /**
+     * 
+     */
+    @Override
+    @Transactional
     public List<mPapers> loadPaperListSummary(String paperStaff, String paperCategory, String paperAcademicYear) {
         try {
         	return paperDAO.loadPaperListSummary(paperStaff, paperCategory, paperAcademicYear);
         } catch (Exception e) {
-            //System.out.println("Exception: " + e.getMessage());
             e.printStackTrace();
         	return null;
         }
@@ -103,26 +101,17 @@ public class mPaperServiceImpl implements mPaperService{
      * @return object
      * @throws UsernameNotFoundException
      */
-    public String name(){
-    	return "mPaperService";
-    }
     @Override
+    @Transactional
     public List<mPapers> loadPaperListByYear(String userRole, String currentUserCode, String reportingrYear){
     	try {
-    		/*
-        	if(currentUserCode != null){
-        		return paperDAO.loadPaperListByYear(userRole, currentUserCode, reportingrYear);
-        	}
-        	
-        	return null;
-        	*/
+    		
     		List<mPapers> papers = paperDAO.loadPaperSummaryListByYear(reportingrYear);
     		List<mPapers> retList = new ArrayList<mPapers>();
     		for(mPapers p: papers){
     			String paperCode = p.getPDECL_Code();
     			List<PaperStaffs> paperStaffs = paperStaffsDAO.loadPaperListByPaperCode(paperCode);
     			for(PaperStaffs ps: paperStaffs){
-    				//System.out.println(name() + "::loadPaperListByYear, paper " + p.getPDECL_PublicationName() + ", staff " + ps.getPPSTF_StaffCode());
     				if(ps.getPPSTF_StaffCode().equals(currentUserCode)){
     					retList.add(p);
     				}
@@ -130,7 +119,6 @@ public class mPaperServiceImpl implements mPaperService{
     		}
     		return retList;
         } catch (Exception e) {
-           // System.out.println("Exception: " + e.getMessage());
         	e.printStackTrace();
             return null;
         }
@@ -143,6 +131,7 @@ public class mPaperServiceImpl implements mPaperService{
      * @throws UsernameNotFoundException
      */
     @Override
+    @Transactional
     public List<mPapers> loadPaperSummaryListByYear(String reportingrYear){
     	try {
         	if(reportingrYear != null){
@@ -150,7 +139,6 @@ public class mPaperServiceImpl implements mPaperService{
         	}
         	return null;
         } catch (Exception e) {
-            //System.out.println("Exception: " + e.getMessage());
             e.printStackTrace();
         	return null;
         }
@@ -165,6 +153,7 @@ public class mPaperServiceImpl implements mPaperService{
      * @return int
      */
     @Override
+    @Transactional
     public int saveAPaper(String currentUserName, String paperCatCode, String paperPubName, String paperJConfName, String paperISSN, int paperPubConHours, int paperAutConHours, int paperYear, String paperJIndexCode, 
     						String paperVolumn, String paperAuthors, String paperReportingAcademicDate, String paperSourceUploadFile, String[] projectMembers, String ApproveStatus, String paperMonth)
     {
@@ -217,22 +206,25 @@ public class mPaperServiceImpl implements mPaperService{
      * @return object
      */
     @Override
+    @Transactional
     public mPapers loadAPaperByIdAndUserCode(String userRole, String userCode, int paperId){
     	try {
     		return paperDAO.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
     	} catch (Exception e) {
-            //System.out.println("Exception: " + e.getMessage());
             e.printStackTrace();
     		return null;
         }
     }
+    
+    /**
+     * 
+     */
     @Override
+    @Transactional
     public mPapers loadAPaperById(int paperId){
     	try {
-    		//return paperDAO.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
     		return paperDAO.loadAPaperById(paperId);
     	} catch (Exception e) {
-            //System.out.println("Exception: " + e.getMessage());
             e.printStackTrace();
     		return null;
         }
@@ -246,6 +238,7 @@ public class mPaperServiceImpl implements mPaperService{
      * @return null
      */
     @Override
+    @Transactional
     public void editAPaper(String userRole, String userCode, int paperId, String paperCate, String publicationName, String journalName, String ISSN, int publicConvertedHours, int authorConvertedHours, int paperYear, 
     						String volumn, String authors, String journalIndex, String paperReportingAcademicDate, String paperSourceUploadFile, String[] projectMembers, String paperMonth ){
     	mPapers paper = paperDAO.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
@@ -285,7 +278,7 @@ public class mPaperServiceImpl implements mPaperService{
 	    		if(oldPaperStaffsList != null && oldPaperStaffsList.size() > 0)
 	    		{
 	    			for (PaperStaffs paperStaff : oldPaperStaffsList) {
-	    				paperStaffsDAO.removeAPaperStaff(paperStaff.getPPSTF_ID());
+	    				paperStaffsDAO.removeAPaperStaff(paperStaff);
 					}
 	    		}
 		    	PaperStaffs paperStaffs = new PaperStaffs();
@@ -300,7 +293,11 @@ public class mPaperServiceImpl implements mPaperService{
     	}
     }
 
+    /**
+     * 
+     */
     @Override
+    @Transactional
     public void editAPaper(int paperId, String paperCate, String publicationName, String journalName, String ISSN, int publicConvertedHours, int authorConvertedHours, int paperYear, 
     						String volumn, String authors, String journalIndex, String paperReportingAcademicDate, String paperSourceUploadFile, String[] projectMembers, String paperMonth ){
     	mPapers paper = paperDAO.loadAPaperById(paperId);
@@ -310,7 +307,6 @@ public class mPaperServiceImpl implements mPaperService{
 	    	paper.setPDECL_AuthorConvertedHours(authorConvertedHours);
 	    	paper.setPDECL_ISSN(ISSN);
 	    	paper.setPDECL_PublicationConvertedHours(publicConvertedHours);
-	    	//paper.setPDECL_User_Code(userCode);
 	    	paper.setPDECL_Volumn(volumn);
 	    	paper.setPDECL_Year(paperYear);
 	    	paper.setPDECL_JournalConferenceName(journalName);
@@ -340,7 +336,7 @@ public class mPaperServiceImpl implements mPaperService{
 	    		if(oldPaperStaffsList != null && oldPaperStaffsList.size() > 0)
 	    		{
 	    			for (PaperStaffs paperStaff : oldPaperStaffsList) {
-	    				paperStaffsDAO.removeAPaperStaff(paperStaff.getPPSTF_ID());
+	    				paperStaffsDAO.removeAPaperStaff(paperStaff);
 					}
 	    		}
 		    	PaperStaffs paperStaffs = new PaperStaffs();
@@ -361,6 +357,7 @@ public class mPaperServiceImpl implements mPaperService{
      * @return int
      */
     @Override
+    @Transactional
     public int removeAPaper(int paperId){
     	return paperDAO.removeAPaper(paperId);
     }

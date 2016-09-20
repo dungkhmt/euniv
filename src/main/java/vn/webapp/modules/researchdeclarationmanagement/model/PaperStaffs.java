@@ -32,7 +32,7 @@ public class PaperStaffs implements Serializable{
     private String PPSTF_StaffCode;
     private String PPSTF_PaperCode;
     
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PPSTF_StaffCode", referencedColumnName = "Staff_Code", insertable=false, updatable=false)
     private mStaffThread staff;
     

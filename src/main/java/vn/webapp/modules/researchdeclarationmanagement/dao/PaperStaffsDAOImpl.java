@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import vn.webapp.dao.BaseDao;
 import vn.webapp.modules.researchdeclarationmanagement.model.PaperStaffs;
+import vn.webapp.modules.researchdeclarationmanagement.model.mPapers;
 
 @Repository("paperStaffsDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -37,21 +38,14 @@ public class PaperStaffsDAOImpl extends BaseDao implements PaperStaffsDAO {
     @Override
     public List<PaperStaffs> loadPaperListByPaperCode(String paperCode){
         try {
-            begin();
-            Criteria criteria = getSession().createCriteria(PaperStaffs.class, "paperStaffs");
-            criteria.add(Restrictions.eq("paperStaffs.PPSTF_PaperCode", paperCode));
-            criteria.addOrder(Order.desc("paperStaffs.PPSTF_StaffCode"));
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PaperStaffs.class);
+            criteria.add(Restrictions.eq("PPSTF_PaperCode", paperCode));
+            criteria.addOrder(Order.desc("PPSTF_StaffCode"));
             List<PaperStaffs> papers = criteria.list();
-            commit();
             return papers;
         } catch (HibernateException e) {
-            e.printStackTrace();
-            rollback();
-            close();
+            System.out.println(e.getMessage());
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -63,20 +57,13 @@ public class PaperStaffsDAOImpl extends BaseDao implements PaperStaffsDAO {
     @Override
     public List<PaperStaffs> loadPaperListByPaperCode(List<String> paperCodes){
     	try {
-            begin();
-            Criteria criteria = getSession().createCriteria(PaperStaffs.class, "paperStaffs");
+    		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PaperStaffs.class, "paperStaffs");
             criteria.add(Restrictions.in("paperStaffs.PPSTF_PaperCode", paperCodes));
             List<PaperStaffs> papers = criteria.list();
-            commit();
             return papers;
         } catch (HibernateException e) {
-            e.printStackTrace();
-            rollback();
-            close();
+        	System.out.println(e.getMessage());
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -89,19 +76,11 @@ public class PaperStaffsDAOImpl extends BaseDao implements PaperStaffsDAO {
     public int saveAPaperStaff(PaperStaffs paperStaff) 
     {
         try {
-           begin();
-           int id = 0; 
-           id = (int)getSession().save(paperStaff);
-           commit();
+           int id = (int)sessionFactory.getCurrentSession().save(paperStaff);
            return id;           
         } catch (HibernateException e) {
-            e.printStackTrace();
-            rollback();
-            close();
+        	System.out.println(e.getMessage());
             return 0;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -111,22 +90,13 @@ public class PaperStaffsDAOImpl extends BaseDao implements PaperStaffsDAO {
      * @return
      */
     @Override
-    public int removeAPaperStaff(int paperStaffId){
-		PaperStaffs paperStaff = new PaperStaffs();
-    	paperStaff.setPPSTF_ID(paperStaffId); 
+    public int removeAPaperStaff(PaperStaffs paperStaff){
         try {
-            begin();
-            getSession().delete(paperStaff);
-            commit();
+            sessionFactory.getCurrentSession().delete(paperStaff);
             return 1;
         } catch (HibernateException e) {
-            e.printStackTrace();
-            rollback();
-            close();
+        	System.out.println(e.getMessage());
             return 0;
-        } finally {
-            flush();
-            close();
         }
     }
     

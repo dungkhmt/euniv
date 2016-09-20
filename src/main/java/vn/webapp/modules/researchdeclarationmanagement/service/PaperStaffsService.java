@@ -17,5 +17,5 @@ public interface PaperStaffsService{
     
     public int saveAPaperStaff(String PPSTF_Code, String PPSTF_StaffCode, String PPSTF_PaperCode);
 
-    public int removeAPaperStaff(int paperStaffId);
+    public int removeAPaperStaff(PaperStaffs paperStaffs);
 }

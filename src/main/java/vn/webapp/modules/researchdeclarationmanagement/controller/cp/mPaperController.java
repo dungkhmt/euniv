@@ -138,34 +138,24 @@ public class mPaperController extends BaseWeb {
     */
    @RequestMapping(value = "/add-a-paper", method = RequestMethod.GET)
    public String addPaper(ModelMap model, HttpSession session) {
-	   /*
-	    * Get paper's category
-	    */
+	   
+	   //Get paper's category
 	   String facultyCode = (String)session.getAttribute("facultyCode");
-	   System.out.println(name() + "::addPaper, facultyCode = " + facultyCode);
 	   
 	   List<mPaperCategory> paperCategory = paperCategoryService.list();
 	   List<mJournal> journalList = journalService.list();
 	   List<mPapersCategoryHourBudget> papersCategoryHourBudget = paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
-	   //List<mFaculty> listFaculty = facultyService.loadFacultyList();
 	   List<mFaculty> listFaculty = new ArrayList<mFaculty>();
 	   mFaculty F = facultyService.loadAFacultyByCode(facultyCode);
 	   listFaculty.add(F);
 	   
 	   List<mDepartment> departments = departmentService.loadADepartmentByFaculty(facultyCode);
-	   for(mDepartment dept: departments){
-		   System.out.println(name() + "::addPaper, department " + dept.getDepartment_Name());
-	   }
-	   
-	   //List<mStaff> staffList = staffService.listStaffs();
 	   
 	   // Get list reportingYear
 	   List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
-	   
 	   String paperConvertedHours = this.setJsonByListPaperCategory(papersCategoryHourBudget, patentReportingAcademicDateList);
-	   /*
-	    * Put data back to view
-	    */
+	   
+	   //Put data back to view
 	   model.put("patentReportingAcademicDateList", patentReportingAcademicDateList);
 	   model.put("paperConvertedHours", paperConvertedHours);
 	   model.put("paperCategory", paperCategory);
@@ -183,9 +173,7 @@ public class mPaperController extends BaseWeb {
     * @return
     */
    public String setJsonByListPaperCategory(List<mPapersCategoryHourBudget> papersCategoryHourBudget, List<mAcademicYear> patentReportingAcademicDateList) {
-	   /*
-	    * Set a hashmap for holding paper list by key - value pairs
-	    */
+	   //Set a hashmap for holding paper list by key - value pairs
 	   HashMap<String, HashMap<String, Integer>> paperConvertedHours = new HashMap<String, HashMap<String, Integer>>();
 	   if(patentReportingAcademicDateList != null && papersCategoryHourBudget != null){
 		   for(mAcademicYear acaYear : patentReportingAcademicDateList){
@@ -215,9 +203,6 @@ public class mPaperController extends BaseWeb {
     * @param session
     * @return String
     */
-    public String name(){
-    	return "mPaperController";
-    }
 	private String establishFileNameStoredDataBase(String filename) {
 		Date currentDate = new Date();
 		SimpleDateFormat dateformatyyyyMMdd = new SimpleDateFormat(
@@ -227,65 +212,59 @@ public class mPaperController extends BaseWeb {
 
 	}
 
-	private String establishFullFileNameForUpload(String filename,
-			String userCode, HttpServletRequest request) {
+	/**
+	 * 
+	 * @param filename
+	 * @param userCode
+	 * @param request
+	 * @return
+	 */
+	private String establishFullFileNameForUpload(String filename, String userCode, HttpServletRequest request) {
 
-		//String uploadDir = "/uploads" + File.separator + userCode + File.separator + "papers";
-		// String realPathtoUploads =
-		// request.getServletContext().getRealPath(uploadDir);
-		String realPathtoUploads = PROJECT_ROOT_DIR + File.separator + userCode
-				+ File.separator + "papers";
+		String realPathtoUploads = PROJECT_ROOT_DIR + File.separator + userCode + File.separator + "papers";
 		File dir = new File(realPathtoUploads);
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
 
-		// Set name file
-		// filename =
-		// establishFileNameStoredDataBase(filename);//"thuyetminh-"+sCurrentDate+filename;
 		String fullfilename = realPathtoUploads + File.separator + filename;
-		System.out.println(name()
-				+ "::establishFullFileNameForDownload, PROJECT_ROOT_DIR = "
-				+ PROJECT_ROOT_DIR + ", fullfilename = " + fullfilename);
 		return fullfilename;
 	}
 
-	private String establishFullFileNameForDownload(String filename,
-			String userCode, HttpServletRequest request) {
+	/**
+	 * 
+	 * @param filename
+	 * @param userCode
+	 * @param request
+	 * @return
+	 */
+	private String establishFullFileNameForDownload(String filename, String userCode, HttpServletRequest request) {
 
-		//String uploadDir = "/uploads" + File.separator + userCode + File.separator + "projects";
-		// String realPathtoUploads =
-		// request.getServletContext().getRealPath(uploadDir);
-		String realPathtoUploads = PROJECT_ROOT_DIR + File.separator + userCode
-				+ File.separator + "papers";
+		String realPathtoUploads = PROJECT_ROOT_DIR + File.separator + userCode + File.separator + "papers";
 
 		File dir = new File(realPathtoUploads);
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
-		// System.out.println(name()
-		// + "::establishFullFileNameForDownload(filename = " + filename
-		// + ", dir = " + dir.getAbsolutePath());
-		// Set name file
-		// filename = "thuyetminh-"+sCurrentDate+filename;
-		// String fullfilename = dir.getAbsolutePath() + File.separator +
-		// filename;
 		String fullfilename = realPathtoUploads + File.separator + filename;
 
-		System.out.println(name()
-				+ "::establishFullFileNameForDownload, PROJECT_ROOT_DIR = "
-				+ PROJECT_ROOT_DIR + ", fullfilename = " + fullfilename);
 		return fullfilename;
 	}
    
+	/**
+	 * 
+	 * @param request
+	 * @param paperValid
+	 * @param result
+	 * @param model
+	 * @param session
+	 * @return
+	 */
    @RequestMapping(value="save-a-paper", method=RequestMethod.POST)
    public String saveAPaper(HttpServletRequest request, @Valid @ModelAttribute("paperFormAdd") mPaperValidation paperValid, BindingResult result,  Map model, HttpSession session) {
-	   /*
-	    * Get list of paper category and journalList
-	    */
 	   
-	   String userCode = session.getAttribute("currentUserCode")
-				.toString();
+	   //Get list of paper category and journalList
+	   String userCode = session.getAttribute("currentUserCode").toString();
 	   
 	   List<mPaperCategory> paperCategory = paperCategoryService.list();
 	   List<mJournal> journalList = journalService.list();
@@ -297,9 +276,7 @@ public class mPaperController extends BaseWeb {
 	   List<mFaculty> listFaculty = facultyService.loadFacultyList();
 	   List<mStaff> staffList = staffService.listStaffs();
 	   
-	   /*
-	    * Put data back to view
-	    */
+	   //Put data back to view
 	   model.put("patentReportingAcademicDateList", patentReportingAcademicDateList);
 	   model.put("paperConvertedHours", paperConvertedHours);
 	   model.put("paperCategory", paperCategory);
@@ -311,9 +288,7 @@ public class mPaperController extends BaseWeb {
            return "cp.addAPaper";
        }else
        {
-    	   /*
-    	    * Prepare data for inserting DB
-    	    */
+    	   // Prepare data for inserting DB
     	   String paperCatCode = paperValid.getPaperCatCode();
     	   mPaperCategory paperCate = paperCategoryService.getPaperCateByCode(paperCatCode);
     	   String paperReportingAcademicDate = paperValid.getPatentReportingAcademicDate();
@@ -371,25 +346,19 @@ public class mPaperController extends BaseWeb {
 	            	   paperSourceUploadFileSrc = dir.getAbsolutePath()+ File.separator + fileName;
 	               //}else{
 	               //}
-	            	  */ 
-	            	   fileName = establishFileNameStoredDataBase(fileName);
-						String fullfilename = establishFullFileNameForUpload(
-								fileName, userCode, request);
+	               */ 
+	               fileName = establishFileNameStoredDataBase(fileName);
+	               String fullfilename = establishFullFileNameForUpload(fileName, userCode, request);
 
-						File serverFile = new File(fullfilename);
-						System.out
-								.println(name()
-										+ "::saveAPaper, upload file with fileName (stored in DataBase) = "
-										+ fileName + ", fullfilename = "
-										+ fullfilename);
-						
+				   File serverFile = new File(fullfilename);
+
 	               // Save data into file
 	               BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 	               stream.write(bytes);
 	               stream.close();
 	               if (serverFile.exists()) {
 						paperSourceUploadFileSrc = fileName;
-					}
+				   }
 		           /**
 		            * Preparing data for adding into DB
 		            */
@@ -414,7 +383,6 @@ public class mPaperController extends BaseWeb {
 		    			   											paperReportingAcademicDate, paperSourceUploadFileSrc, projectMembers,
 		    			   											mPaperController.APPROVE_STATUS_PENDING, paperMonth);
 		    	   if(i_InsertAPaper > 0){
-		    		   //model.put("status", "Successfully saved a paper: ");
 		    		   return "redirect:" + this.baseUrl + "/cp/papers.html";
 		    	   }
 	    	   }catch (Exception e) {
@@ -478,24 +446,28 @@ public class mPaperController extends BaseWeb {
        return "cp.generate";
    }
    
+   /**
+    * 
+    * @param model
+    * @param paperId
+    * @param session
+    * @return
+    */
    @RequestMapping("/paperdetail/{id}")
    public String editAPaper(ModelMap model, @PathVariable("id") int paperId, HttpSession session) {
-	   
 	   // Get list reportingYear
 	   List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
 	   List<mFaculty> listFaculty = facultyService.loadFacultyList();
 	   List<mStaff> staffList = staffService.listStaffs();
 	   String[] monthList = {"1","2","3","4","5","6","7","8","9","10","11","12"};
-	   /*
-	    * Put data back to view
-	    */
+
+	   // Put data back to view
 	   model.put("patentReportingAcademicDateList", patentReportingAcademicDateList);
 	   model.put("papers", status);
 	   model.put("listFaculty", listFaculty);
 	   model.put("staffList", staffList);
 	   String userRole = session.getAttribute("currentUserRole").toString();
 	   String userCode = session.getAttribute("currentUserCode").toString();
-	   //mPapers papers = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
 	   mPapers papers = paperService.loadAPaperById(paperId);
 	   if(papers != null)
 	   {
@@ -505,9 +477,8 @@ public class mPaperController extends BaseWeb {
 		   List<mPapersCategoryHourBudget> papersCategoryHourBudget = paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
 		   String paperConvertedHours = this.setJsonByListPaperCategory(papersCategoryHourBudget, patentReportingAcademicDateList);
 		   String fileUploadName = papers.getPDECL_SourceFile();
-		   /*
-		    * Put journal list and paper category to view
-		    */
+
+		   // Put journal list and paper category to view
 		   model.put("monthList", monthList);
 		   model.put("paperConvertedHours", paperConvertedHours);
 		   model.put("paperCategory", paperCategory);
@@ -545,22 +516,21 @@ public class mPaperController extends BaseWeb {
 	   List<mPaperCategory> paperCategories = paperCategoryService.list();
 	   List<mJournal> journalList = journalService.list();
 	   List<mPapersCategoryHourBudget> papersCategoryHourBudget = paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
+	   
 	   // Get list reportingYear
 	   List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
 	   String paperConvertedHours = this.setJsonByListPaperCategory(papersCategoryHourBudget, patentReportingAcademicDateList);
 	   List<mFaculty> listFaculty = facultyService.loadFacultyList();
 	   List<mStaff> staffList = staffService.listStaffs();
 	   int paperId = paperFormEdit.getPaperId();
-	   //mPapers paper = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
 	   mPapers paper = paperService.loadAPaperById(paperId);
 	   List<PaperStaffs> listPaperStaffs = new ArrayList();
 	   if(paper != null){
 		   listPaperStaffs = paperStaffsService.loadPaperListByPaperCode(paper.getPDECL_Code());
 	   }
 	   String[] monthList = {"1","2","3","4","5","6","7","8","9","10","11","12"};
-	   /*
-	    * Put data back to view
-	    */
+	   
+	   // Put data back to view
 	   model.put("patentReportingAcademicDateList", patentReportingAcademicDateList);
 	   model.put("paperConvertedHours", paperConvertedHours);
 	   model.put("paperCategory", paperCategories);
@@ -570,6 +540,7 @@ public class mPaperController extends BaseWeb {
 	   model.put("journalList", journalList);
 	   model.put("monthList", monthList);
 	   model.put("papers", status);
+	   
 	   // Add the saved validationForm to the model  
       if (result.hasErrors()) {
     	   model.put("paperCate", paperFormEdit.getPaperCatCode());
@@ -588,9 +559,7 @@ public class mPaperController extends BaseWeb {
            return "cp.editAPaper";
       }else
       {
-    	   /**
-   	       * Uploading file
-	   	   */
+   	       // Uploading file
 	   	   MultipartFile paperSourceUploadFile = paperFormEdit.getPaperFileUpload();
 	   	   String fileName = paperSourceUploadFile.getOriginalFilename();
 	   	   String paperSourceUploadFileSrc = "";
@@ -600,13 +569,13 @@ public class mPaperController extends BaseWeb {
 	    	   if(projectMembers != null && projectMembers.length > 0){
 		   		   	//	Creating Date in java with today's date.
 		   		   	Date currentDate = new Date();
-		   		   	//change date into string yyyyMMdd format example "20110914"
+		   		   	
+		   		   	// Change date into string yyyyMMdd format example "20110914"
 		   		   	SimpleDateFormat dateformatyyyyMMdd = new SimpleDateFormat("HHmmssddMMyyyy");
 		   		   	String sCurrentDate = dateformatyyyyMMdd.format(currentDate);
 	    		   
 		    	   	byte[] bytes = paperSourceUploadFile.getBytes();
 		    	   	String path = request.getServletContext().getRealPath("uploads");
-		    	   	System.out.println("PaperController::editAPaper, path = " + path);
 		    	   	File dir = new File(path+ "/papers");
 		           	if (!dir.exists()){
 		        	   dir.mkdirs();
@@ -614,43 +583,23 @@ public class mPaperController extends BaseWeb {
 		           	
 		           	if(!fileName.equals("")){
 		        	   // Create a file
-		           	   /*
-		           		String currentUserName 	= session.getAttribute("currentUserName").toString();
-		 	           fileName = currentUserName + "_" + sCurrentDate + "_" + fileName; 
-			           File serverFile = new File(dir.getAbsolutePath()+ File.separator + fileName);
-			           */
+
 		           		fileName = establishFileNameStoredDataBase(fileName);
-						String fullfilename = establishFullFileNameForUpload(
+		           		String fullfilename = establishFullFileNameForUpload(
 								fileName, userCode, request);
 
 						File serverFile = new File(fullfilename);
-						System.out
-								.println(name()
-										+ "::editAPaper, upload file with fileName (stored in DataBase) = "
-										+ fileName + ", fullfilename = "
-										+ fullfilename);
-			           
+						
 			           // Save data into file
 			           BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 			           stream.write(bytes);
 			           stream.close();
 			           
 			           paperSourceUploadFileSrc = fileName;
-			           
-			           //serverFile = new File(dir.getAbsolutePath()+ File.separator + fileName);
-			           
-			           //if(serverFile.exists()){
-		           	   		//paperSourceUploadFileSrc = dir.getAbsolutePath()+ File.separator + fileName;
-			           //}else{
-			        	   //System.out.println("PaperController::editAPaper, fileName = " + fileName + ", serverFile not exists");
-			           //}
+
 		           	}
-		           
-		           	System.out.println("PaperController::editAPaper, paperCourseUpLoadFileSrc = " + paperSourceUploadFileSrc);
-		           	
-		    	  	/**
-		    	  	 * Prepare data for inserting DB
-		    	  	 */
+
+		    	  	// Prepare data for inserting DB
 			   	  	mPaperCategory paperCategory = paperCategoryService.getPaperCateByCode(paperCate);
 			   	  	mPapersCategoryHourBudget papersCateHourBudget = paperCategoryHourBudgetService.loadPaperCategoryHourBudgetByCategoryAndYear(paperCate, paperFormEdit.getPatentReportingAcademicDate());
 			   	  	String authors = paperFormEdit.getPaperAuthorList();
@@ -678,10 +627,6 @@ public class mPaperController extends BaseWeb {
 		   	   		String volumn 				= paperFormEdit.getPaperVolumn();
 		   	   		String journalIndex = paperCategory.getPCAT_Journal();
 		   	   		
-		   	   		//paperService.editAPaper(userRole, userCode, paperId, paperCate, publicationName, 
-		   	   		//						journalName, ISSN, publicConvertedHours, authorConvertedHours, paperYear, volumn, 
-		   	   		//						authors, journalIndex, paperReportingAcademicDate, paperSourceUploadFileSrc, projectMembers, paperMonth);
-		   	   		
 		   	   		paperService.editAPaper(paperId, paperCate, publicationName, 
 								journalName, ISSN, publicConvertedHours, authorConvertedHours, paperYear, volumn, 
 								authors, journalIndex, paperReportingAcademicDate, paperSourceUploadFileSrc, projectMembers, paperMonth);
@@ -707,7 +652,6 @@ public class mPaperController extends BaseWeb {
 	   String userCode = session.getAttribute("currentUserCode").toString();
 	   String userRole = session.getAttribute("currentUserRole").toString();
 	   model.put("papers", status);
-	   //mPapers paper = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
 	   mPapers paper = paperService.loadAPaperById(paperId);
 	   if(paper != null){
 		   paperService.removeAPaper(paperId);
@@ -716,7 +660,7 @@ public class mPaperController extends BaseWeb {
 		   if(listPaperStaffs != null)
 		   {
 			   for (PaperStaffs paperStaffs : listPaperStaffs) {
-				   paperStaffsService.removeAPaperStaff(paperStaffs.getPPSTF_ID());
+				   paperStaffsService.removeAPaperStaff(paperStaffs);
 			   }
 		   }
 		   model.put("papersList", papersList);
@@ -735,17 +679,12 @@ public class mPaperController extends BaseWeb {
 	   String userCode = session.getAttribute("currentUserCode").toString();
 	   String userRole = session.getAttribute("currentUserRole").toString();
 	   model.put("papers", status);
-	   //mPapers paper = paperService.loadAPaperByIdAndUserCode(userRole, userCode, paperId);
 	   mPapers paper = paperService.loadAPaperById(paperId);
 	   String auth_user_code = paper.getPDECL_User_Code();
 	   if(paper.getPDECL_SourceFile() != null){
 		   ServletContext context = request.getServletContext();
 		   
-		   System.out.println(name() + "::downloadPaper, SourceFile = " + paper.getPDECL_SourceFile());
-		   //String fullfilename = establishFullFileNameForDownload(paper.getPDECL_SourceFile(), userCode, request);
 		   String fullfilename = establishFullFileNameForDownload(paper.getPDECL_SourceFile(), auth_user_code, request);
-		   System.out.println(name() + "::downloadPaper, SourceFile = " + paper.getPDECL_SourceFile() + ", fullfilname = " + fullfilename);
-		   //File downloadFile = new File(paper.getPDECL_SourceFile());
 		   File downloadFile = new File(fullfilename);
 		   
 		   if(downloadFile.exists()){
@@ -784,6 +723,12 @@ public class mPaperController extends BaseWeb {
    }
    
 
+   /**
+    * 
+    * @param model
+    * @param session
+    * @return
+    */
     @RequestMapping(value = "/summary-papers", method = RequestMethod.GET)
 	public String getListTopics(ModelMap model, HttpSession session) {
 		String userCode = session.getAttribute("currentUserCode").toString();
@@ -794,7 +739,6 @@ public class mPaperController extends BaseWeb {
 		if ("ROLE_ADMIN".equals(userRole) || "SUPER_ADMIN".equals(userRole)){
 			threadFaculties = facultyService.loadFacultyList();
 		}else if (mUserController.ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY.equals(userRole)) {
-			// threadFaculties = new ArrayList<mFaculty>();
 			mFaculty faculty = facultyService.loadAFacultyByCode(facultyCode);
 			if (faculty != null){
 				threadFaculties.add(faculty);
@@ -814,6 +758,14 @@ public class mPaperController extends BaseWeb {
 		return "cp.summaryPaper";
    }
     
+    /**
+     * 
+     * @param paperSummaryValidation
+     * @param result
+     * @param model
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "/papersSummary", method = RequestMethod.POST)
 	public String papersSummary(@Valid @ModelAttribute("paperSummaryForm") mPaperSummaryValidation paperSummaryValidation, BindingResult result, Map model, HttpSession session){
 		
@@ -822,9 +774,6 @@ public class mPaperController extends BaseWeb {
     	String paperFaculty = paperSummaryValidation.getPaperFaculty();
     	String paperDepartment = paperSummaryValidation.getPaperDepartment();
     	String paperStaff = paperSummaryValidation.getThreadStaff();
-    	
-    	System.out.println(name() + "::papersSummary, paperCategory = " + paperCategory + ", paperFaculty = " + paperFaculty + 
-    			", paperDepartment = " + paperDepartment + ", paperStaff = " + paperStaff + ", paperYear = " + paperAcademicYear);
     	
     	List<mStaff> staffs = staffService.listStaffs();
     	HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();

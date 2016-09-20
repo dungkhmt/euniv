@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import vn.webapp.modules.researchdeclarationmanagement.dao.PaperStaffsDAO;
 import vn.webapp.modules.researchdeclarationmanagement.model.PaperStaffs;
@@ -23,11 +24,12 @@ public class PaperStaffsServiceImpl implements PaperStaffsService {
     * 
     */
     @Override
+    @Transactional
     public List<PaperStaffs> loadPaperListByPaperCode(String paperCode){
         try {
         	return paperStaffsDAO.loadPaperListByPaperCode(paperCode);
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -36,12 +38,12 @@ public class PaperStaffsServiceImpl implements PaperStaffsService {
      * 
      */
      @Override
+     @Transactional
      public List<PaperStaffs> loadPaperListByPaperCode(List<String> paperCodes){
          try {
          	return paperStaffsDAO.loadPaperListByPaperCode(paperCodes);
          } catch (Exception e) {
-             e.printStackTrace();
-        	 //System.out.println("Exception: " + e.getMessage());
+        	 System.out.println(e.getMessage());
              return null;
          }
      }
@@ -56,6 +58,7 @@ public class PaperStaffsServiceImpl implements PaperStaffsService {
      * @return int
      */
     @Override
+    @Transactional
     public int saveAPaperStaff(String PPSTF_Code, String PPSTF_StaffCode, String PPSTF_PaperCode)
     {
     	if(!"".equals(PPSTF_Code) && !"".equals(PPSTF_StaffCode) && !"".equals(PPSTF_PaperCode)){
@@ -76,10 +79,11 @@ public class PaperStaffsServiceImpl implements PaperStaffsService {
      * @return int
      */
     @Override
-    public int removeAPaperStaff(int paperStaffId){
-    	if(paperStaffId > 0)
+    @Transactional
+    public int removeAPaperStaff(PaperStaffs paperStaffs){
+    	if(paperStaffs != null)
     	{
-    		return paperStaffsDAO.removeAPaperStaff(paperStaffId);
+    		return paperStaffsDAO.removeAPaperStaff(paperStaffs);
     	}else{
     		return 0;
     	}
