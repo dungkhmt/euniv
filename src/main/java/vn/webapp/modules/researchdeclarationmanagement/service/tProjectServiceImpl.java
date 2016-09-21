@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import vn.webapp.modules.researchdeclarationmanagement.dao.tProjectDAO;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopics;
@@ -25,6 +26,7 @@ public class tProjectServiceImpl implements tProjectService {
      * @throws UsernameNotFoundException
      */
     @Override
+    @Transactional
     public List<mTopics> loadTopicListByStaff(String userRole, String userCode) {
         try {
         	return tProjectDAO.loadTopicListByStaff(userRole, userCode);
@@ -41,6 +43,7 @@ public class tProjectServiceImpl implements tProjectService {
      * @throws UsernameNotFoundException
      */
     @Override
+    @Transactional
     public List<mTopics> loadTopicListByYear(String userRole, String userCode,  String reportingrYear) {
     	try {
     		if(userCode != null){
@@ -60,6 +63,7 @@ public class tProjectServiceImpl implements tProjectService {
      * @throws UsernameNotFoundException
      */
     @Override
+    @Transactional
     public List<mTopics> loadTopicSummaryListByYear(String reportingrYear){
     	try {
     		if(reportingrYear != null){
@@ -81,6 +85,7 @@ public class tProjectServiceImpl implements tProjectService {
      * @return int
      */
     @Override
+    @Transactional
     public int saveATopic(String userCode, String topicPubName, String topicCategory, int topicConVertedHours, int topicAutConHours, int topicYear, int topicBudget,
     						String topicReportingAcademicDate,String topicMemberRole,String topicSponsor,String topicApprover,String topicStartDate,String topicEndDate)
     {
@@ -112,6 +117,7 @@ public class tProjectServiceImpl implements tProjectService {
      * @return object
      */
     @Override
+    @Transactional
     public mTopics loadATopicByIdAndUserCode(String userRole, String userCode, int topicId){
     	try {
     		return tProjectDAO.loadATopicByIdAndUserCode(userRole, userCode, topicId);
@@ -129,6 +135,7 @@ public class tProjectServiceImpl implements tProjectService {
      * @return null
      */
     @Override
+    @Transactional
     public void editATopic(String userRole, String userCode, int topicId, String topicPubName, String topicCategory, int topicConVertedHours, Integer topicAutConHours, int topicYear, int topicBudget, 
     						String topicReportingAcademicDate,String topicMemberRole,String topicSponsor,String topicApprover,String topicStartDate,String topicEndDate){
     	mTopics topic = tProjectDAO.loadATopicByIdAndUserCode(userRole, userCode, topicId);
@@ -157,6 +164,7 @@ public class tProjectServiceImpl implements tProjectService {
      * @return int
      */
     @Override
+    @Transactional
     public int removeATopic(int topicId){
     	return tProjectDAO.removeATopic(topicId);
     }

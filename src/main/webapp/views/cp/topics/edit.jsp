@@ -76,7 +76,7 @@
 	                                	<label for="topicMemberRole">Vai trò*</label>
 		                                <form:select path="topicMemberRole" class="form-control" data-validation="required" data-validation-error-msg="Trường thông tin này là bắt buộc" name="topicMemberRole" >
 		                                	<c:forEach items="${memberRolesList}" var="memberRole">
-		                                     <option value="${memberRole.PROJPARTIROLE_Code}" <c:if test="${topicDate.PROJDECL_RoleCode == memberRole.PROJPARTIROLE_Code}">selected</c:if> >${memberRole.PROJPARTIROLE_Description}</option>
+		                                     <option value="${memberRole.PROJPARTIROLE_Code}" <c:if test="${topic.PROJDECL_RoleCode == memberRole.PROJPARTIROLE_Code}">selected</c:if> >${memberRole.PROJPARTIROLE_Description}</option>
 		                                   	</c:forEach>
 		                                </form:select>
 		                                <form:errors path="topicMemberRole" class="alert-danger"></form:errors>

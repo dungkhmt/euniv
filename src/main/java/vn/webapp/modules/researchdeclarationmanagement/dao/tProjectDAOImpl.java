@@ -1,6 +1,7 @@
 package vn.webapp.modules.researchdeclarationmanagement.dao;
 
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import vn.webapp.dao.BaseDao;
+import vn.webapp.modules.researchdeclarationmanagement.model.PaperStaffs;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopics;
 
 @Repository("tProjectDAO")
@@ -30,23 +32,16 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public List<mTopics> loadTopicListByStaff(String userRole, String userCode) {
         try {
-            begin();
-            Criteria criteria = getSession().createCriteria(mTopics.class, "topics");
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class, "topics");
             //if(!userRole.equals("ROLE_ADMIN")){
             criteria.add(Restrictions.eq("topics.PROJDECL_User_Code", userCode));
             //}
             criteria.addOrder(Order.desc("topics.PROJDECL_ID"));
             List<mTopics> topics = criteria.list();
-            commit();
             return topics;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -58,24 +53,17 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public List<mTopics> loadTopicListByYear(String userRole, String userCode, String reportingrYear) {
     	try {
-            begin();
-            Criteria criteria = getSession().createCriteria(mTopics.class, "topics");
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class, "topics");
             if(!userRole.equals("SUPER_ADMIN")){
             	criteria.add(Restrictions.eq("topics.PROJDECL_User_Code", userCode));
             }
             criteria.add(Restrictions.eq("topics.PROJDECL_ReportingAcademicDate", reportingrYear));
             criteria.addOrder(Order.asc("topics.PROJDECL_Name"));
             List<mTopics> topics = criteria.list();
-            commit();
             return topics;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -87,21 +75,14 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public List<mTopics> loadTopicSummaryListByYear(String reportingrYear){
     	try {
-            begin();
-            Criteria criteria = getSession().createCriteria(mTopics.class, "topics");
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class, "topics");
             criteria.add(Restrictions.eq("topics.PROJDECL_ReportingAcademicDate", reportingrYear));
             criteria.addOrder(Order.asc("topics.PROJDECL_Name"));
             List<mTopics> topics = criteria.list();
-            commit();
             return topics;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -114,19 +95,11 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     public int saveATopic(mTopics topic) 
     {
         try {
-           begin();
-           int id = 0; 
-           id = (int)getSession().save(topic);
-           commit();
+           int id = (int)sessionFactory.getCurrentSession().save(topic);
            return id;           
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return 0;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -138,23 +111,16 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public mTopics loadATopicByIdAndUserCode(String userRole, String userCode, int topicId){
     	try {
-            begin();
-            Criteria criteria = getSession().createCriteria(mTopics.class);
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class);
             criteria.add(Restrictions.eq("PROJDECL_ID", topicId));
             if(!userRole.equals("ROLE_ADMIN")){
             	criteria.add(Restrictions.eq("PROJDECL_User_Code", userCode));
             }
             mTopics topic = (mTopics) criteria.uniqueResult();
-            commit();
             return topic;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return null;
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -166,16 +132,9 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public void editATopic(mTopics topic){
         try {
-           begin();
-           getSession().update(topic);
-           commit();
+           sessionFactory.getCurrentSession().update(topic);
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
-        } finally {
-            flush();
-            close();
         }
     }
     
@@ -189,18 +148,12 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     	mTopics topic = new mTopics();
     	topic.setPROJDECL_ID(topicId);    
         try {
-            begin();
             getSession().delete(topic);
-            commit();
+            sessionFactory.getCurrentSession().delete(topic);
             return 1;
         } catch (HibernateException e) {
             e.printStackTrace();
-            rollback();
-            close();
             return 0;
-        } finally {
-            flush();
-            close();
         }
     }
 }

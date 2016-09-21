@@ -124,11 +124,9 @@ public class oProjectController extends BaseWeb {
 		   mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
 	   
 	   List<mTopics> topicsList = tProjectService.loadTopicListByStaff(userRole, userCode);
-	   System.out.println(name() + "::topicsList"
-	   		+ ", staffs.sz = " + staffs.size() + ", topicsList.sz = " + topicsList.size());
+	   
 	   for(mTopics p: topicsList){
 		   p.setPROJDECL_User_Code(mStaffCode2Name.get(p.getPROJDECL_User_Code()));
-		   System.out.println(name() + "::topicsList, userName = " + p.getPROJDECL_User_Code());
 	   }
 	   
 	   model.put("topicsList", topicsList);
@@ -152,7 +150,6 @@ public class oProjectController extends BaseWeb {
 	   List<mTopicCategory> topicCategory = tProjectCategoryService.list();
 	   // Get list reportingYear
 	   List<mAcademicYear> topicReportingAcademicDateList = academicYearService.list();
-	   
 	   List<ProjectParticipationRoles> memberRolesList = projectParticipationRolesService.getList();
 	   
 	   // Put data back to view
@@ -174,8 +171,6 @@ public class oProjectController extends BaseWeb {
     */
    @RequestMapping(value="save-a-topic", method=RequestMethod.POST)
    public String saveATopic(@Valid @ModelAttribute("topicFormAdd") mTopicValidation topicValid, BindingResult result,  Map model, HttpSession session) {
-	   System.out.println(name() + "::saveATopic");
-	   
 	   // Get topic's category
 	   List<mTopicCategory> topicCategoryList = tProjectCategoryService.list();
 	   // Get list reportingYear
@@ -186,7 +181,6 @@ public class oProjectController extends BaseWeb {
 	   model.put("topicCategory", topicCategoryList);
 	   model.put("topics", status);
 	   if(result.hasErrors()) {
-		   System.out.println(name() + "::saveATopic hasError ");
 		   return "cp.addATopic";
        }else
        {
@@ -207,9 +201,7 @@ public class oProjectController extends BaseWeb {
     	   
     	   int i_InsertATopic = tProjectService.saveATopic(userCode, topicPubName, topicCategory, topicConVertedHours, topicAutConHours, 
     			   											topicYear, topicBudget, topicReportingAcademicDate, topicMemberRole, topicSponsor, topicApprover, topicStartDate, topicEndDate);
-    	   System.out.println(name() + "::save-a-topic, i_InertATopic = " + i_InsertATopic);
     	   if(i_InsertATopic > 0){
-    		   //model.put("status", "Successfully saved a topic.");
     		   return "redirect:" + this.baseUrl + "/cp/topics.html";
     	   }
            return "cp.addATopic";
@@ -229,23 +221,18 @@ public class oProjectController extends BaseWeb {
 	          return new ModelAndView("cp.generateTopics");
 	     }else
 	     {
-	    	/**
-	    	 * Get list of all Projects (Topics)
-	    	 */
+	    	// Get list of all Projects (Topics)
 			String yearForGenerating = topicValidExcell.getReportingAcademicDate();
 			String currentUserName = session.getAttribute("currentUserName").toString();
 			String currentUserCode = session.getAttribute("currentUserCode").toString();
 		    String userRole = session.getAttribute("currentUserRole").toString();
 		    List<mTopics> topicsList = tProjectService.loadTopicListByYear(userRole, currentUserCode, yearForGenerating);
 		    
-		    /**
-		     * Get list of all Patents
-		     */
+		    // Get list of all Patents
 		    List<mPatents> patentsList = patentService.loadPatentListByYear(userRole, currentUserCode, yearForGenerating);
 		    model.put("patentsList", patentsList);
-		    /**
-		     * Get staff's information
-		     */
+		    
+		    // Get staff's information
 			mStaff staff = staffService.loadStaffByUserCode(currentUserCode);
 			model.put("yearOfPaper", yearForGenerating);
 			if(staff != null){
@@ -257,6 +244,7 @@ public class oProjectController extends BaseWeb {
 			    model.put("staffDepartementName", staff.getDepartment().getDepartment_Name());
 			    model.put("staffDepartementCode", staff.getDepartment().getDepartment_Code());
 			}
+			
 			// return a view which will be resolved by an excel view resolver
 			return new ModelAndView("excelTopicsView", "topicsList", topicsList);
 	     }
@@ -276,6 +264,13 @@ public class oProjectController extends BaseWeb {
        return "cp.generateTopics";
    }
    
+   /**
+    * 
+    * @param model
+    * @param topicId
+    * @param session
+    * @return
+    */
    @RequestMapping("/topicdetail/{id}")
    public String editATopic(ModelMap model, @PathVariable("id") int topicId, HttpSession session) {
 	   
@@ -330,7 +325,6 @@ public class oProjectController extends BaseWeb {
 		   model.put("topicName", topicFormEdit.getTopicName());
 		   model.put("topicConHours", topicFormEdit.getTopicConHours());
 		   model.put("topicAutConHours", topicFormEdit.getTopicAutConHours());
-		   //model.put("topicYear", topicFormEdit.getTopicYear());
 		   model.put("topicYear", "0");
 		   model.put("budget", topicFormEdit.getBudget());
 		   
@@ -357,7 +351,6 @@ public class oProjectController extends BaseWeb {
           
     	  tProjectService.editATopic(userRole, userCode, topicId, topicPubName, topicCategory, topicConVertedHours, topicAutConHours, topicYear, topicBudget, 
     			  						topicReportingAcademicDate, topicMemberRole, topicSponsor, topicApprover, topicStartDate, topicEndDate);
-          //model.put("status", "Successfully edited project");
           return "redirect:" + this.baseUrl + "/cp/topics.html";
       }
    }
@@ -397,10 +390,6 @@ public class oProjectController extends BaseWeb {
 		String userRole = session.getAttribute("currentUserRole").toString();
 		String userCode = session.getAttribute("currentUserCode").toString();
 
-		// Projects project =
-		// threadService.loadAProjectByIdAndUserCode(userRole,userCode,
-		// projectId);
-		//Projects project = threadService.loadProjectsById(80);
 		mStaff staff = staffService.loadStaffByUserCode(userCode);
 		List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
 		List<mPatents> patentsList = patentService.loadPatentListByStaff(userRole, userCode);
@@ -417,7 +406,6 @@ public class oProjectController extends BaseWeb {
 		model.put("projects", status);
 		
 		// Put journal list and topic category to view
-
 		model.put("projectFormEdit", new ProjectsValidation());
 		model.put("projectId", 1);
 
@@ -426,9 +414,6 @@ public class oProjectController extends BaseWeb {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			baos = convertPDFToByteArrayOutputStream(temperotyFilePath+ "\\" + sProjectPDFFileName);
-			// response.setContentType("application/pdf");
-			// response.setHeader("Content-Disposition",
-			// "attachment:filename=report.pdf");
 			OutputStream os = response.getOutputStream();
 			baos.writeTo(os);
 			os.flush();
@@ -481,11 +466,6 @@ public class oProjectController extends BaseWeb {
 	 * @param project
 	 * @throws IOException
 	 */
-
-	public String name(){
-		return "oProjectController";
-	}
-	
 	private void prepareContent(List<mTopics> projects, mStaff staff, List<mPapers> papersList, List<mPatents> patentsList, List<mBooks> booksList) throws IOException {
 		
 		try {
@@ -528,8 +508,6 @@ public class oProjectController extends BaseWeb {
 			{
 				iCounter = 0;
 				for (mPapers mPapers : papersList) {
-					System.out.println(name() + "::prepareContent, paper " + mPapers.getPDECL_PublicationName() + " userCode = " + mPapers.getPDECL_User_Code());
-					
 					iCounter++;
 					staffPapers += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
 					staffPapers += "<td class='col-2'><p class='content'><br />"+mPapers.getPDECL_PublicationName()+"</p></td>";
@@ -543,8 +521,6 @@ public class oProjectController extends BaseWeb {
 			if(booksList != null && booksList.size() > 0){
 				iCounter = 0;
 				for (mBooks books : booksList) {
-					System.out.println(name() + "::prepareContent, book " + books.getBOK_BookName() + ", userCode = " + books.getBOK_UserCode());
-					
 					iCounter++;
 					staffBooks += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
 					staffBooks += "<td class='col-2'><p class='content'><br />"+books.getBOK_BookName()+"</p></td>";
@@ -561,8 +537,6 @@ public class oProjectController extends BaseWeb {
 			{
 				iCounter = 0;
 				for (mPatents patent : patentsList) {
-					System.out.println(name() + "::prepareContent, patent = " + patent.getPAT_Name() + ", userCode = " + patent.getPAT_User_Code());
-							
 					iCounter++;
 					staffPatents += "<tr><td class='col-1'><p class='content'>"+iCounter+"</p></td>";
 					staffPatents += "<td class='col-2'><p class='content'><br />"+patent.getPAT_Name()+"</p></td>";
@@ -573,8 +547,6 @@ public class oProjectController extends BaseWeb {
 			}
 			sTemplateContent = FileUtil.sReplaceAll(sTemplateContent,"___STAFF_PATENTS___", staffPatents);
 			
-			
-			//ProjectParticipationRoles roles = projectParticipationRolesService.loadAProjectParticipationRolesByCode(sCode);
 			/* Projects info */
 			if(projects != null && projects.size() > 0){
 				
