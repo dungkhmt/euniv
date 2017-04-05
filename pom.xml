@@ -283,8 +283,11 @@
 		
 		<dependency>
 		  <groupId>com.opencbls</groupId>
-		  <artifactId>opencbls</artifactId>
+		  <artifactId>xmlworker</artifactId>
 		  <version>0.0.1</version>
+		  <scope>system</scope>
+		  <systemPath>${basedir}/opencbls.jar</systemPath>
+		  
 		</dependency>
 		
 		<!-- JSOUP -->
