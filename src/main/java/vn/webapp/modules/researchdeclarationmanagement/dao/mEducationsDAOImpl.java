@@ -113,7 +113,7 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 			System.out.print(20);
 			newEducation.setEDU_ID(id);
 			NumberFormat nf = new DecimalFormat("000000");
-			newEducation.setEDU_UserCode("EDU"+newEducation.getEDU_UserCode()+nf.format(id));
+			newEducation.setEDU_Code("EDU"+newEducation.getEDU_UserCode()+nf.format(id));
 			return newEducation;
 		}catch(HibernateException e){
 			e.printStackTrace();
