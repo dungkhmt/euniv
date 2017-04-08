@@ -17,7 +17,7 @@
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">Danh sách đợt bảo vệ</h1>
+			<h1 class="page-header">Danh sách quá trình đào tạo</h1>
 			<p>
 				<button type="button" class="btn btn-primary btn-xs add" onclick="newEducation()"  data-toggle="modal" data-target="#edit-education">Thêm mới</button>
 			</p>
@@ -50,7 +50,7 @@
 		
 		<div class="col-lg-12">
 			<div class="panel panel-default">
-				<div class="panel-heading"><h4>Danh sách đợt bảo vệ</h4></div>
+				<div class="panel-heading"><h4>Danh sách quá trình đào tạo</h4></div>
 					
 				<!-- /.panel-heading -->
 				<div class="panel-body">
