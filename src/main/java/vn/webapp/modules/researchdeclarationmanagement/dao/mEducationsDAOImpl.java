@@ -7,11 +7,14 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import vn.webapp.dao.BaseDao;
+import vn.webapp.modules.researchdeclarationmanagement.model.field;
 import vn.webapp.modules.researchdeclarationmanagement.model.mEducations;
 
 @Repository("mEducationDAO")
@@ -47,15 +50,27 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public List<mEducations> getListByField(String[] field, String[] value) {
+	public List<mEducations> getListByField(List<field> fields) {
 		try{
 			begin();
 			Criteria criteria = getSession().createCriteria(mEducations.class);
-			for(int i = 0; i < field.length; ++i) {
-				criteria.add(Restrictions.eq(field[i], value[i]));
+			System.out.print(9);
+			Junction conditionGroup = Restrictions.disjunction();
+			for(field field: fields) {
+				List<String> values = field.getValues();
+				for(String value: values) {
+					conditionGroup.add(Restrictions.eq(field.getFieldName(), value));
+				}
 			}
+			criteria.add(conditionGroup);
+			System.out.print(10);
 			List<mEducations> list= criteria.list();
+			for(int i = 0 ; i < list.size(); ++i) {
+				System.out.print(list.get(i).getEDU_UserCode());
+			}
+			System.out.print(11);
 			commit();
+			System.out.print(12);
 			return list;
 		} catch (HibernateException e){
 			e.printStackTrace();
@@ -91,8 +106,11 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		try{
 			begin();
 			int id = 0;
-			id = (int)getSession().save(newEducation);
+			System.out.print(18);
+			id = (Integer)getSession().save(newEducation);
+			System.out.print(19);
 			commit();
+			System.out.print(20);
 			newEducation.setEDU_ID(id);
 			NumberFormat nf = new DecimalFormat("000000");
 			newEducation.setEDU_UserCode("EDU"+newEducation.getEDU_UserCode()+nf.format(id));
@@ -110,16 +128,19 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 	@Override
 	public Boolean changeEducation(int EDU_ID, String EDU_Level,
 			String EDU_Institution, String EDU_Major, String EDU_CompleteDate) {
-		mEducations education = new mEducations();
-		education.setEDU_ID(EDU_ID);
-		education.setEDU_Level(EDU_Level);
-		education.setEDU_Institution(EDU_Institution);
-		education.setEDU_Major(EDU_Major);
-		education.setEDU_CompleteDate(EDU_CompleteDate);
+		
 		try {
            begin();
-           getSession().merge(education);
+           mEducations education = (mEducations) getSession().get(mEducations.class, EDU_ID);
+           	education.setEDU_Level(EDU_Level);
+	   		education.setEDU_Institution(EDU_Institution);
+	   		education.setEDU_Major(EDU_Major);
+	   		education.setEDU_CompleteDate(EDU_CompleteDate);
+           System.out.print(EDU_ID);
+           getSession().update(education);
+           System.out.print(13);
            commit();
+           System.out.print(14);
            return true;
         } catch (HibernateException e) {
             e.printStackTrace();

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.webapp.modules.researchdeclarationmanagement.dao.mEducationsDAO;
+import vn.webapp.modules.researchdeclarationmanagement.model.field;
 import vn.webapp.modules.researchdeclarationmanagement.model.mEducations;
 
 @Service("mEducationService")
@@ -20,8 +21,8 @@ public class mEducationServiceImpl implements mEducationService {
 	}
 
 	@Override
-	public List<mEducations> getListByField(String[] field, String[] value) {
-		return mEducationsDAO.getListByField(field, value);
+	public List<mEducations> getListByField(List<field> fields) {
+		return mEducationsDAO.getListByField(fields);
 	}
 
 	@Override

@@ -139,5 +139,18 @@ public class mFuncsPermissionServiceImpl implements mFuncsPermissionService {
 		}
 		return 0;
 	}
+	
+	/***
+	 * 
+	 */
+	@Override
+	public Boolean checkAccess(String sUserCode, String sFuncCode) {
+		mFuncsPermission mFuncsPermission =  funcsPermissionDAO.loadFunctionsPermissionByCodeAndUser(sFuncCode, sUserCode);
+		if(mFuncsPermission==null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 }

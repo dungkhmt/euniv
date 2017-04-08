@@ -52,4 +52,6 @@ public interface mFuncsPermissionService {
 	 */
 	public int saveFunctionsPermission(String sFuncCode, String sUserCode);
    
+	
+	public Boolean checkAccess(String sUserCode, String sFuncCode);
 }
