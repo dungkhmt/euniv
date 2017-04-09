@@ -27,6 +27,7 @@ import com.google.gson.JsonParser;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import vn.webapp.controller.BaseWeb;
 import vn.webapp.modules.researchdeclarationmanagement.model.mBooks;
 import vn.webapp.modules.researchdeclarationmanagement.model.mEducations;
 import vn.webapp.modules.researchdeclarationmanagement.model.field;
@@ -37,7 +38,7 @@ import vn.webapp.modules.usermanagement.service.mStaffService;
 
 @Controller("mEducation")
 @RequestMapping(value = {"/cp"})
-public class mEducationController {
+public class mEducationController extends BaseWeb {
 	@Autowired
 	private mEducationService mEducationService;
 	
