@@ -32,7 +32,7 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public List<mStaff> listStaffs(){
     	try {
-    		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
+    		Criteria criteria = getSession().createCriteria(mStaff.class);
             criteria.setFirstResult(0);
             criteria.addOrder(Order.asc("Staff_Name"));
             List<mStaff> staff = criteria.list();
@@ -51,7 +51,7 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public List<mStaff> listStaffsByFalcuty(String staffFaculty){
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
+            Criteria criteria = getSession().createCriteria(mStaff.class);
             criteria.setFirstResult(0);
             criteria.add(Restrictions.eq("Staff_Faculty_Code", staffFaculty));
             criteria.addOrder(Order.asc("Staff_Name"));
@@ -71,7 +71,7 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public List<mStaff> listStaffsByDepartment(String departmentCode){
     	try {
-    		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
+    		Criteria criteria = getSession().createCriteria(mStaff.class);
             criteria.setFirstResult(0);
             criteria.add(Restrictions.eq("Staff_Department_Code", departmentCode));
             criteria.addOrder(Order.asc("Staff_Name"));
@@ -91,7 +91,7 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public List<mStaff> listStaffsByFalcutyAndDepartment(String staffFaculty, String departmentCode){
     	try {
-    		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
+    		Criteria criteria = getSession().createCriteria(mStaff.class);
             criteria.setFirstResult(0);
             if(null != staffFaculty && !staffFaculty.equals("")){
             	criteria.add(Restrictions.eq("Staff_Faculty_Code", staffFaculty));
@@ -116,7 +116,7 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public mStaff getByUserCode(String userCode) {
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
+            Criteria criteria = getSession().createCriteria(mStaff.class);
             criteria.add(Restrictions.eq("Staff_User_Code", userCode));
             mStaff staff = (mStaff) criteria.uniqueResult();
             return staff;
@@ -134,7 +134,7 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
     @Override
     public mStaff getStaffById(int staffId){
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mStaff.class);
+            Criteria criteria = getSession().createCriteria(mStaff.class);
             criteria.add(Restrictions.eq("Staff_ID", staffId));
             mStaff staff = (mStaff) criteria.uniqueResult();
             return staff;

@@ -42,7 +42,7 @@ public class mFuncsPermissionDAOImpl extends BaseDao implements
 	public List<mFuncsPermission> loadFunctionsPermissionByUserList(
 			String sUserCode) {
 		try {
-			Criteria criteria = sessionFactory.getCurrentSession()
+			Criteria criteria = getSession()
 					.createCriteria(mFuncsPermission.class);
 			criteria.add(Restrictions.eq("USERFUNC_USERCODE", sUserCode));
 			criteria.addOrder(Order.asc("USERFUNC_ID"));
@@ -64,7 +64,7 @@ public class mFuncsPermissionDAOImpl extends BaseDao implements
 	public mFuncsPermission loadFunctionsPermissionByCodeAndUser(
 			String sFunctionCode, String sUserCode) {
 		try {
-			Criteria criteria = sessionFactory.getCurrentSession()
+			Criteria criteria = getSession()
 					.createCriteria(mFuncsPermission.class);
 			criteria.add(Restrictions.eq("USERFUNC_USERCODE", sUserCode));
 			criteria.add(Restrictions.eq("USERFUNC_FUNCCODE", sFunctionCode));

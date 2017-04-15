@@ -1,0 +1,38 @@
+#editEducation {
+	color: green;
+	cursor: pointer;
+	display: initial;
+	padding: 1px;
+}
+
+
+#changeEducation {
+	display: block;
+}
+
+#deleteEducation {
+	display: initial;
+	padding: 1px;
+	color: red; 
+	cursor: pointer;
+}
+
+.inline-box {
+	display: -webkit-box;
+}
+
+.th {
+	width: 30%;
+}
+
+.container-fluid > .row {
+	padding: 3px;
+}
+
+.container-fluid > .row > input {
+    width: 70%;
+}
+
+#edit-education > .modal-dialog > .modal-content {
+	margin-top: 15%;
+}

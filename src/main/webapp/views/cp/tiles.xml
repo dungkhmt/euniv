@@ -612,5 +612,11 @@
         <put-attribute name="title" value="Show list papers" />                                 
         <put-attribute name="content" value="/views/cp/books/list-books-summary.jsp" />
     </definition>
+    
+    <!--  Educations Modules -->
+    <definition name="cp.manageEducations" extends="layout.base">
+        <put-attribute name="title" value="Manage education" />                                 
+        <put-attribute name="content" value="/views/cp/education/manageEducations.jsp" />
+    </definition>
 
 </tiles-definitions>
