@@ -38,6 +38,7 @@
 									<th>Tên</th>
 									<th>Mã đợt gọi đề tài</th>
 									<th>Thời gian</th>
+									<th>Trạng thái</th>
 									<th></th>
 								</tr>
 							</thead>
@@ -47,6 +48,7 @@
 										<td><c:out value="${projectCall.PROJCALL_NAME}"/></td>
 										<td><c:out value="${projectCall.PROJCALL_CODE}"/></td>
 										<td><c:out value="${projectCall.PROJCALL_DATE}"/></td>
+										<td><c:out value="${projectCall.PROJCALL_STATUS}"/></td>
 										<td class="center">
 											<button type="button" onclick="v_fViewDetailAProjectCall(${projectCall.PROJCALL_ID});" class="btn btn-info btn-xs" title="Edit">Chi tiết</button>
 											<br/>

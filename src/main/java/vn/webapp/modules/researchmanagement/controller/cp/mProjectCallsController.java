@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,10 +36,12 @@ import vn.webapp.modules.researchdeclarationmanagement.service.mPatentService;
 import vn.webapp.modules.researchdeclarationmanagement.service.tProjectCategoryService;
 import vn.webapp.modules.researchdeclarationmanagement.service.tProjectService;
 import vn.webapp.modules.researchmanagement.model.mProducts;
+import vn.webapp.modules.researchmanagement.model.mProjectCallStatus;
 import vn.webapp.modules.researchmanagement.model.mProjectCalls;
 import vn.webapp.modules.researchmanagement.model.mProjectStatus;
 import vn.webapp.modules.researchmanagement.model.mThreads;
 import vn.webapp.modules.researchmanagement.service.mProductService;
+import vn.webapp.modules.researchmanagement.service.mProjectCallStatusService;
 import vn.webapp.modules.researchmanagement.service.mProjectCallsService;
 import vn.webapp.modules.researchmanagement.service.mProjectStatusService;
 import vn.webapp.modules.researchmanagement.service.nProjectService;
@@ -82,8 +86,13 @@ public class mProjectCallsController extends BaseWeb {
 	@Autowired
 	private mProjectStatusService projectStatusService;
 
+	@Autowired
+	private mProjectCallStatusService projectCallStatusService;
+	
 	static final String status = "active";
 
+	static final Logger log = Logger.getLogger(mProjectCallsController.class);
+	
 	/**
 	 * Show list all threads
 	 * 
@@ -92,8 +101,22 @@ public class mProjectCallsController extends BaseWeb {
 	 */
 	@RequestMapping(value = "/project-call-open", method = RequestMethod.GET)
 	public String projectCallsList(ModelMap model, HttpSession session) {
+		String userCode = (String)session.getAttribute("currentUserCode");
+		log.info(userCode + " : load all project calls");
+		System.out.println("mProjectController::projectCallsList, log4j(" + userCode + " : load all project calls)");
+		
 		// Get list of project calls
 		List<mProjectCalls> projectCallsList = projectCallsService.loadProjectCallsList();
+		
+		List<mProjectCallStatus> statuses = projectCallStatusService.loadProjectCallStatusList();
+		HashMap<String, String> mCode2Name = new HashMap<String, String>();
+		for(mProjectCallStatus pcs: statuses){
+			mCode2Name.put(pcs.getPROJCALLSTAT_Code(), pcs.getPROJCALLSTAT_Name());
+		}
+		
+		for(mProjectCalls pc: projectCallsList){
+			pc.setPROJCALL_STATUS(mCode2Name.get(pc.getPROJCALL_STATUS()));
+		}
 		
 		// Put data back to view
 		model.put("projectCallsList", projectCallsList);
@@ -187,10 +210,13 @@ public class mProjectCallsController extends BaseWeb {
 		// Get topic's category
 		List<mTopicCategory> topicCategory = tProjectCategoryService.list();
 		mProjectCalls projectCalls = projectCallsService.loadAProjectCallById(iProjectCallId);
+		List<mProjectCallStatus> project_call_statuses = projectCallStatusService.loadProjectCallStatusList();
 		
 		// Put data back to view
 		model.put("topicCategory", topicCategory);
 		model.put("projectcalls", status);
+		model.put("projectCallStatus", project_call_statuses);
+		model.put("currentProjectCallStatusCode", projectCalls.getPROJCALL_STATUS());
 		if (projectCalls != null) {
 			String sProjectCallDate = DateUtil.s_fConvertDateFormatType2(projectCalls.getPROJCALL_DATE());
 			// Put journal list and topic category to view
@@ -249,7 +275,22 @@ public class mProjectCallsController extends BaseWeb {
 				 model.put("err", "Đợt gọi đề tài đã tồn tại");
 			 }
 			 
-			 return "cp.editAProjectCall";
+			 
+			 List<mProjectCalls> projectCalls = projectCallsService.loadProjectCallsList();
+			 List<mProjectCallStatus> statuses = projectCallStatusService.loadProjectCallStatusList();
+				HashMap<String, String> mCode2Name = new HashMap<String, String>();
+				for(mProjectCallStatus pcs: statuses){
+					mCode2Name.put(pcs.getPROJCALLSTAT_Code(), pcs.getPROJCALLSTAT_Name());
+				}
+				
+				for(mProjectCalls pc: projectCalls){
+					pc.setPROJCALL_STATUS(mCode2Name.get(pc.getPROJCALL_STATUS()));
+				}
+					 
+			 model.put("projectCallsList", projectCalls);
+			 model.put("projectcalls", status);
+					 
+			 return "cp.projectcalls";//"cp.editAProjectCall";
 		 }
 	 }
 	

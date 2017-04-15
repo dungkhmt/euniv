@@ -20,12 +20,19 @@ public class mFunction implements Serializable{
     private int FUNC_ID;
     private String FUNC_CODE;
     private String FUNC_NAME;
+    private int		FUNC_INDEX;
     private String FUNC_URL;
     private int FUNC_PARENTID;
     private String FUNC_TITLE_CLASS;
     private String FUNC_SELECTED_CLASS;
     private int FUNC_HAS_CHILDREN;
     
+	public int getFUNC_INDEX() {
+		return FUNC_INDEX;
+	}
+	public void setFUNC_INDEX(int fUNC_INDEX) {
+		FUNC_INDEX = fUNC_INDEX;
+	}
 	public int getFUNC_ID() {
 		return FUNC_ID;
 	}

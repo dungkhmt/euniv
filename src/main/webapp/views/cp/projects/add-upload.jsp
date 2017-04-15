@@ -222,12 +222,20 @@
 	                           	 </div>
 	                           	 <div class="form-group">
 	                                <label for="memberWorkingDays">Số ngày công*</label>
-	                                <input class="form-control" data-validation="custom" data-validation-optional="true" data-validation-regexp="^[0-9]*[1-9][0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên" id="memberWorkingDays" value="" placeholder="Working days" />
+	                                <!-- 
+	                                <input class="form-control" data-validation="custom" data-validation-optional="true" data-validation-regexp="^[0-9]*[1-9][0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên" id="memberWorkingDays" value="0" placeholder="Working days" />
+	                                 -->
+	                                <input class="form-control" data-validation="custom" data-validation-optional="true" data-validation-regexp="^[0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên" id="memberWorkingDays" value="0" placeholder="Working days" />
+	                                
 	                                <div id="error-workingdays"></div>
 	                             </div>
 	                             <div class="form-group">
 	                                <label for="taskBudget">Thành tiền*<i class="hint-text">(VNĐ - chỉ nhập các chữ số, không nhập dấu chấm, phảy)</i></label>
-	                                <input class="form-control" data-validation="custom" data-validation-optional="true" data-validation-regexp="^[0-9]*[1-9][0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên" id="taskBudget" value="" placeholder="Fee" />
+	                                <!-- 
+	                                <input class="form-control" data-validation="custom" data-validation-optional="true" data-validation-regexp="^[0-9]*[1-9][0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên" id="taskBudget" value="0" placeholder="Fee" />
+	                                 -->
+	                                <input class="form-control" data-validation="custom" data-validation-optional="true" data-validation-regexp="^[0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên" id="taskBudget" value="0" placeholder="Fee" />
+	                                
 	                                <div id="error-budget"></div>
 	                             </div>
 	                        </div>
@@ -286,7 +294,12 @@
                                	 
 			             	<div class="form-group">
                             	<label for="budgetMaterial">Kinh phí vật tư, vật liệu,… <i class="hint-text">(VNĐ - chỉ nhập các chữ số, không nhập dấu chấm, phảy)</i></label>
-                            	<form:input path="budgetMaterial" value="" data-validation="custom" data-validation-optional="true" data-validation-regexp="^[0-9]*[1-9][0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên"  class="form-control" name="budgetMaterial" placeholder="Other Fees"></form:input>
+                            	<!-- 
+                            	<form:input path="budgetMaterial" value="0" data-validation="custom" data-validation-optional="true" data-validation-regexp="[0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên"  class="form-control" name="budgetMaterial" placeholder="Other Fees"></form:input>
+								 -->
+								<form:input path="budgetMaterial" value="0" data-validation="custom" data-validation-optional="true" data-validation-regexp="^[0-9]*$" data-validation-error-msg="Giá trị phải là số nguyên"  class="form-control" name="budgetMaterial" placeholder="Other Fees"></form:input>
+								
+								
 								<form:errors path="budgetMaterial" class="alert-danger"></form:errors>
 		                    </div>
 			             	<div class="form-group">

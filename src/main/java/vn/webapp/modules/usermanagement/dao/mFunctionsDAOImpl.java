@@ -10,6 +10,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -62,6 +63,7 @@ public class mFunctionsDAOImpl extends BaseDao implements mFunctionsDAO{
             begin();
             Criteria criteria = getSession().createCriteria(mFunction.class);
             criteria.add(Restrictions.eq("FUNC_PARENTID", 0));
+            criteria.addOrder(Order.asc("FUNC_INDEX"));
             List<mFunction> funcsList = criteria.list();
             commit();
             return funcsList;
@@ -87,6 +89,7 @@ public class mFunctionsDAOImpl extends BaseDao implements mFunctionsDAO{
             begin();
             Criteria criteria = getSession().createCriteria(mFunction.class);
             criteria.add(Restrictions.gt("FUNC_PARENTID", 0));
+            criteria.addOrder(Order.asc("FUNC_INDEX"));
             List<mFunction> funcsList = criteria.list();
             commit();
             return funcsList;

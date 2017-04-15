@@ -14,6 +14,11 @@
     </definition>  
     
     <!-- 404 -->
+    <definition name="cp.Error" extends="layout.errorBase">
+        <put-attribute name="title" value="" />                                 
+        <put-attribute name="content" value="/views/cp/widget/error.jsp" />
+    </definition>
+
     <definition name="cp.notFound404" extends="layout.errorBase">
         <put-attribute name="title" value="404 Not found." />                                 
         <put-attribute name="content" value="/views/cp/404.jsp" />

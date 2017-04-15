@@ -28,6 +28,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -155,6 +157,7 @@ public class nProjectController extends BaseWeb {
 	 */
 	private static final int BUFFER_SIZE = 4096;
 
+	static final Logger log = Logger.getLogger(nProjectController.class);
 	/**
 	 * Show list all threads
 	 * 
@@ -1090,6 +1093,11 @@ public class nProjectController extends BaseWeb {
 			HttpServletRequest request,
 			@Valid @ModelAttribute("projectsAddForm") ProjectsValidation projectValid,
 			BindingResult result, Map model, HttpSession session) {
+		
+		String userCode = (String)session.getAttribute("currentUserCode");
+		
+		
+		
 		// Get list of project calls
 		List<mProjectCalls> projectCallsList = projectCallsService
 				.loadProjectCallsList();
@@ -1119,14 +1127,20 @@ public class nProjectController extends BaseWeb {
 			// Prepare data for inserting DB
 			String userRole = session.getAttribute("currentUserRole")
 					.toString();
-			String userCode = session.getAttribute("currentUserCode")
-					.toString();
+			//String userCode = session.getAttribute("currentUserCode").toString();
+			
 			String projectCallCode = projectValid.getProjectCallCode();
 			String projectName = projectValid.getProjectName();
 			String startDate = projectValid.getProjectStartDate();
 			String endDate = projectValid.getProjectEndDate();
-			int budgetMaterial = (!"".equals(projectValid.getBudgetMaterial())) ? Integer
+			int budgetMaterial;
+			try{
+				budgetMaterial= (!"".equals(projectValid.getBudgetMaterial())) ? Integer
 					.parseInt(projectValid.getBudgetMaterial()) : 0;
+			}catch(Exception ex){
+				model.put("err", "Kinh phí vật tư, vật liệu = " + projectValid.getBudgetMaterial() + " --> KHÔNG HỢP LỆ");
+				return "cp.Error";
+			}
 			String facultyAdd = projectValid.getFalcutyAddress();
 			String projectContent = projectValid.getProjectContent();
 			String projectResult = projectValid.getProjectResult();
@@ -1139,6 +1153,9 @@ public class nProjectController extends BaseWeb {
 			String projectResearchFieldCode = ""; // This field in the table
 													// tplprojects will be empty
 
+			log.info(userCode + " save a project: " + projectCallCode + "," + projectName + "," + startDate + "," + endDate);
+			
+			
 			mProjectCalls selectedProjectCall = projectCallsService
 					.loadAProjectCallByCode(projectCallCode);
 			if ("OPEN_FOR_SUBMISSION".equals(selectedProjectCall
@@ -2535,9 +2552,15 @@ public class nProjectController extends BaseWeb {
 			String projectContent = projectFormEdit.getProjectContent();
 			String projectMotivation = projectFormEdit.getProjectMotivation();
 			String projectResult = projectFormEdit.getProjectResult();
-			int budgetMaterial = (!"".equals(projectFormEdit
+			int budgetMaterial;
+			try{
+			budgetMaterial = (!"".equals(projectFormEdit
 					.getBudgetMaterial())) ? Integer.parseInt(projectFormEdit
 					.getBudgetMaterial()) : 0;
+			}catch(Exception ex){
+				model.put("err", "Kinh phí vật tư, vật liệu = " + projectFormEdit.getBudgetMaterial() + " --> KHÔNG HỢP LỆ");
+				return "cp.Error";
+			}
 			String projectCode = projectCallCode + projectEditId;
 			String startDate = projectFormEdit.getProjectStartDate();
 			String endDate = projectFormEdit.getProjectEndDate();
