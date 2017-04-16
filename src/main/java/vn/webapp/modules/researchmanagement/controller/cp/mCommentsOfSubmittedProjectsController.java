@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -137,6 +138,8 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 
 	static final String status = "active";
 	 
+	static Logger log = Logger.getLogger(mCommentsOfSubmittedProjectsController.class);
+	
 	/**
 	 * 
 	 * @param model
@@ -285,6 +288,8 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		String userCode = session.getAttribute("currentUserCode").toString();
 		String userRole = session.getAttribute("currentUserRole").toString();
 		
+		log.info(userCode);
+		
 		//List of staff juries of submitted projects whose reviewer is the current user
 		List<mStaffJuryOfSubmittedProject> staffJuryOfSubmittedProjectList = staffJuryOfSubmittedProjectService.loadListStaffJuryOfSubmittedProjectByStaffCode(userCode);
 		
@@ -311,7 +316,11 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 	public String addADetailCommentProject(ModelMap model, @PathVariable("id") int projectId, HttpSession session) {
 		String userCode = session.getAttribute("currentUserCode").toString();
 		String userRole = session.getAttribute("currentUserRole").toString(); 
+		log.info(userCode);
+		
 		Projects project = projectService.loadAProjectByIdAndUserCode("ROLE_ADMIN", userCode, projectId);
+		
+		
 		DetailCommentSubmittedProjects detailCommentSubmittedProjects = new DetailCommentSubmittedProjects();
 		if(project != null)
 		{

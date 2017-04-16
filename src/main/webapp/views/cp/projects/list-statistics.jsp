@@ -27,7 +27,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">Danh sách đợt gọi đề tài</div>
+				<div class="panel-heading">Danh sách đề tài</div>
 				<!-- /.panel-heading -->
 				<div class="panel-body">
 				
@@ -68,7 +68,7 @@
 									<tr class="gradeX">
 										<c:set var="count" value="${count + 1}" scope="page"/> 
 										<td><c:out value="${count}"/></td>
-										<td><c:out value="${project.PROJ_Code}"/></td>
+										<td><c:out value="${project.PROJ_PublicCode}"/></td>
 										<td><c:out value="${project.PROJ_Name}"/></td>
 										<td><c:out value="${project.PROJ_User_Code}"/></td>
 										<td><c:out value="${project.PROJ_PRJCall_Code}"/></td>

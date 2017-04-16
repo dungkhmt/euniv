@@ -308,6 +308,8 @@ public class nProjectController extends BaseWeb {
 		String userRole = session.getAttribute("currentUserRole").toString();
 		String facultyCode = session.getAttribute("facultyCode").toString();
 
+		log.info(userCode + "list projects");
+		
 		System.out
 				.println(name()
 						+ "::getListProjectsStatisticsParams, userCode = "
@@ -369,8 +371,11 @@ public class nProjectController extends BaseWeb {
 			HttpSession session,
 			HttpServletRequest request,
 			@Valid @ModelAttribute("threadExcellForm") mThreadExcellValidation threadExcellForm) {
+		
 		String userCode = session.getAttribute("currentUserCode").toString();
 		String userRole = session.getAttribute("currentUserRole").toString();
+		
+		
 		String projectCallCode = (threadExcellForm.getThreadYear() != null) ? threadExcellForm
 				.getThreadYear() : "";
 		String statusCode = (threadExcellForm.getThreadStatus() != null) ? threadExcellForm
@@ -393,6 +398,8 @@ public class nProjectController extends BaseWeb {
 		System.out.println(name() + "::generateProjectCodes staffCode : "
 				+ staffCode);
 
+		log.info(userCode + " generate codes for projects");
+		
 		threadService.generateProjectCodes(projectCallCode);
 
 		List<mStaff> staffs = staffService.listStaffs();
@@ -488,6 +495,7 @@ public class nProjectController extends BaseWeb {
 			HttpSession session,
 			HttpServletRequest request,
 			@Valid @ModelAttribute("threadExcellForm") mThreadExcellValidation threadExcellForm) {
+		
 		String userCode = session.getAttribute("currentUserCode").toString();
 		String userRole = session.getAttribute("currentUserRole").toString();
 		String projectCallCode = (threadExcellForm.getThreadYear() != null) ? threadExcellForm
@@ -501,6 +509,11 @@ public class nProjectController extends BaseWeb {
 		String staffCode = (threadExcellForm.getThreadStaff() != null) ? threadExcellForm
 				.getThreadStaff() : "";
 
+		log.info(userCode + " : list projects for statistics, projetcCallCode = " + projectCallCode + ","
+				+ "statusCode = " + statusCode + ", facultyCode = " + facultyCode + ", departmentCode = " + departmentCode + 
+				", staffCode = " + staffCode);
+		
+		
 		System.out.println(name()
 				+ "::getListProjectsStatistics projectCallCode : "
 				+ projectCallCode);
@@ -582,7 +595,9 @@ public class nProjectController extends BaseWeb {
 
 		List<mThreads> allProjectsList = threadService.listAll();// threadService.loadProjectsListByStaff(userRole,
 																	// userCode);
-
+		
+		
+		
 		System.out.print(name()
 				+ "::getListProjectsStatistics, setProjectCallCodes = ");
 		for (String code : setProjectCallCode)
@@ -1256,6 +1271,9 @@ public class nProjectController extends BaseWeb {
 								projectCategory, projectResearchFieldCode,
 								paperSourceUploadFileSrc,
 								projectResearchFieldCodeList);
+						
+						log.info(userCode + "," + userRole + ", save a project(" + projectCallCode + ","
+								+ projectName + "," + budgetMaterial + "," + totalBudget);
 						if (i_InsertAProject > 0) {
 							model.put("status", "Thêm mới thành công!");
 							projectCode = projectCallCode + i_InsertAProject;

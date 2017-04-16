@@ -19,6 +19,7 @@ public class mThreads implements Serializable{
     @GeneratedValue
     private int PROJ_ID;
     private String PROJ_Code;
+    private String PROJ_PublicCode;
     private String PROJ_AcaYear_Code;
     private String PROJ_Name;
     private String PROJ_ProjCat_Code;
@@ -47,7 +48,16 @@ public class mThreads implements Serializable{
     private int PROJ_BudgetMaterialChanged;
     private String PROJ_ResearchFieldCode;
     
-    public String getPROJ_ResearchFieldCode() {
+    
+    public String getPROJ_PublicCode() {
+		return PROJ_PublicCode;
+	}
+
+	public void setPROJ_PublicCode(String pROJ_PublicCode) {
+		PROJ_PublicCode = pROJ_PublicCode;
+	}
+
+	public String getPROJ_ResearchFieldCode() {
 		return PROJ_ResearchFieldCode;
 	}
 

@@ -10,6 +10,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tbljuryresearchprojects")
 
+/*
+ * represents the jury for evaluating submitted project for each project-call
+ */
 public class mJuryResearchProject implements Serializable {
 	@Id
     @GeneratedValue

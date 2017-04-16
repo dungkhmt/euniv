@@ -21,6 +21,7 @@ public class Projects implements Serializable{
     @GeneratedValue
     private int PROJ_ID;
     private String PROJ_Code;
+    private String PROJ_PublicCode;
     private String PROJ_AcaYear_Code;
     private String PROJ_Name;
     private String PROJ_ProjCat_Code;
@@ -50,7 +51,15 @@ public class Projects implements Serializable{
     private String PROJ_ResearchFieldCode;// ma linh vuc
     
     
-    public String getPROJ_ResearchFieldCode() {
+    public String getPROJ_PublicCode() {
+		return PROJ_PublicCode;
+	}
+
+	public void setPROJ_PublicCode(String pROJ_PublicCode) {
+		PROJ_PublicCode = pROJ_PublicCode;
+	}
+
+	public String getPROJ_ResearchFieldCode() {
 		return PROJ_ResearchFieldCode;
 	}
 

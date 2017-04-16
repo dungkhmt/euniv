@@ -1,5 +1,6 @@
 package vn.webapp.modules.researchmanagement.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import vn.webapp.modules.researchmanagement.dao.mJuryResearchProjectDAO;
 import vn.webapp.modules.researchmanagement.model.mJuryResearchProject;
+import vn.webapp.modules.researchmanagement.model.mProjectCalls;
 
 @Service("mJuryResearchProjectService")
 public class mJuryResearchProjectServiceImpl implements
@@ -14,6 +16,8 @@ public class mJuryResearchProjectServiceImpl implements
 
 	@Autowired
 	private mJuryResearchProjectDAO juryResearchProjectDAO;
+	@Autowired
+	private mProjectCallsService projectCallService;
 	
 	public mJuryResearchProject listAJuryByCode(String juryCode){
 		return juryResearchProjectDAO.listAJuryByCode(juryCode);
@@ -33,7 +37,6 @@ public class mJuryResearchProjectServiceImpl implements
 		// TODO Auto-generated method stub
 		return juryResearchProjectDAO.listAllJuries();
 	}
-
 	@Override
 	public int saveAJury(mJuryResearchProject jury) {
 		// TODO Auto-generated method stub

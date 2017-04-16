@@ -16,6 +16,8 @@ public interface nProjectService {
 	 * @return
 	 */
 	
+	public List<Projects> getSubmittedProjects(String projectCallCode, String facultyCode);
+	
 	public int saveAThread(mThreads thread); 
 	
 	public List<mThreads> loadThreadsListByStaff(String userRole, String userCode);

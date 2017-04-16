@@ -34,7 +34,7 @@
 								<tr>
 									<th>STT</th>
 									<th>Tên đề tài</th>
-									<th>Edit</th>
+									<th>""</th>
 								</tr>
 							</thead>
 							<tbody>

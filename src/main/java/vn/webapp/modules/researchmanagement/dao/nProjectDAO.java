@@ -14,6 +14,9 @@ public interface nProjectDAO {
 	 * @param userCode
 	 * @return
 	 */
+	
+	public List<Projects> getSubmittedProjects(String projectCallCode, String facultyCode);
+	
 	public List<mThreads> loadThreadsListByStaff(String userRole, String userCode);
 	
 	/**
