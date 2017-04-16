@@ -1547,7 +1547,11 @@ public class nProjectController extends BaseWeb {
 		SimpleDateFormat dateformatyyyyMMdd = new SimpleDateFormat(
 				"HHmmssddMMyyyy");
 		String sCurrentDate = dateformatyyyyMMdd.format(currentDate);
-		return "thuyetminh-" + sCurrentDate + filename;
+		String[] s = filename.split(".");
+		String ext = "";
+		if(s.length >= 2) ext = s[s.length-1];
+		System.out.println(name() + "::establishFileNameStoreDataBase, filename = " + filename + ", s.length = " + s.length + ", ext = " + ext);
+		return "thuyetminh-" + sCurrentDate + "." + ext;//filename;
 
 	}
 
@@ -1730,7 +1734,7 @@ public class nProjectController extends BaseWeb {
 							// fileName = "thuyetminh-"+sCurrentDate+fileName;
 							// String fullfilename = dir.getAbsolutePath()+
 							// File.separator + fileName;
-
+							
 							fileName = establishFileNameStoredDataBase(fileName);
 							String fullfilename = establishFullFileNameForUpload(
 									fileName, userCode, request);
