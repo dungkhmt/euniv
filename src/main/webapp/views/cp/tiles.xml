@@ -327,6 +327,10 @@
         <put-attribute name="title" value="Show list projects" />                                 
         <put-attribute name="content" value="/views/cp/CommentsOfSubmittedProjects/list-statistics-params.jsp" />
     </definition>
+    <definition name="cp.projectsListCommentsStatisiticsParamsForSummarize" extends="layout.base">
+        <put-attribute name="title" value="Show list projects" />                                 
+        <put-attribute name="content" value="/views/cp/CommentsOfSubmittedProjects/list-statistics-params-for-summarize.jsp" />
+    </definition>
 
     <definition name="cp.addAProject" extends="layout.base">
         <put-attribute name="title" value="Create a project" />    

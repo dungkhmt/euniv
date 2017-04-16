@@ -16,7 +16,7 @@
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">Chọn tiêu chí thống kê</h1>
+			<h1 class="page-header">Tiêu chí lọc: Kết quả đánh giá, phản biện thuyết minh đề tài</h1>
 			<p>
 				<!-- <button type="button" class="btn btn-primary btn-xs gen">Kết xuất danh sách</button> -->
 			</p>

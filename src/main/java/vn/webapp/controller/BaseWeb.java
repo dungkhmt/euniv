@@ -22,6 +22,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import vn.webapp.modules.researchmanagement.model.mProjectStatus;
+import vn.webapp.modules.researchmanagement.service.mProjectStatusService;
 import vn.webapp.modules.usermanagement.model.mDepartment;
 import vn.webapp.modules.usermanagement.model.mEditFunctions;
 import vn.webapp.modules.usermanagement.model.mFaculty;
@@ -56,6 +58,9 @@ public class BaseWeb {
 	public static List<mDepartment> glb_departments = null;
 	public static HashMap<String, mDepartment> mCode2Department = null;
 
+	public static List<mProjectStatus> glb_projectStatus = null;
+	public static HashMap<String, mProjectStatus> mCode2ProjectStatus = null;
+	
 	public static final String PROJECT_ROOT_DIR = "C:/euniv-deploy/";
 
 	@Autowired
@@ -70,9 +75,20 @@ public class BaseWeb {
 	@Autowired
 	private mDepartmentService departmentService;
 
+	@Autowired
+	private mProjectStatusService projectStatusService;
 	
 	public String name(){
 		return "BaseWeb";
+	}
+	
+	public void loadProjectStatus(){
+		System.out.println(name() + "::loadProjectStatus");
+		glb_projectStatus = projectStatusService.list();
+		mCode2ProjectStatus = new HashMap<String, mProjectStatus>();
+		for(mProjectStatus ps: glb_projectStatus){
+			mCode2ProjectStatus.put(ps.getPROJSTAT_Code(), ps);
+		}
 	}
 	public void loadStaffs() {
 		System.out.println(name() + "::loadStaffs");
@@ -80,6 +96,9 @@ public class BaseWeb {
 		mCode2Staff = new HashMap<String, mStaff>();
 		for (mStaff st : glb_staffs) {
 			mCode2Staff.put(st.getStaff_Code(), st);
+			if(st.getStaff_Code().equals("dung.phamquang@hust.edu.vn")){
+				System.out.println(name() + "::loadStaff, mCode2Satff.put(" + st.getStaff_Code() + ")");
+			}
 		}
 	}
 
@@ -240,6 +259,9 @@ public class BaseWeb {
 			loadDepartment();
 		}
 
+		if(glb_projectStatus == null){
+			loadProjectStatus();
+		}
 		map.put("funcsChildrenList", funcsEditChildrenList);
 		map.put("funcsParentsList", funcsEditParentsList);
 	}

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.logging.Log;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -68,7 +70,10 @@ import vn.webapp.modules.researchmanagement.model.mProjectCalls;
 import vn.webapp.modules.researchmanagement.model.mProjectComments;
 import vn.webapp.modules.researchmanagement.model.mProjectStaffs;
 import vn.webapp.modules.researchmanagement.model.mProjectStatus;
+import vn.webapp.modules.researchmanagement.model.mStaffJuryOfSubmittedProject;
 import vn.webapp.modules.researchmanagement.model.mThreads;
+import vn.webapp.modules.researchmanagement.model.xDetailCommentSubmittedProjects;
+import vn.webapp.modules.researchmanagement.model.xProjects;
 import vn.webapp.modules.researchmanagement.service.ProjectParticipationRolesService;
 import vn.webapp.modules.researchmanagement.service.ProjectResearchFieldService;
 import vn.webapp.modules.researchmanagement.service.ProjectTasksService;
@@ -781,6 +786,502 @@ public class nProjectController extends BaseWeb {
 		}
 
 		return projectsList;
+	}
+
+	@RequestMapping(value = "/summarize-submitted-project-comment-params", method = RequestMethod.GET)
+	public String getListProjectsForSummarizeStatisticsParams(ModelMap model, HttpSession session) {
+		String userCode = session.getAttribute("currentUserCode").toString();
+		String userRole = session.getAttribute("currentUserRole").toString();
+		String facultyCode = session.getAttribute("facultyCode").toString();
+
+		System.out
+				.println(name()
+						+ "::getListProjectsForSummarizeStatisticsParams, userCode = "
+						+ userCode + ", userRole = " + userRole
+						+ ", facultyCode = " + facultyCode);
+		List<mThreads> threadsList = threadService.loadThreadsListByStaff(userRole, userCode);
+		// Get topic's category
+		List<mTopicCategory> threadCategory = tProjectCategoryService.list();
+		// Get list project statuses
+		List<mProjectStatus> threadStatuses = projectStatusService.list();
+		//List<mFaculty> threadFaculties = facultyService.loadFacultyList();
+		List<mFaculty> threadFaculties = new ArrayList<mFaculty>();
+		if (userRole.equals("ROLE_ADMIN") || userRole.equals("SUPER_ADMIN"))
+			threadFaculties = facultyService.loadFacultyList();
+		else if (userRole
+				.equals(mUserController.ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY)) {
+			// threadFaculties = new ArrayList<mFaculty>();
+			mFaculty faculty = facultyService.loadAFacultyByCode(facultyCode);
+			if (faculty != null)
+				threadFaculties.add(faculty);
+			else {
+				System.out.println(name()
+						+ "::getListProjectsStatisticsParams, faculty "
+						+ facultyCode + " NOT EXIST!!!");
+			}
+		}
+		List<mDepartment> threadDepartments = departmentService.loadDepartmentList();
+		List<mStaff> threadStaffs = staffService.listStaffs();
+		List<mProjectCalls> projectCallsList = projectCallsService.loadProjectCallsList();
+				
+		model.put("threadExcellForm", new mThreadExcellValidation());
+		model.put("threadsList", threadsList);
+		model.put("threadCategory", threadCategory);
+		model.put("threadStatuses", threadStatuses);
+		model.put("projectCallsList", projectCallsList);
+		model.put("threadFaculties", threadFaculties);
+		model.put("threadDepartments", threadDepartments);
+		model.put("threadStaffs", threadStaffs);
+		model.put("threads", status);
+
+		return "cp.projectsListCommentsStatisiticsParamsForSummarize";
+	}
+
+	public List<mThreads> getListProjectsCriteria(String projectCallCode, String statusCode, String facultyCode, 
+			String departmentCode, String staffCode, String userCode, String userRole){
+
+		log.info(userCode + " : projetcCallCode = " + projectCallCode + ","
+				+ "statusCode = " + statusCode + ", facultyCode = " + facultyCode + ", departmentCode = " + departmentCode + 
+				", staffCode = " + staffCode);
+		
+		
+		System.out.println(name()
+				+ "::getListProjectsCriteria projectCallCode : "
+				+ projectCallCode);
+		System.out.println(name() + "::getListProjectsCriteria statusCode : "
+				+ statusCode);
+		System.out.println(name()
+				+ "::getListProjectsCriteria facultyCode : " + facultyCode);
+		System.out.println(name()
+				+ "::getListProjectsCriteria departmentCode : "
+				+ departmentCode);
+		System.out.println(name() + "::getListProjectsCriteria staffCode : "
+				+ staffCode);
+
+		List<mStaff> staffs = staffService.listStaffs();
+		HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+		for (mStaff st : staffs) {
+			mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+		}
+		List<mProjectCalls> prjCalls = projectCallsService
+				.loadProjectCallsList();
+		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
+		for (mProjectCalls pc : prjCalls) {
+			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(),
+					pc.getPROJCALL_NAME());
+		}
+
+		List<mProjectStatus> status = projectStatusService.list();
+		HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
+		for (mProjectStatus ps : status) {
+			mStatusCode2Name.put(ps.getPROJSTAT_Code(),
+					ps.getPROJSTAT_Description());
+		}
+
+		List<mFaculty> faculties = facultyService.loadFacultyList();
+
+		HashSet<String> setProjectCallCode = new HashSet<String>();
+		HashSet<String> setStaffCode = new HashSet<String>();
+		HashSet<String> setStatusCode = new HashSet<String>();
+		HashSet<String> setFacultyCode = new HashSet<String>();
+
+		if (staffCode == "" || staffCode.equals("")) {
+			for (mStaff st : staffs) {
+				setStaffCode.add(st.getStaff_Code());
+			}
+		} else {
+			setStaffCode.add(staffCode);
+		}
+
+		if (projectCallCode == "" || projectCallCode.equals("")) {
+			for (mProjectCalls pc : prjCalls) {
+				setProjectCallCode.add(pc.getPROJCALL_CODE());
+			}
+		} else {
+			setProjectCallCode.add(projectCallCode);
+		}
+
+		if (statusCode == "" || statusCode.equals("")) {
+			for (mProjectStatus ps : status) {
+				setStatusCode.add(ps.getPROJSTAT_Code());
+			}
+		} else {
+			setStatusCode.add(statusCode);
+		}
+
+		if (userRole.equals(mUserController.ROLE_ADMIN)
+				|| userRole.equals(mUserController.SUPER_ADMIN)) {
+			if (facultyCode == "" || facultyCode.equals("")) {
+				for (mFaculty f : faculties) {
+					setFacultyCode.add(f.getFaculty_Code());
+				}
+			} else {
+				setFacultyCode.add(facultyCode);
+			}
+		} else {
+			//String userFacultyCode = session.getAttribute("facultyCode")
+			//		.toString();
+			//setFacultyCode.add(userFacultyCode);
+		}
+
+		List<mThreads> allProjectsList = threadService.listAll();// threadService.loadProjectsListByStaff(userRole,
+																	// userCode);
+		
+		
+		
+		//System.out.print(name()
+		//		+ "::getListProjectsCriteria, setProjectCallCodes = ");
+		//for (String code : setProjectCallCode)
+		//	System.out.print(code + ", ");
+		//System.out.println();
+
+		//System.out.print(name()
+		//		+ "::getListProjectsCriteria, setStatusCodes = ");
+		//for (String code : setStatusCode)
+		//	System.out.print(code + ", ");
+		//System.out.println();
+
+		//System.out.print(name()
+		//		+ "::getListProjectsCriteria, setFacultyCodes = ");
+		//for (String code : setFacultyCode)
+		//	System.out.print(code + ", ");
+		//System.out.println();
+
+		//System.out.print(name()
+		//		+ "::getListProjectsCriteria, setStaffCodes = ");
+		//for (String code : setStaffCode)
+		//	System.out.print(code + ", ");
+		//System.out.println();
+
+		List<mThreads> projectsList = new ArrayList<mThreads>();
+		for (mThreads t : allProjectsList) {
+			//System.out.println(name() + "::getListProjectsCriteria consider project for filter " + t.getPROJ_Code());
+			if (setProjectCallCode.contains(t.getPROJ_PRJCall_Code())
+					&& setStatusCode.contains(t.getPROJ_Status_Code())
+					&& setFacultyCode.contains(t.getPROJ_FacultyCode())
+					&& setStaffCode.contains(t.getPROJ_User_Code()))
+				projectsList.add(t);
+
+		}
+
+		//for (mThreads t : projectsList) {
+		//	t.setPROJ_PRJCall_Code(mProjectCallCode2Name.get(t
+		//			.getPROJ_PRJCall_Code()));
+		//	t.setPROJ_User_Code(mStaffCode2Name.get(t.getPROJ_User_Code()));
+		//	t.setPROJ_Status_Code(mStatusCode2Name.get(t.getPROJ_Status_Code()));
+		//}
+
+		return projectsList;
+		
+	}
+	public List<mThreads> getListProjectsCriteriaViewInfo(String projectCallCode, String statusCode, String facultyCode, 
+			String departmentCode, String staffCode, String userCode, String userRole){
+
+		log.info(userCode + " : projetcCallCode = " + projectCallCode + ","
+				+ "statusCode = " + statusCode + ", facultyCode = " + facultyCode + ", departmentCode = " + departmentCode + 
+				", staffCode = " + staffCode);
+		
+		
+		System.out.println(name()
+				+ "::getListProjectsCriteria projectCallCode : "
+				+ projectCallCode);
+		System.out.println(name() + "::getListProjectsCriteria statusCode : "
+				+ statusCode);
+		System.out.println(name()
+				+ "::getListProjectsCriteria facultyCode : " + facultyCode);
+		System.out.println(name()
+				+ "::getListProjectsCriteria departmentCode : "
+				+ departmentCode);
+		System.out.println(name() + "::getListProjectsCriteria staffCode : "
+				+ staffCode);
+
+		List<mStaff> staffs = staffService.listStaffs();
+		HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+		for (mStaff st : staffs) {
+			mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+		}
+		List<mProjectCalls> prjCalls = projectCallsService
+				.loadProjectCallsList();
+		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
+		for (mProjectCalls pc : prjCalls) {
+			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(),
+					pc.getPROJCALL_NAME());
+		}
+
+		List<mProjectStatus> status = projectStatusService.list();
+		HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
+		for (mProjectStatus ps : status) {
+			mStatusCode2Name.put(ps.getPROJSTAT_Code(),
+					ps.getPROJSTAT_Description());
+		}
+
+		List<mFaculty> faculties = facultyService.loadFacultyList();
+
+		HashSet<String> setProjectCallCode = new HashSet<String>();
+		HashSet<String> setStaffCode = new HashSet<String>();
+		HashSet<String> setStatusCode = new HashSet<String>();
+		HashSet<String> setFacultyCode = new HashSet<String>();
+
+		if (staffCode == "" || staffCode.equals("")) {
+			for (mStaff st : staffs) {
+				setStaffCode.add(st.getStaff_Code());
+			}
+		} else {
+			setStaffCode.add(staffCode);
+		}
+
+		if (projectCallCode == "" || projectCallCode.equals("")) {
+			for (mProjectCalls pc : prjCalls) {
+				setProjectCallCode.add(pc.getPROJCALL_CODE());
+			}
+		} else {
+			setProjectCallCode.add(projectCallCode);
+		}
+
+		if (statusCode == "" || statusCode.equals("")) {
+			for (mProjectStatus ps : status) {
+				setStatusCode.add(ps.getPROJSTAT_Code());
+			}
+		} else {
+			setStatusCode.add(statusCode);
+		}
+
+		if (userRole.equals(mUserController.ROLE_ADMIN)
+				|| userRole.equals(mUserController.SUPER_ADMIN)) {
+			if (facultyCode == "" || facultyCode.equals("")) {
+				for (mFaculty f : faculties) {
+					setFacultyCode.add(f.getFaculty_Code());
+				}
+			} else {
+				setFacultyCode.add(facultyCode);
+			}
+		} else {
+			//String userFacultyCode = session.getAttribute("facultyCode")
+			//		.toString();
+			//setFacultyCode.add(userFacultyCode);
+		}
+
+		List<mThreads> allProjectsList = threadService.listAll();// threadService.loadProjectsListByStaff(userRole,
+																	// userCode);
+		
+		
+		
+		//System.out.print(name()
+		//		+ "::getListProjectsCriteria, setProjectCallCodes = ");
+		//for (String code : setProjectCallCode)
+		//	System.out.print(code + ", ");
+		//System.out.println();
+
+		//System.out.print(name()
+		//		+ "::getListProjectsCriteria, setStatusCodes = ");
+		//for (String code : setStatusCode)
+		//	System.out.print(code + ", ");
+		//System.out.println();
+
+		//System.out.print(name()
+		//		+ "::getListProjectsCriteria, setFacultyCodes = ");
+		//for (String code : setFacultyCode)
+		//	System.out.print(code + ", ");
+		//System.out.println();
+
+		//System.out.print(name()
+		//		+ "::getListProjectsCriteria, setStaffCodes = ");
+		//for (String code : setStaffCode)
+		//	System.out.print(code + ", ");
+		//System.out.println();
+
+		List<mThreads> projectsList = new ArrayList<mThreads>();
+		for (mThreads t : allProjectsList) {
+			//System.out.println(name() + "::getListProjectsCriteria consider project for filter " + t.getPROJ_Code());
+			if (setProjectCallCode.contains(t.getPROJ_PRJCall_Code())
+					&& setStatusCode.contains(t.getPROJ_Status_Code())
+					&& setFacultyCode.contains(t.getPROJ_FacultyCode())
+					&& setStaffCode.contains(t.getPROJ_User_Code()))
+				projectsList.add(t);
+
+		}
+
+		for (mThreads t : projectsList) {
+			t.setPROJ_PRJCall_Code(mProjectCallCode2Name.get(t
+					.getPROJ_PRJCall_Code()));
+			t.setPROJ_User_Code(mStaffCode2Name.get(t.getPROJ_User_Code()));
+			t.setPROJ_Status_Code(mStatusCode2Name.get(t.getPROJ_Status_Code()));
+		}
+
+		return projectsList;
+		
+	}
+
+	
+	
+	@RequestMapping(value = "/list-submitted-projects-for-summarize", method = RequestMethod.POST)
+	public String CommentsOfSubmittedProjectsResultSummaryList(ModelMap model, 
+			HttpSession session,
+			HttpServletRequest request, 
+			@Valid @ModelAttribute("threadExcellForm") mThreadExcellValidation threadExcellForm
+			) {
+		
+		String userCode = session.getAttribute("currentUserCode").toString();
+		String userRole = session.getAttribute("currentUserRole").toString();
+		String projectCallCode = (threadExcellForm.getThreadYear() != null) ? threadExcellForm
+				.getThreadYear() : "";
+		String statusCode = (threadExcellForm.getThreadStatus() != null) ? threadExcellForm
+				.getThreadStatus() : "";
+		String facultyCode = (threadExcellForm.getThreadFaculty() != null) ? threadExcellForm
+				.getThreadFaculty() : "";
+		String departmentCode = (threadExcellForm.getThreadDepartment() != null) ? threadExcellForm
+				.getThreadDepartment() : "";
+		String staffCode = (threadExcellForm.getThreadStaff() != null) ? threadExcellForm
+				.getThreadStaff() : "";
+
+		/*		
+		log.info(userCode + " : list projects for statistics, projetcCallCode = " + projectCallCode + ","
+				+ "statusCode = " + statusCode + ", facultyCode = " + facultyCode + ", departmentCode = " + departmentCode + 
+				", staffCode = " + staffCode);
+		
+		
+		System.out.println(name()
+				+ "::getListProjectsStatistics projectCallCode : "
+				+ projectCallCode);
+		System.out.println(name() + "::getListProjectsStatistics statusCode : "
+				+ statusCode);
+		System.out.println(name()
+				+ "::getListProjectsStatistics facultyCode : " + facultyCode);
+		System.out.println(name()
+				+ "::getListProjectsStatistics departmentCode : "
+				+ departmentCode);
+		System.out.println(name() + "::getListProjectsStatistics staffCode : "
+				+ staffCode);
+
+		List<mStaff> staffs = staffService.listStaffs();
+		HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+		for (mStaff st : staffs) {
+			mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+		}
+		List<mProjectCalls> prjCalls = projectCallsService
+				.loadProjectCallsList();
+		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
+		for (mProjectCalls pc : prjCalls) {
+			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(),
+					pc.getPROJCALL_NAME());
+		}
+
+		List<mProjectStatus> status = projectStatusService.list();
+		HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
+		for (mProjectStatus ps : status) {
+			mStatusCode2Name.put(ps.getPROJSTAT_Code(),
+					ps.getPROJSTAT_Description());
+		}
+
+		List<mFaculty> faculties = facultyService.loadFacultyList();
+
+		HashSet<String> setProjectCallCode = new HashSet<String>();
+		HashSet<String> setStaffCode = new HashSet<String>();
+		HashSet<String> setStatusCode = new HashSet<String>();
+		HashSet<String> setFacultyCode = new HashSet<String>();
+
+		if (staffCode == "" || staffCode.equals("")) {
+			for (mStaff st : staffs) {
+				setStaffCode.add(st.getStaff_Code());
+			}
+		} else {
+			setStaffCode.add(staffCode);
+		}
+
+		if (projectCallCode == "" || projectCallCode.equals("")) {
+			for (mProjectCalls pc : prjCalls) {
+				setProjectCallCode.add(pc.getPROJCALL_CODE());
+			}
+		} else {
+			setProjectCallCode.add(projectCallCode);
+		}
+
+		if (statusCode == "" || statusCode.equals("")) {
+			for (mProjectStatus ps : status) {
+				setStatusCode.add(ps.getPROJSTAT_Code());
+			}
+		} else {
+			setStatusCode.add(statusCode);
+		}
+
+		if (userRole.equals(mUserController.ROLE_ADMIN)
+				|| userRole.equals(mUserController.SUPER_ADMIN)) {
+			if (facultyCode == "" || facultyCode.equals("")) {
+				for (mFaculty f : faculties) {
+					setFacultyCode.add(f.getFaculty_Code());
+				}
+			} else {
+				setFacultyCode.add(facultyCode);
+			}
+		} else {
+			String userFacultyCode = session.getAttribute("facultyCode")
+					.toString();
+			setFacultyCode.add(userFacultyCode);
+		}
+
+		List<mThreads> allProjectsList = threadService.listAll();// threadService.loadProjectsListByStaff(userRole,
+																	// userCode);
+		
+		
+		
+		System.out.print(name()
+				+ "::getListProjectsStatistics, setProjectCallCodes = ");
+		for (String code : setProjectCallCode)
+			System.out.print(code + ", ");
+		System.out.println();
+
+		System.out.print(name()
+				+ "::getListProjectsStatistics, setStatusCodes = ");
+		for (String code : setStatusCode)
+			System.out.print(code + ", ");
+		System.out.println();
+
+		System.out.print(name()
+				+ "::getListProjectsStatistics, setFacultyCodes = ");
+		for (String code : setFacultyCode)
+			System.out.print(code + ", ");
+		System.out.println();
+
+		System.out.print(name()
+				+ "::getListProjectsStatistics, setStaffCodes = ");
+		for (String code : setStaffCode)
+			System.out.print(code + ", ");
+		System.out.println();
+
+		List<mThreads> projectsList = new ArrayList<mThreads>();
+		for (mThreads t : allProjectsList) {
+			System.out.println(name() + "::getListProjectsStatistics consider project for filter " + t.getPROJ_Code());
+			if (setProjectCallCode.contains(t.getPROJ_PRJCall_Code())
+					&& setStatusCode.contains(t.getPROJ_Status_Code())
+					&& setFacultyCode.contains(t.getPROJ_FacultyCode())
+					&& setStaffCode.contains(t.getPROJ_User_Code()))
+				projectsList.add(t);
+
+		}
+
+		for (mThreads t : projectsList) {
+			t.setPROJ_PRJCall_Code(mProjectCallCode2Name.get(t
+					.getPROJ_PRJCall_Code()));
+			t.setPROJ_User_Code(mStaffCode2Name.get(t.getPROJ_User_Code()));
+			t.setPROJ_Status_Code(mStatusCode2Name.get(t.getPROJ_Status_Code()));
+		}
+		System.out.println(name() + "::getListProjectsStatistics, userCode = "
+				+ userCode + ", userRole = " + userRole);
+		*/
+	
+		List<mThreads> projectsList = getListProjectsCriteria(projectCallCode, statusCode, facultyCode, 
+				departmentCode, staffCode, userCode, userRole);
+		
+		model.put("projectsList", projectsList);
+		model.put("projectCallCode", projectCallCode);
+		model.put("statusCode", statusCode);
+		model.put("facultyCode", facultyCode);
+		model.put("departmentCode", departmentCode);
+		model.put("staffCode", staffCode);
+		model.put("userCode", userCode);
+		model.put("userRole", userRole);
+		
+		return "cp.listcomments";//"cp.commentsSubmittedProjectsResultSummary";
 	}
 
 	@RequestMapping(value = "/collect-comments", method = RequestMethod.GET)
@@ -2903,7 +3404,12 @@ public class nProjectController extends BaseWeb {
 									projectBeingEditted.getPROJ_Code(),
 									summaryComment, currentDate, false);
 				}
-				return "redirect:" + this.baseUrl + "/cp/collect-comments.html";
+				
+				
+			
+				//return "redirect:" + this.baseUrl + "/cp/collect-comments.html";
+				return "redirect:" + this.baseUrl + "/cp/summarize-submitted-project-comment-params.html";
+				
 			} else {
 				System.out.println(name()
 						+ "::updateAProjectComments, project Id = "
@@ -3400,6 +3906,10 @@ public class nProjectController extends BaseWeb {
 	public ModelAndView downloadExcelThreads(
 			@Valid @ModelAttribute("threadExcellForm") mThreadExcellValidation threadValidExcell,
 			BindingResult result, Map model, HttpSession session) {
+		
+		String userCode = session.getAttribute("currentUserCode").toString();
+		String userRole = session.getAttribute("currentUserRole").toString();
+		
 		List<mAcademicYear> patentReportingAcademicDateList = academicYearService
 				.list();
 		List<mProjectCalls> projectCallsList = projectCallsService
@@ -3414,28 +3924,38 @@ public class nProjectController extends BaseWeb {
 			/**
 			 * Get list of all Projects (Topics)
 			 */
-			String yearForGenerating = threadValidExcell.getThreadYear();
-			String threadCategory = threadValidExcell.getThreadCatCode();
-			String threadStatus = threadValidExcell.getThreadStatus();
-			String threadFaculty = threadValidExcell.getThreadFaculty();
-			String threadDepartment = threadValidExcell.getThreadDepartment();
-			String threadStaff = threadValidExcell.getThreadStaff();
-			// Get list of Threads
+			//String yearForGenerating = threadValidExcell.getThreadYear();
+			//String threadCategory = threadValidExcell.getThreadCatCode();
+			//String threadStatus = threadValidExcell.getThreadStatus();
+			//String threadFaculty = threadValidExcell.getThreadFaculty();
+			//String threadDepartment = threadValidExcell.getThreadDepartment();
+			//String threadStaff = threadValidExcell.getThreadStaff();
+			
+			String projectCallCode = (threadValidExcell.getThreadYear() != null) ? threadValidExcell.getThreadYear() : "";
+			String statusCode = (threadValidExcell.getThreadStatus()  != null) ? threadValidExcell.getThreadStatus() : "";
+			String facultyCode = (threadValidExcell.getThreadFaculty() != null) ? threadValidExcell.getThreadFaculty() : "";
+			String departmentCode = (threadValidExcell.getThreadDepartment() != null) ? threadValidExcell.getThreadDepartment() : "";
+			String staffCode = (threadValidExcell.getThreadStaff() != null) ? threadValidExcell.getThreadStaff() : "";
+			
+			// Get list of Thread
+			
+			//List<mStaff> staffs = staffService.listStaffs();
+			//HashMap<String, mStaff> mCode2Staff = new HashMap<String, mStaff>();
+			//for (mStaff st : staffs) {
+			//	mCode2Staff.put(st.getStaff_Code(), st);
+			//}
 
-			List<mStaff> staffs = staffService.listStaffs();
-			HashMap<String, mStaff> mCode2Staff = new HashMap<String, mStaff>();
-			for (mStaff st : staffs) {
-				mCode2Staff.put(st.getStaff_Code(), st);
-			}
-
-			System.out.println(name()
-					+ "::downloadExcelThread, threadFaculty = " + threadFaculty
-					+ ", threadStaff = " + threadStaff);
-			List<mThreads> threadsList = threadService
-					.loadThreadsListForReporting(threadCategory, threadStatus,
-							threadFaculty, threadDepartment, threadStaff,
-							yearForGenerating);
-
+			//System.out.println(name()
+			//		+ "::downloadExcelThread, threadFaculty = " + threadFaculty
+			//		+ ", threadStaff = " + threadStaff);
+			
+			//List<mThreads> threadsList = threadService
+			//		.loadThreadsListForReporting(threadCategory, threadStatus,
+			//				threadFaculty, threadDepartment, threadStaff,
+			//				yearForGenerating);
+			List<mThreads> threadsList = getListProjectsCriteria(projectCallCode, statusCode, facultyCode,
+					departmentCode, staffCode, userCode, userRole);
+				
 			List<List<String>> summaryThreadList = new ArrayList<>();
 			if (threadsList != null) {
 				for (mThreads threads : threadsList) {
@@ -3444,7 +3964,12 @@ public class nProjectController extends BaseWeb {
 					String leaderDepartment = threadService
 							.getDepartmentName(threads.getStaff()
 									.getStaff_Department_Code());
+					
 					mStaff staff = mCode2Staff.get(threads.getPROJ_User_Code());
+					if(staff == null){
+						System.out.println(name() + "::downloadExcelThreads, staff " + threads.getPROJ_User_Code() + 
+								" in project " + threads.getPROJ_Name() + " NULL??????????????????????????");
+					}
 					List<ProjectTasks> tasks = projectTasksService
 							.loadAProjectTaskByProjectCode(threads
 									.getPROJ_Code());
@@ -3496,7 +4021,7 @@ public class nProjectController extends BaseWeb {
 
 			model.put("listMembers", listMembers);
 			model.put("summaryThreadList", summaryThreadList);
-			model.put("yearOfPaper", yearForGenerating);
+			model.put("yearOfPaper", projectCallCode);
 			// return a view which will be resolved by an excel view resolver
 			return new ModelAndView("excelThreadsView");
 		}

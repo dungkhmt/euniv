@@ -266,7 +266,8 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 		
 		HashMap<String, String> mProjectCode2Name = new HashMap<String, String>();
 		for(Projects prj: projects){
-			mProjectCode2Name.put(prj.getPROJ_Code(), prj.getPROJ_Name());
+			String proj_leader = mCode2Staff.get(prj.getPROJ_User_Code()).getStaff_Name();
+			mProjectCode2Name.put(prj.getPROJ_Code(), prj.getPROJ_Name() + " (Chủ nhiệm : " + proj_leader + ")");
 		}
 		
 		List<mStaffJuryOfSubmittedProject> staffJuryOfSubmittedProjectList;
@@ -282,6 +283,10 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 		for(mStaffJuryOfSubmittedProject sjsp: staffJuryOfSubmittedProjectList){
 			sjsp.setSTFJUPRJ_PRJCODE(mProjectCode2Name.get(sjsp.getSTFJUPRJ_PRJCODE()));
 			sjsp.setSTFJUPRJ_STAFFJURCODE(mStaffCode2Name.get(sjsp.getSTFJUPRJ_STAFFJURCODE()));
+		}
+		
+		for(Projects p: projects){
+			p.setPROJ_Name(mProjectCode2Name.get(p.getPROJ_Code()));
 		}
 		
 		// Return to view

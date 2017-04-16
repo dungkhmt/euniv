@@ -39,7 +39,10 @@ public class nProjectDAOImpl extends BaseDao implements nProjectDAO {
 			Criteria criteria = getSession().createCriteria(Projects.class);
 			criteria.add(Restrictions.eq("PROJ_PRJCall_Code", projectCallCode));
 			criteria.add(Restrictions.eq("PROJ_FacultyCode", facultyCode));
-			criteria.add(Restrictions.eq("PROJ_Status_Code","SUBMIT"));
+			//criteria.add(Restrictions.eq("PROJ_Status_Code","SUBMIT"));
+			criteria.add(Restrictions.ne("PROJ_Status_Code","PREPARE_SAVE"));
+			criteria.add(Restrictions.ne("PROJ_Status_Code",""));
+			
 			List<Projects> projectList = criteria.list();
 			commit();
 			return projectList;

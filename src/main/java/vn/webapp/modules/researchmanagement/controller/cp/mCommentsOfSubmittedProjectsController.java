@@ -595,6 +595,8 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 				}
 				listTemp.add(sCommentTemp); // Comment
 				listTemp.add(oPrj.getPROJ_ID() + "");
+				listTemp.add(mCode2ProjectStatus.get(oPrj.getPROJ_Status_Code()).getPROJSTAT_Description());
+				
 				// Add element to the list
 				listProjectSummary.add(listTemp);
 				i++;

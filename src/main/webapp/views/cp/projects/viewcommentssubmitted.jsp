@@ -150,7 +150,10 @@
 							</div>
 							<div class="col-lg-12">
 		                    	 <!-- Buttons -->
+	                             
+	                             <!-- 
 	                             <button type="reset" class="btn btn-primary cancel">Quay lại</button>
+	                              -->
                              </div>
 	                    </div>
 	                </div>
