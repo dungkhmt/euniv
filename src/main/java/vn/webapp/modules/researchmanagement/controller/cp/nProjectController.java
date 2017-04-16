@@ -280,21 +280,18 @@ public class nProjectController extends BaseWeb {
 		String userCode = session.getAttribute("currentUserCode").toString();
 		String userRole = session.getAttribute("currentUserRole").toString();
 
-		List<mThreads> threadsList = threadService.loadThreadsListByStaff(
-				userRole, userCode);
+		//List<mThreads> threadsList = threadService.loadThreadsListByStaff(userRole, userCode);
 		// Get topic's category
-		List<mTopicCategory> threadCategory = tProjectCategoryService.list();
+		List<mTopicCategory> threadCategory = glb_projectCategories;// tProjectCategoryService.list();
 		// Get list project statuses
-		List<mProjectStatus> threadStatuses = projectStatusService.list();
-		List<mFaculty> threadFaculties = facultyService.loadFacultyList();
-		List<mDepartment> threadDepartments = departmentService
-				.loadDepartmentList();
-		List<mStaff> threadStaffs = staffService.listStaffs();
-		List<mProjectCalls> projectCallsList = projectCallsService
-				.loadProjectCallsList();
+		List<mProjectStatus> threadStatuses = glb_projectStatus;//projectStatusService.list();
+		List<mFaculty> threadFaculties = glb_faculties;//facultyService.loadFacultyList();
+		List<mDepartment> threadDepartments = glb_departments;//departmentService.loadDepartmentList();
+		List<mStaff> threadStaffs = glb_staffs;//staffService.listStaffs();
+		List<mProjectCalls> projectCallsList = glb_projectCalls;//projectCallsService.loadProjectCallsList();
 
 		model.put("threadExcellForm", new mThreadExcellValidation());
-		model.put("threadsList", threadsList);
+		//model.put("threadsList", threadsList);
 		model.put("threadCategory", threadCategory);
 		model.put("threadStatuses", threadStatuses);
 		model.put("projectCallsList", projectCallsList);
@@ -320,16 +317,21 @@ public class nProjectController extends BaseWeb {
 						+ "::getListProjectsStatisticsParams, userCode = "
 						+ userCode + ", userRole = " + userRole
 						+ ", facultyCode = " + facultyCode);
-		List<mThreads> threadsList = threadService.loadThreadsListByStaff(
-				userRole, userCode);
+		
+		//List<mThreads> threadsList = threadService.loadThreadsListByStaff(
+		//		userRole, userCode);
+		
 		// Get topic's category
-		List<mTopicCategory> threadCategory = tProjectCategoryService.list();
+		
+		
+		List<mTopicCategory> threadCategory = glb_projectCategories;//tProjectCategoryService.list();
+		
 		// Get list project statuses
-		List<mProjectStatus> threadStatuses = projectStatusService.list();
+		List<mProjectStatus> threadStatuses = glb_projectStatus; ////projectStatusService.list();
 
 		List<mFaculty> threadFaculties = new ArrayList<mFaculty>();
 		if (userRole.equals("ROLE_ADMIN") || userRole.equals("SUPER_ADMIN"))
-			threadFaculties = facultyService.loadFacultyList();
+			threadFaculties = glb_faculties;// facultyService.loadFacultyList();
 		else if (userRole
 				.equals(mUserController.ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY)) {
 			// threadFaculties = new ArrayList<mFaculty>();
@@ -342,23 +344,22 @@ public class nProjectController extends BaseWeb {
 						+ facultyCode + " NOT EXIST!!!");
 			}
 		}
-		for (mFaculty f : threadFaculties) {
-			System.out.println(name()
-					+ "::getListProjectsStatisticsParams, get faculty = "
-					+ f.getFaculty_Code() + ", " + f.getFaculty_Name());
-		}
-		System.out.println(name()
-				+ "::getListProjectsStatisticsParams, faculties.sz = "
-				+ threadFaculties.size());
+		//for (mFaculty f : threadFaculties) {
+		//	System.out.println(name()
+		//			+ "::getListProjectsStatisticsParams, get faculty = "
+		//			+ f.getFaculty_Code() + ", " + f.getFaculty_Name());
+		//}
+		//System.out.println(name()
+		//		+ "::getListProjectsStatisticsParams, faculties.sz = "
+		//		+ threadFaculties.size());
 
-		List<mDepartment> threadDepartments = departmentService
-				.loadDepartmentList();
-		List<mStaff> threadStaffs = staffService.listStaffs();
-		List<mProjectCalls> projectCallsList = projectCallsService
-				.loadProjectCallsList();
+		List<mDepartment> threadDepartments = glb_departments;//departmentService.loadDepartmentList();
+		
+		List<mStaff> threadStaffs =  glb_staffs;// staffService.listStaffs();
+		List<mProjectCalls> projectCallsList = glb_projectCalls;// projectCallsService.loadProjectCallsList();
 
 		model.put("threadExcellForm", new mThreadExcellValidation());
-		model.put("threadsList", threadsList);
+		//model.put("threadsList", threadsList);
 		model.put("threadCategory", threadCategory);
 		model.put("threadStatuses", threadStatuses);
 		model.put("projectCallsList", projectCallsList);
@@ -799,15 +800,15 @@ public class nProjectController extends BaseWeb {
 						+ "::getListProjectsForSummarizeStatisticsParams, userCode = "
 						+ userCode + ", userRole = " + userRole
 						+ ", facultyCode = " + facultyCode);
-		List<mThreads> threadsList = threadService.loadThreadsListByStaff(userRole, userCode);
+		//List<mThreads> threadsList = threadService.loadThreadsListByStaff(userRole, userCode);
 		// Get topic's category
-		List<mTopicCategory> threadCategory = tProjectCategoryService.list();
+		List<mTopicCategory> threadCategory = glb_projectCategories;// tProjectCategoryService.list();
 		// Get list project statuses
-		List<mProjectStatus> threadStatuses = projectStatusService.list();
+		List<mProjectStatus> threadStatuses = glb_projectStatus;//projectStatusService.list();
 		//List<mFaculty> threadFaculties = facultyService.loadFacultyList();
 		List<mFaculty> threadFaculties = new ArrayList<mFaculty>();
 		if (userRole.equals("ROLE_ADMIN") || userRole.equals("SUPER_ADMIN"))
-			threadFaculties = facultyService.loadFacultyList();
+			threadFaculties = glb_faculties;//facultyService.loadFacultyList();
 		else if (userRole
 				.equals(mUserController.ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY)) {
 			// threadFaculties = new ArrayList<mFaculty>();
@@ -820,12 +821,12 @@ public class nProjectController extends BaseWeb {
 						+ facultyCode + " NOT EXIST!!!");
 			}
 		}
-		List<mDepartment> threadDepartments = departmentService.loadDepartmentList();
-		List<mStaff> threadStaffs = staffService.listStaffs();
-		List<mProjectCalls> projectCallsList = projectCallsService.loadProjectCallsList();
+		List<mDepartment> threadDepartments = glb_departments;//departmentService.loadDepartmentList();
+		List<mStaff> threadStaffs = glb_staffs;//staffService.listStaffs();
+		List<mProjectCalls> projectCallsList = glb_projectCalls;//projectCallsService.loadProjectCallsList();
 				
 		model.put("threadExcellForm", new mThreadExcellValidation());
-		model.put("threadsList", threadsList);
+		//model.put("threadsList", threadsList);
 		model.put("threadCategory", threadCategory);
 		model.put("threadStatuses", threadStatuses);
 		model.put("projectCallsList", projectCallsList);
@@ -3969,7 +3970,7 @@ public class nProjectController extends BaseWeb {
 							.getDepartmentName(threads.getStaff()
 									.getStaff_Department_Code());
 					
-					mStaff staff = mCode2Staff.get(threads.getPROJ_User_Code());
+					mStaff staff = glb_mCode2Staff.get(threads.getPROJ_User_Code());
 					if(staff == null){
 						System.out.println(name() + "::downloadExcelThreads, staff " + threads.getPROJ_User_Code() + 
 								" in project " + threads.getPROJ_Name() + " NULL??????????????????????????");

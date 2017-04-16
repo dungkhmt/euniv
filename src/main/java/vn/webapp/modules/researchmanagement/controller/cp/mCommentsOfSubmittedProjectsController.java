@@ -299,6 +299,9 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 			projectList.addAll(projectService.loadListProjectsByCode(staffJuryOfSubmittedProjectList.get(i).getSTFJUPRJ_PRJCODE()));
 		}
 		
+		for(Projects p: projectList){
+			p.setPROJ_PRJCall_Code(glb_mCode2ProjectCall.get(p.getPROJ_PRJCall_Code()).getPROJCALL_NAME());
+		}
 		// Put data back to view
 		model.put("projectList", projectList);
 		 
@@ -411,15 +414,15 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 						+ "::getListProjectsStatisticsParams, userCode = "
 						+ userCode + ", userRole = " + userRole
 						+ ", facultyCode = " + facultyCode);
-		List<mThreads> threadsList = threadService.loadThreadsListByStaff(userRole, userCode);
+		//List<mThreads> threadsList = threadService.loadThreadsListByStaff(userRole, userCode);
 		// Get topic's category
-		List<mTopicCategory> threadCategory = tProjectCategoryService.list();
+		List<mTopicCategory> threadCategory = glb_projectCategories;// tProjectCategoryService.list();
 		// Get list project statuses
-		List<mProjectStatus> threadStatuses = projectStatusService.list();
+		List<mProjectStatus> threadStatuses = glb_projectStatus;//projectStatusService.list();
 		//List<mFaculty> threadFaculties = facultyService.loadFacultyList();
 		List<mFaculty> threadFaculties = new ArrayList<mFaculty>();
 		if (userRole.equals("ROLE_ADMIN") || userRole.equals("SUPER_ADMIN"))
-			threadFaculties = facultyService.loadFacultyList();
+			threadFaculties = glb_faculties;//facultyService.loadFacultyList();
 		else if (userRole
 				.equals(mUserController.ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY)) {
 			// threadFaculties = new ArrayList<mFaculty>();
@@ -432,12 +435,12 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 						+ facultyCode + " NOT EXIST!!!");
 			}
 		}
-		List<mDepartment> threadDepartments = departmentService.loadDepartmentList();
-		List<mStaff> threadStaffs = staffService.listStaffs();
-		List<mProjectCalls> projectCallsList = projectCallsService.loadProjectCallsList();
+		List<mDepartment> threadDepartments = glb_departments;// departmentService.loadDepartmentList();
+		List<mStaff> threadStaffs = glb_staffs;//staffService.listStaffs();
+		List<mProjectCalls> projectCallsList = glb_projectCalls;//projectCallsService.loadProjectCallsList();
 				
 		model.put("threadExcellForm", new mThreadExcellValidation());
-		model.put("threadsList", threadsList);
+		//model.put("threadsList", threadsList);
 		model.put("threadCategory", threadCategory);
 		model.put("threadStatuses", threadStatuses);
 		model.put("projectCallsList", projectCallsList);
@@ -595,7 +598,7 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 				}
 				listTemp.add(sCommentTemp); // Comment
 				listTemp.add(oPrj.getPROJ_ID() + "");
-				listTemp.add(mCode2ProjectStatus.get(oPrj.getPROJ_Status_Code()).getPROJSTAT_Description());
+				listTemp.add(glb_mCode2ProjectStatus.get(oPrj.getPROJ_Status_Code()).getPROJSTAT_Description());
 				
 				// Add element to the list
 				listProjectSummary.add(listTemp);

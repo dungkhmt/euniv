@@ -199,6 +199,9 @@ public class mProjectCallsController extends BaseWeb {
 				}else{
 					model.put("err", "Lưu không thành công. Hãy thử lại.");
 				}
+				
+				//update global glb_projectCalls
+				loadProjectCalls();
 			
 			return "cp.addAProjectCall";
 		}
@@ -309,6 +312,9 @@ public class mProjectCallsController extends BaseWeb {
 			 projectCallsService.removeAProjectCall(iProjectCallId);
 			// Get topic's category
 			List<mProjectCalls> projectCallsList = projectCallsService.loadProjectCallsList();
+			
+			//update global glb_projectCalls
+			loadProjectCalls();
 			
 			// Put data back to view
 			model.put("projectCallsList", projectCallsList);

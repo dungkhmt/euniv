@@ -34,6 +34,8 @@
 								<tr>
 									<th>STT</th>
 									<th>Tên đề tài</th>
+									<th>Đợt gọi đề tài</th>
+									
 									<th>""</th>
 								</tr>
 							</thead>
@@ -44,6 +46,7 @@
 										<c:set var="count" value="${count + 1}" scope="page"/>  
 										<td><c:out value="${count}"/></td>
 										<td><c:out value="${project.PROJ_Name}"/></td>
+										<td><c:out value="${project.PROJ_PRJCall_Code}"/></td>
 										<td class="center">
 											<button type="button" onclick="v_fViewDetailAProjectCall(${project.PROJ_ID});" class="btn btn-info btn-xs" title="Edit"> Đánh giá </button>
 											<a href="<c:url value="${baseUrl}/cp/download-proposal/${project.PROJ_ID}.html"/>" title="Download file xác thực" class="btn btn-success btn-xs">Tải thuyết minh</a>

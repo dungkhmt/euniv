@@ -22,7 +22,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import vn.webapp.modules.researchdeclarationmanagement.model.mTopicCategory;
+import vn.webapp.modules.researchdeclarationmanagement.service.tProjectCategoryService;
+import vn.webapp.modules.researchmanagement.model.mProjectCalls;
 import vn.webapp.modules.researchmanagement.model.mProjectStatus;
+import vn.webapp.modules.researchmanagement.service.mProjectCallsService;
 import vn.webapp.modules.researchmanagement.service.mProjectStatusService;
 import vn.webapp.modules.usermanagement.model.mDepartment;
 import vn.webapp.modules.usermanagement.model.mEditFunctions;
@@ -50,16 +54,23 @@ public class BaseWeb {
 	public static List<mFunction> mFuncsParentsPermissionList;
 
 	public static List<mStaff> glb_staffs = null;
-	public static HashMap<String, mStaff> mCode2Staff = null;
+	public static HashMap<String, mStaff> glb_mCode2Staff = null;
 
 	public static List<mFaculty> glb_faculties = null;
-	public static HashMap<String, mFaculty> mCode2Faculty = null;
+	public static HashMap<String, mFaculty> glb_mCode2Faculty = null;
 
 	public static List<mDepartment> glb_departments = null;
-	public static HashMap<String, mDepartment> mCode2Department = null;
+	public static HashMap<String, mDepartment> glb_mCode2Department = null;
 
 	public static List<mProjectStatus> glb_projectStatus = null;
-	public static HashMap<String, mProjectStatus> mCode2ProjectStatus = null;
+	public static HashMap<String, mProjectStatus> glb_mCode2ProjectStatus = null;
+	
+	public static List<mProjectCalls> glb_projectCalls = null;
+	public static HashMap<String, mProjectCalls> glb_mCode2ProjectCall = null;
+	
+	public static List<mTopicCategory> glb_projectCategories = null;
+	public static HashMap<String, mTopicCategory> glb_mCode2ProjectCategory = null;
+	
 	
 	public static final String PROJECT_ROOT_DIR = "C:/euniv-deploy/";
 
@@ -78,24 +89,46 @@ public class BaseWeb {
 	@Autowired
 	private mProjectStatusService projectStatusService;
 	
+	@Autowired
+	private mProjectCallsService projectCallService;
+	
+	@Autowired
+	private tProjectCategoryService projectCategoryService;
+	
 	public String name(){
 		return "BaseWeb";
 	}
 	
+	public void loadProjectCategories(){
+		System.out.println(name() + "::loadProjectCategories");
+		glb_projectCategories = projectCategoryService.list();
+		glb_mCode2ProjectCategory = new HashMap<String, mTopicCategory>();
+		for(mTopicCategory tc: glb_projectCategories){
+			glb_mCode2ProjectCategory.put(tc.getPROJCAT_Code(), tc);
+		}
+	}
+	public void loadProjectCalls(){
+		System.out.println(name() + "::loadProjectCalls");
+		glb_projectCalls = projectCallService.loadProjectCallsList();
+		glb_mCode2ProjectCall = new HashMap<String, mProjectCalls>();
+		for(mProjectCalls pc: glb_projectCalls){
+			glb_mCode2ProjectCall.put(pc.getPROJCALL_CODE(), pc);
+		}
+	}
 	public void loadProjectStatus(){
 		System.out.println(name() + "::loadProjectStatus");
 		glb_projectStatus = projectStatusService.list();
-		mCode2ProjectStatus = new HashMap<String, mProjectStatus>();
+		glb_mCode2ProjectStatus = new HashMap<String, mProjectStatus>();
 		for(mProjectStatus ps: glb_projectStatus){
-			mCode2ProjectStatus.put(ps.getPROJSTAT_Code(), ps);
+			glb_mCode2ProjectStatus.put(ps.getPROJSTAT_Code(), ps);
 		}
 	}
 	public void loadStaffs() {
 		System.out.println(name() + "::loadStaffs");
 		glb_staffs = staffService.listStaffs();
-		mCode2Staff = new HashMap<String, mStaff>();
+		glb_mCode2Staff = new HashMap<String, mStaff>();
 		for (mStaff st : glb_staffs) {
-			mCode2Staff.put(st.getStaff_Code(), st);
+			glb_mCode2Staff.put(st.getStaff_Code(), st);
 			if(st.getStaff_Code().equals("dung.phamquang@hust.edu.vn")){
 				System.out.println(name() + "::loadStaff, mCode2Satff.put(" + st.getStaff_Code() + ")");
 			}
@@ -105,18 +138,18 @@ public class BaseWeb {
 	public void loadFaculties() {
 		System.out.println(name() + "::loadFaculties");
 		glb_faculties = facultyService.loadFacultyList();
-		mCode2Faculty = new HashMap<String, mFaculty>();
+		glb_mCode2Faculty = new HashMap<String, mFaculty>();
 		for (mFaculty f : glb_faculties) {
-			mCode2Faculty.put(f.getFaculty_Code(), f);
+			glb_mCode2Faculty.put(f.getFaculty_Code(), f);
 		}
 	}
 
 	public void loadDepartment() {
 		System.out.println(name() + "::loadDepartments");
 		glb_departments = departmentService.loadDepartmentList();
-		mCode2Department = new HashMap<String, mDepartment>();
+		glb_mCode2Department = new HashMap<String, mDepartment>();
 		for (mDepartment d : glb_departments) {
-			mCode2Department.put(d.getDepartment_Code(), d);
+			glb_mCode2Department.put(d.getDepartment_Code(), d);
 		}
 	}
 
@@ -262,6 +295,15 @@ public class BaseWeb {
 		if(glb_projectStatus == null){
 			loadProjectStatus();
 		}
+		
+		if(glb_projectCalls == null){
+			loadProjectCalls();
+		}
+		
+		if(glb_projectCategories == null){
+			loadProjectCategories();
+		}
+		
 		map.put("funcsChildrenList", funcsEditChildrenList);
 		map.put("funcsParentsList", funcsEditParentsList);
 	}

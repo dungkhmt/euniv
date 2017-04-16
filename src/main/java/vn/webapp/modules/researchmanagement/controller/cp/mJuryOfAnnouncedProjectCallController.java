@@ -219,7 +219,7 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 		}
 		for(mJuryResearchProject J: juries){
 			J.setJURPRJ_PROJCall_Code(mCode2ProjectCall.get(J.getJURPRJ_PROJCall_Code()).getPROJCALL_NAME());
-			J.setJURPRJ_UserCode(mCode2Staff.get(J.getJURPRJ_UserCode()).getStaff_Name());
+			J.setJURPRJ_UserCode(glb_mCode2Staff.get(J.getJURPRJ_UserCode()).getStaff_Name());
 		}
 		model.put("juries", juries);
 		return "cp.juryOfResearchProjectManagement";
@@ -256,7 +256,7 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 		
 		for(mJuryResearchProject jury: juries){
 			jury.setJURPRJ_PROJCall_Code(mProjectCallCode2Name.get(jury.getJURPRJ_PROJCall_Code()));
-			jury.setJURPRJ_UserCode(mCode2Staff.get(jury.getJURPRJ_UserCode()).getStaff_Name());
+			jury.setJURPRJ_UserCode(glb_mCode2Staff.get(jury.getJURPRJ_UserCode()).getStaff_Name());
 		}
 		return juries;
 	}
