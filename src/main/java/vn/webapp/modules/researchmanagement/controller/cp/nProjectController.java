@@ -1551,7 +1551,7 @@ public class nProjectController extends BaseWeb {
 		String ext = "";
 		if(s.length >= 2) ext = s[s.length-1];
 		System.out.println(name() + "::establishFileNameStoreDataBase, filename = " + filename + ", s.length = " + s.length + ", ext = " + ext);
-		return "thuyetminh-" + sCurrentDate + "." + ext;//filename;
+		return "thuyetminh-" + sCurrentDate + "." + filename;
 
 	}
 
