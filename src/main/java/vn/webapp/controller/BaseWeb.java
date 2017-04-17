@@ -24,8 +24,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopicCategory;
 import vn.webapp.modules.researchdeclarationmanagement.service.tProjectCategoryService;
+import vn.webapp.modules.researchmanagement.model.ProjectParticipationRoles;
+import vn.webapp.modules.researchmanagement.model.ProjectResearchField;
 import vn.webapp.modules.researchmanagement.model.mProjectCalls;
 import vn.webapp.modules.researchmanagement.model.mProjectStatus;
+import vn.webapp.modules.researchmanagement.service.ProjectParticipationRolesService;
+import vn.webapp.modules.researchmanagement.service.ProjectResearchFieldService;
 import vn.webapp.modules.researchmanagement.service.mProjectCallsService;
 import vn.webapp.modules.researchmanagement.service.mProjectStatusService;
 import vn.webapp.modules.usermanagement.model.mDepartment;
@@ -71,6 +75,12 @@ public class BaseWeb {
 	public static List<mTopicCategory> glb_projectCategories = null;
 	public static HashMap<String, mTopicCategory> glb_mCode2ProjectCategory = null;
 	
+	public static List<ProjectResearchField> glb_projectResearchFields = null;
+	public static HashMap<String, ProjectResearchField> glb_mCode2ProjectResearchField = null;
+	
+	public static List<ProjectParticipationRoles> glb_projectParticipationRoles = null;
+	public static HashMap<String, ProjectParticipationRoles> glb_mCode2ProjectParticipationRole = null;
+	
 	
 	public static final String PROJECT_ROOT_DIR = "C:/euniv-deploy/";
 
@@ -95,10 +105,32 @@ public class BaseWeb {
 	@Autowired
 	private tProjectCategoryService projectCategoryService;
 	
+	@Autowired
+	private ProjectResearchFieldService projectResearchFieldService;
+	
+	@Autowired
+	private ProjectParticipationRolesService projectParticipationRolesService;
+
 	public String name(){
 		return "BaseWeb";
 	}
 	
+	public void loadProjectParticipationRoles(){
+		System.out.println(name() + "::loadProjectParticipationRoles");
+		glb_projectParticipationRoles = projectParticipationRolesService.getList();
+		glb_mCode2ProjectParticipationRole = new HashMap<String, ProjectParticipationRoles>();
+		for(ProjectParticipationRoles ppr: glb_projectParticipationRoles){
+			glb_mCode2ProjectParticipationRole.put(ppr.getPROJPARTIROLE_Code(), ppr);
+		}
+	}
+	public void loadProjectResearchFields(){
+		System.out.println(name() + "::loadProjectResearchFields");
+		glb_projectResearchFields = projectResearchFieldService.list();
+		glb_mCode2ProjectResearchField = new HashMap<String, ProjectResearchField>();
+		for(ProjectResearchField prf: glb_projectResearchFields){
+			glb_mCode2ProjectResearchField.put(prf.getPRJRSHF_Code(), prf);
+		}
+	}
 	public void loadProjectCategories(){
 		System.out.println(name() + "::loadProjectCategories");
 		glb_projectCategories = projectCategoryService.list();
@@ -304,6 +336,13 @@ public class BaseWeb {
 			loadProjectCategories();
 		}
 		
+		if(glb_projectResearchFields == null){
+			loadProjectResearchFields();
+		}
+		
+		if(glb_projectParticipationRoles == null){
+			loadProjectParticipationRoles();
+		}
 		map.put("funcsChildrenList", funcsEditChildrenList);
 		map.put("funcsParentsList", funcsEditParentsList);
 	}

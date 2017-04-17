@@ -258,16 +258,15 @@ public class nProjectController extends BaseWeb {
 		System.out.println(name() + "::getListProjects, userCode = " + userCode
 				+ ", userRole = " + userRole);
 
-		List<mProjectCalls> projectCalls = projectCallsService
-				.loadProjectCallsList();
-		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
-		for (mProjectCalls pc : projectCalls) {
-			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(),
-					pc.getPROJCALL_NAME());
-		}
+		List<mProjectCalls> projectCalls = glb_projectCalls;//projectCallsService.loadProjectCallsList();
+		//HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
+		//for (mProjectCalls pc : projectCalls) {
+		//	mProjectCallCode2Name.put(pc.getPROJCALL_CODE(),
+		//			pc.getPROJCALL_NAME());
+		//}
 		for (Projects p : projectsList) {
-			p.setPROJ_PRJCall_Code(mProjectCallCode2Name.get(p
-					.getPROJ_PRJCall_Code()));
+			//p.setPROJ_PRJCall_Code(mProjectCallCode2Name.get(p.getPROJ_PRJCall_Code()));
+			p.setPROJ_PRJCall_Code(glb_mCode2ProjectCall.get(p.getPROJ_PRJCall_Code()).getPROJCALL_NAME());
 		}
 
 		model.put("projectsList", projectsList);
@@ -1511,18 +1510,19 @@ public class nProjectController extends BaseWeb {
 	@RequestMapping(value = "/add-a-newproject", method = RequestMethod.GET)
 	public String addAProject(ModelMap model, HttpSession session) {
 		// Get list of project calls
-		List<mProjectCalls> projectCallsList = projectCallsService
-				.loadProjectCallsList();
+		List<mProjectCalls> projectCallsList = glb_projectCalls;//projectCallsService.loadProjectCallsList();
 		// Get list faculty
-		List<mFaculty> listFaculty = facultyService.loadFacultyList();
+		List<mFaculty> listFaculty = glb_faculties;//facultyService.loadFacultyList();
 		// Get list staffs
-		List<mStaff> staffList = staffService.listStaffs();
+		List<mStaff> staffList = glb_staffs;//staffService.listStaffs();
+		
+		
 		// Get list member roles
-		List<ProjectParticipationRoles> memberRolesList = projectParticipationRolesService
-				.getList();
+		List<ProjectParticipationRoles> memberRolesList = glb_projectParticipationRoles;//projectParticipationRolesService.getList();
 
-		List<ProjectResearchField> projectResearchFields = projectResearchFieldService
-				.list();
+		
+		List<ProjectResearchField> projectResearchFields = glb_projectResearchFields;//projectResearchFieldService.list();
+		
 		String currentStaffName = session.getAttribute("currentstaffName")
 				.toString();
 		String currentUserName = (!"".equals(currentStaffName)) ? currentStaffName
