@@ -533,27 +533,26 @@ public class nProjectController extends BaseWeb {
 		System.out.println(name() + "::getListProjectsStatistics staffCode : "
 				+ staffCode);
 
-		List<mStaff> staffs = staffService.listStaffs();
-		HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
-		for (mStaff st : staffs) {
-			mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
-		}
-		List<mProjectCalls> prjCalls = projectCallsService
-				.loadProjectCallsList();
-		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
-		for (mProjectCalls pc : prjCalls) {
-			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(),
-					pc.getPROJCALL_NAME());
-		}
+		List<mStaff> staffs = glb_staffs;//staffService.listStaffs();
+		//HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+		//for (mStaff st : staffs) {
+		//	mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+		//}
+		List<mProjectCalls> prjCalls = glb_projectCalls;//projectCallsService.loadProjectCallsList();
+		//HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
+		//for (mProjectCalls pc : prjCalls) {
+		//	mProjectCallCode2Name.put(pc.getPROJCALL_CODE(),
+		//			pc.getPROJCALL_NAME());
+		//}
 
-		List<mProjectStatus> status = projectStatusService.list();
-		HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
-		for (mProjectStatus ps : status) {
-			mStatusCode2Name.put(ps.getPROJSTAT_Code(),
-					ps.getPROJSTAT_Description());
-		}
+		List<mProjectStatus> status = glb_projectStatus;//projectStatusService.list();
+		//HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
+		//for (mProjectStatus ps : status) {
+		//	mStatusCode2Name.put(ps.getPROJSTAT_Code(),
+		//			ps.getPROJSTAT_Description());
+		//}
 
-		List<mFaculty> faculties = facultyService.loadFacultyList();
+		List<mFaculty> faculties = glb_faculties;//facultyService.loadFacultyList();
 
 		HashSet<String> setProjectCallCode = new HashSet<String>();
 		HashSet<String> setStaffCode = new HashSet<String>();
@@ -640,10 +639,12 @@ public class nProjectController extends BaseWeb {
 		}
 
 		for (mThreads t : projectsList) {
-			t.setPROJ_PRJCall_Code(mProjectCallCode2Name.get(t
-					.getPROJ_PRJCall_Code()));
-			t.setPROJ_User_Code(mStaffCode2Name.get(t.getPROJ_User_Code()));
-			t.setPROJ_Status_Code(mStatusCode2Name.get(t.getPROJ_Status_Code()));
+			//t.setPROJ_PRJCall_Code(mProjectCallCode2Name.get(t.getPROJ_PRJCall_Code()));
+			t.setPROJ_PRJCall_Code(glb_mCode2ProjectCall.get(t.getPROJ_PRJCall_Code()).getPROJCALL_NAME());
+			//t.setPROJ_User_Code(mStaffCode2Name.get(t.getPROJ_User_Code()));
+			t.setPROJ_User_Code(glb_mCode2Staff.get(t.getPROJ_User_Code()).getStaff_Name());
+			//t.setPROJ_Status_Code(mStatusCode2Name.get(t.getPROJ_Status_Code()));
+			t.setPROJ_Status_Code(glb_mCode2ProjectStatus.get(t.getPROJ_Status_Code()).getPROJSTAT_Description());
 		}
 		System.out.println(name() + "::getListProjectsStatistics, userCode = "
 				+ userCode + ", userRole = " + userRole);
@@ -859,27 +860,26 @@ public class nProjectController extends BaseWeb {
 		System.out.println(name() + "::getListProjectsCriteria staffCode : "
 				+ staffCode);
 
-		List<mStaff> staffs = staffService.listStaffs();
-		HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
-		for (mStaff st : staffs) {
-			mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
-		}
-		List<mProjectCalls> prjCalls = projectCallsService
-				.loadProjectCallsList();
-		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
-		for (mProjectCalls pc : prjCalls) {
-			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(),
-					pc.getPROJCALL_NAME());
-		}
+		List<mStaff> staffs = glb_staffs;//staffService.listStaffs();
+		//HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+		//for (mStaff st : staffs) {
+		//	mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+		//}
+		List<mProjectCalls> prjCalls = glb_projectCalls;//projectCallsService.loadProjectCallsList();
+		//HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
+		//for (mProjectCalls pc : prjCalls) {
+		//	mProjectCallCode2Name.put(pc.getPROJCALL_CODE(),
+		//			pc.getPROJCALL_NAME());
+		//}
 
-		List<mProjectStatus> status = projectStatusService.list();
-		HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
-		for (mProjectStatus ps : status) {
-			mStatusCode2Name.put(ps.getPROJSTAT_Code(),
-					ps.getPROJSTAT_Description());
-		}
+		List<mProjectStatus> status = glb_projectStatus;//projectStatusService.list();
+		//HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
+		//for (mProjectStatus ps : status) {
+		//	mStatusCode2Name.put(ps.getPROJSTAT_Code(),
+		//			ps.getPROJSTAT_Description());
+		//}
 
-		List<mFaculty> faculties = facultyService.loadFacultyList();
+		List<mFaculty> faculties = glb_faculties;//facultyService.loadFacultyList();
 
 		HashSet<String> setProjectCallCode = new HashSet<String>();
 		HashSet<String> setStaffCode = new HashSet<String>();

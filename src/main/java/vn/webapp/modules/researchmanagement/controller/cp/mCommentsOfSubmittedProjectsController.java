@@ -477,24 +477,25 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		System.out.println(name() + "::CommentsOfSubmittedProjectsResultSummaryList departmentCode : " + departmentCode);
 		System.out.println(name() + "::CommentsOfSubmittedProjectsResultSummaryList staffCode : " + staffCode);
 
-		List<mStaff> staffs = staffService.listStaffs();
-		HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
-		for(mStaff st: staffs){
-			mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
-		}
-		List<mProjectCalls> prjCalls = projectCallsService.loadProjectCallsList();
-		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
-		for(mProjectCalls pc: prjCalls){
-			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(), pc.getPROJCALL_NAME());
-		}
+		List<mStaff> staffs = glb_staffs;//staffService.listStaffs();
+		//HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+		//for(mStaff st: staffs){
+		//	mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+		//}
 		
-		List<mProjectStatus> status = projectStatusService.list();
-		HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
-		for(mProjectStatus ps: status){
-			mStatusCode2Name.put(ps.getPROJSTAT_Code(), ps.getPROJSTAT_Description());
-		}
+		List<mProjectCalls> prjCalls = glb_projectCalls;//projectCallsService.loadProjectCallsList();
+		//HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
+		//for(mProjectCalls pc: prjCalls){
+		//	mProjectCallCode2Name.put(pc.getPROJCALL_CODE(), pc.getPROJCALL_NAME());
+		//}
 		
-		List<mFaculty> faculties = facultyService.loadFacultyList();
+		List<mProjectStatus> status = glb_projectStatus;//projectStatusService.list();
+		//HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
+		//for(mProjectStatus ps: status){
+		//	mStatusCode2Name.put(ps.getPROJSTAT_Code(), ps.getPROJSTAT_Description());
+		//}
+		
+		List<mFaculty> faculties = glb_faculties;//facultyService.loadFacultyList();
 		
 		HashSet<String> setProjectCallCode = new HashSet<String>();
 		HashSet<String> setStaffCode = new HashSet<String>();
@@ -541,7 +542,7 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		
 		
 		//List of staff juries of submitted projects whose reviewer is the current user
-		List<mStaffJuryOfSubmittedProject> staffJuryOfSubmittedProjectList = staffJuryOfSubmittedProjectService.loadListStaffJuryOfSubmittedProjectByStaffCode(userCode);
+		//List<mStaffJuryOfSubmittedProject> staffJuryOfSubmittedProjectList = staffJuryOfSubmittedProjectService.loadListStaffJuryOfSubmittedProjectByStaffCode(userCode);
 		
 		//List<xProjects> xProjects = projectService.loadListSubmittedProjectsForSummary();
 		List<xProjects> allxProjects = projectService.loadListSubmittedProjectsForSummary();
@@ -612,10 +613,10 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		}
 		
 		//List of projects 
-		List<Projects> projectList = new ArrayList<Projects>();
-		for(int i = 0; i < staffJuryOfSubmittedProjectList.size(); i++){
-			projectList.addAll(projectService.loadListProjectsByCode(staffJuryOfSubmittedProjectList.get(i).getSTFJUPRJ_PRJCODE()));
-		}
+		//List<Projects> projectList = new ArrayList<Projects>();
+		//for(int i = 0; i < staffJuryOfSubmittedProjectList.size(); i++){
+		//	projectList.addAll(projectService.loadListProjectsByCode(staffJuryOfSubmittedProjectList.get(i).getSTFJUPRJ_PRJCODE()));
+		//}
 		
 		// Put data back to view
 		model.put("projectList", listProjectSummary);
