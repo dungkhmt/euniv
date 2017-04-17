@@ -448,7 +448,9 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		model.put("threadDepartments", threadDepartments);
 		model.put("threadStaffs", threadStaffs);
 		model.put("threads", status);
-
+		
+		System.out.println(name() + "::::getListProjectsStatisticsParams RETURN view");
+		
 		return "cp.projectsListCommentsStatisiticsParams";
 	}
 	public String name(){
@@ -460,6 +462,7 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 			HttpServletRequest request, 
 			@Valid @ModelAttribute("threadExcellForm") mThreadExcellValidation threadExcellForm
 			) {
+		System.out.println(name() + "::CommentsOfSubmittedProjectsResultSummaryList, BEGIN");
 		
 		// Get current user name and role
 		String userCode = session.getAttribute("currentUserCode").toString();
@@ -620,6 +623,8 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		
 		// Put data back to view
 		model.put("projectList", listProjectSummary);
+		
+		System.out.println(name() + "::CommentsOfSubmittedProjectsResultSummaryList, RETURN a view");
 		return "cp.commentsSubmittedProjectsResultSummary";
 	}
  
