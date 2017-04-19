@@ -22,7 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import vn.webapp.modules.researchdeclarationmanagement.model.mAcademicYear;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopicCategory;
+import vn.webapp.modules.researchdeclarationmanagement.service.mAcademicYearService;
 import vn.webapp.modules.researchdeclarationmanagement.service.tProjectCategoryService;
 import vn.webapp.modules.researchmanagement.model.ProjectParticipationRoles;
 import vn.webapp.modules.researchmanagement.model.ProjectResearchField;
@@ -81,8 +83,14 @@ public class BaseWeb {
 	public static List<ProjectParticipationRoles> glb_projectParticipationRoles = null;
 	public static HashMap<String, ProjectParticipationRoles> glb_mCode2ProjectParticipationRole = null;
 	
+
+	public static List<mAcademicYear> glb_academicYear = null;
+	public static HashMap<String, mAcademicYear> glb_mCode2AcademicYear = null;
 	
 	public static final String PROJECT_ROOT_DIR = "C:/euniv-deploy/";
+
+    @Autowired
+    private mAcademicYearService academicYearService;
 
 	@Autowired
 	private mFuncsPermissionService funcsPermissionService;
@@ -115,6 +123,14 @@ public class BaseWeb {
 		return "BaseWeb";
 	}
 	
+	public void loadAcademicYears(){
+		System.out.println(name() + "::loadAcademicYear");
+		glb_academicYear = academicYearService.list();
+		glb_mCode2AcademicYear = new HashMap<String, mAcademicYear>();
+		for(mAcademicYear y: glb_academicYear){
+			glb_mCode2AcademicYear.put(y.getACAYEAR_Code(), y);
+		}
+	}
 	public void loadProjectParticipationRoles(){
 		System.out.println(name() + "::loadProjectParticipationRoles");
 		glb_projectParticipationRoles = projectParticipationRolesService.getList();

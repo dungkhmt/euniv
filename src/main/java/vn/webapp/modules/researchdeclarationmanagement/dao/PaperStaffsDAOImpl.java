@@ -38,13 +38,15 @@ public class PaperStaffsDAOImpl extends BaseDao implements PaperStaffsDAO {
     @Override
     public List<PaperStaffs> loadPaperListByPaperCode(String paperCode){
         try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PaperStaffs.class);
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PaperStaffs.class);
+        	Criteria criteria = getSession().createCriteria(PaperStaffs.class);
             criteria.add(Restrictions.eq("PPSTF_PaperCode", paperCode));
             criteria.addOrder(Order.desc("PPSTF_StaffCode"));
             List<PaperStaffs> papers = criteria.list();
             return papers;
         } catch (HibernateException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
+        	e.printStackTrace();
             return null;
         }
     }
@@ -57,7 +59,8 @@ public class PaperStaffsDAOImpl extends BaseDao implements PaperStaffsDAO {
     @Override
     public List<PaperStaffs> loadPaperListByPaperCode(List<String> paperCodes){
     	try {
-    		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PaperStaffs.class, "paperStaffs");
+    		//Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PaperStaffs.class, "paperStaffs");
+    		Criteria criteria = getSession().createCriteria(PaperStaffs.class, "paperStaffs");
             criteria.add(Restrictions.in("paperStaffs.PPSTF_PaperCode", paperCodes));
             List<PaperStaffs> papers = criteria.list();
             return papers;
@@ -76,7 +79,8 @@ public class PaperStaffsDAOImpl extends BaseDao implements PaperStaffsDAO {
     public int saveAPaperStaff(PaperStaffs paperStaff) 
     {
         try {
-           int id = (int)sessionFactory.getCurrentSession().save(paperStaff);
+           //int id = (int)sessionFactory.getCurrentSession().save(paperStaff);
+        	int id = (int)getSession().save(paperStaff);
            return id;           
         } catch (HibernateException e) {
         	System.out.println(e.getMessage());
@@ -92,7 +96,8 @@ public class PaperStaffsDAOImpl extends BaseDao implements PaperStaffsDAO {
     @Override
     public int removeAPaperStaff(PaperStaffs paperStaff){
         try {
-            sessionFactory.getCurrentSession().delete(paperStaff);
+            //sessionFactory.getCurrentSession().delete(paperStaff);
+        	getSession().delete(paperStaff);
             return 1;
         } catch (HibernateException e) {
         	System.out.println(e.getMessage());

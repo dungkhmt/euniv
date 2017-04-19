@@ -70,8 +70,9 @@ public class mStaffServiceImpl implements mStaffService {
     		}
     		return null;
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     

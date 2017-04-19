@@ -29,8 +29,9 @@ public class mDepartmentServiceImpl implements mDepartmentService {
         try {
             return departmentDAO.loadDepartmentList();
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     
@@ -68,8 +69,9 @@ public class mDepartmentServiceImpl implements mDepartmentService {
             return departmentDAO.loadADepartmentByCodes(departmentCode, falcutyCode);
             
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     
@@ -87,8 +89,9 @@ public class mDepartmentServiceImpl implements mDepartmentService {
             return departmentDAO.loadADepartmentByFaculty(falcutyCode);
             
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
 }

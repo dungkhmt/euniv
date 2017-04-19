@@ -71,8 +71,9 @@ public class tProjectServiceImpl implements tProjectService {
     		}
     		return null;
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            return null;
+            //System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     

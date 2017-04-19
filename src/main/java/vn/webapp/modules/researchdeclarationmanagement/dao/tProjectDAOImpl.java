@@ -32,7 +32,8 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public List<mTopics> loadTopicListByStaff(String userRole, String userCode) {
         try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class, "topics");
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class, "topics");
+        	Criteria criteria = getSession().createCriteria(mTopics.class, "topics");
             //if(!userRole.equals("ROLE_ADMIN")){
             criteria.add(Restrictions.eq("topics.PROJDECL_User_Code", userCode));
             //}
@@ -53,7 +54,8 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public List<mTopics> loadTopicListByYear(String userRole, String userCode, String reportingrYear) {
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class, "topics");
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class, "topics");
+    		Criteria criteria = getSession().createCriteria(mTopics.class, "topics");
             if(!userRole.equals("SUPER_ADMIN")){
             	criteria.add(Restrictions.eq("topics.PROJDECL_User_Code", userCode));
             }
@@ -75,7 +77,8 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public List<mTopics> loadTopicSummaryListByYear(String reportingrYear){
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class, "topics");
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class, "topics");
+    		Criteria criteria = getSession().createCriteria(mTopics.class, "topics");
             criteria.add(Restrictions.eq("topics.PROJDECL_ReportingAcademicDate", reportingrYear));
             criteria.addOrder(Order.asc("topics.PROJDECL_Name"));
             List<mTopics> topics = criteria.list();
@@ -95,7 +98,8 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     public int saveATopic(mTopics topic) 
     {
         try {
-           int id = (int)sessionFactory.getCurrentSession().save(topic);
+           //int id = (int)sessionFactory.getCurrentSession().save(topic);
+        	int id = (int)getSession().save(topic);
            return id;           
         } catch (HibernateException e) {
             e.printStackTrace();
@@ -111,7 +115,8 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public mTopics loadATopicByIdAndUserCode(String userRole, String userCode, int topicId){
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class);
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mTopics.class);
+    		Criteria criteria = getSession().createCriteria(mTopics.class);
             criteria.add(Restrictions.eq("PROJDECL_ID", topicId));
             if(!userRole.equals("ROLE_ADMIN")){
             	criteria.add(Restrictions.eq("PROJDECL_User_Code", userCode));
@@ -132,7 +137,8 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     @Override
     public void editATopic(mTopics topic){
         try {
-           sessionFactory.getCurrentSession().update(topic);
+           //sessionFactory.getCurrentSession().update(topic);
+        	getSession().update(topic);
         } catch (HibernateException e) {
             e.printStackTrace();
         }
@@ -149,7 +155,8 @@ public class tProjectDAOImpl extends BaseDao implements tProjectDAO{
     	topic.setPROJDECL_ID(topicId);    
         try {
             getSession().delete(topic);
-            sessionFactory.getCurrentSession().delete(topic);
+            //sessionFactory.getCurrentSession().delete(topic);
+            getSession().delete(topic);
             return 1;
         } catch (HibernateException e) {
             e.printStackTrace();

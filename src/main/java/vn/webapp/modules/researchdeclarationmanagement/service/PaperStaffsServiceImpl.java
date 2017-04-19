@@ -29,8 +29,9 @@ public class PaperStaffsServiceImpl implements PaperStaffsService {
         try {
         	return paperStaffsDAO.loadPaperListByPaperCode(paperCode);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
+            //System.out.println(e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     

@@ -32,7 +32,8 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> listAll() {
         try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+        	Criteria criteria = getSession().createCriteria(mPapers.class, "papers");
             criteria.addOrder(Order.desc("papers.PDECL_ID"));
             List<mPapers> papers = criteria.list();
             return papers;
@@ -48,7 +49,8 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> loadPaperListByStaff(String userRole, String userCode) {
         try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+           // Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+        	 Criteria criteria = getSession().createCriteria(mPapers.class, "papers");
             //if(!userRole.equals("ROLE_ADMIN")){
             	criteria.add(Restrictions.eq("papers.PDECL_User_Code", userCode));
             //}
@@ -98,7 +100,8 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> loadPaperListByYear(String userRole, String userCode, String reportingrYear){
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+    		Criteria criteria = getSession().createCriteria(mPapers.class, "papers");
             if(!userRole.equals("SUPER_ADMIN")){
             	criteria.add(Restrictions.eq("papers.PDECL_User_Code", userCode));
             }
@@ -120,7 +123,8 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> loadPaperSummaryListByYear(String reportingrYear){
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+    		Criteria criteria = getSession().createCriteria(mPapers.class, "papers");
             criteria.add(Restrictions.eq("papers.PDECL_ReportingAcademicDate", reportingrYear));
             criteria.addOrder(Order.asc("papers.PDECL_PublicationName"));
             List<mPapers> papers = criteria.list();
@@ -140,7 +144,8 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     public int saveAPaper(mPapers paper) 
     {
         try {
-           int id = (int)sessionFactory.getCurrentSession().save(paper);
+           //int id = (int)sessionFactory.getCurrentSession().save(paper);
+        	int id = (int)getSession().save(paper);
            return id; 
         } catch (HibernateException e) {
         	System.out.println(e.getMessage());
@@ -156,7 +161,8 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public mPapers loadAPaperByIdAndUserCode(String userRole, String userCode, int paperId){
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class);
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class);
+    		Criteria criteria = getSession().createCriteria(mPapers.class);
             criteria.add(Restrictions.eq("PDECL_ID", paperId));
             //if(!userRole.equals("ROLE_ADMIN")){
             	criteria.add(Restrictions.eq("PDECL_User_Code", userCode));
@@ -175,7 +181,8 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public mPapers loadAPaperById(int paperId){
     	try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class);
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class);
+    		Criteria criteria = getSession().createCriteria(mPapers.class);
             criteria.add(Restrictions.eq("PDECL_ID", paperId));
             mPapers paper = (mPapers) criteria.uniqueResult();
             return paper;
@@ -193,7 +200,8 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public void editAPaper(mPapers paper){
         try {
-           sessionFactory.getCurrentSession().update(paper);
+           //sessionFactory.getCurrentSession().update(paper);
+           getSession().update(paper);
         } catch (HibernateException e) {
         	System.out.println(e.getMessage());
         }
@@ -209,7 +217,8 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     	mPapers paper = new mPapers();
     	paper.setPDECL_ID(paperId);    
         try {
-            sessionFactory.getCurrentSession().delete(paper);
+            //sessionFactory.getCurrentSession().delete(paper);
+        	getSession().delete(paper);
             return 1;
         } catch (HibernateException e) {
         	System.out.println(e.getMessage());
