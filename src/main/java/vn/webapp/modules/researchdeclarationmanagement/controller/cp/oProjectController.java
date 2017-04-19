@@ -118,15 +118,16 @@ public class oProjectController extends BaseWeb {
    public String topicsList(ModelMap model, HttpSession session) {
 	   String userCode = session.getAttribute("currentUserCode").toString();
 	   String userRole = session.getAttribute("currentUserRole").toString();
-	   List<mStaff> staffs = staffService.listStaffs();
-	   HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
-	   for(mStaff st: staffs)
-		   mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+	   List<mStaff> staffs = glb_staffs;//staffService.listStaffs();
+	   //HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+	   //for(mStaff st: staffs)
+	//	   mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
 	   
 	   List<mTopics> topicsList = tProjectService.loadTopicListByStaff(userRole, userCode);
 	   
 	   for(mTopics p: topicsList){
-		   p.setPROJDECL_User_Code(mStaffCode2Name.get(p.getPROJDECL_User_Code()));
+		   //p.setPROJDECL_User_Code(mStaffCode2Name.get(p.getPROJDECL_User_Code()));
+		   p.setPROJDECL_User_Code(glb_mCode2Staff.get(p.getPROJDECL_User_Code()).getStaff_Name());
 	   }
 	   
 	   model.put("topicsList", topicsList);

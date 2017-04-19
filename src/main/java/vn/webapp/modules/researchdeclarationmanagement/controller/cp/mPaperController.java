@@ -118,12 +118,13 @@ public class mPaperController extends BaseWeb {
 	   String userRole = session.getAttribute("currentUserRole").toString();
 	   
 	   List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
-	   List<mStaff> staffs = staffService.listStaffs();
-	   HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
-	   for(mStaff st: staffs)
-		   mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+	   List<mStaff> staffs = glb_staffs;//staffService.listStaffs();
+	   //HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+	   //for(mStaff st: staffs)
+		//   mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
 	   for(mPapers p: papersList)
-		   p.setPDECL_User_Code(mStaffCode2Name.get(p.getPDECL_User_Code()));
+		   //p.setPDECL_User_Code(mStaffCode2Name.get(p.getPDECL_User_Code()));
+		   p.setPDECL_User_Code(glb_mCode2Staff.get(p.getPDECL_User_Code()).getStaff_Name());
 	   
 	   model.put("papersList", papersList);
 	   model.put("papers", status);
@@ -775,15 +776,28 @@ public class mPaperController extends BaseWeb {
     	String paperDepartment = paperSummaryValidation.getPaperDepartment();
     	String paperStaff = paperSummaryValidation.getThreadStaff();
     	
-    	List<mStaff> staffs = staffService.listStaffs();
-    	HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
-    	for(mStaff st: staffs)
-    		mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+    	System.out.println(name() + "::paperSummary, faculty = " + paperFaculty + ", year = " + paperAcademicYear);
+    	
+    	List<mStaff> staffs = glb_staffs;//Service.listStaffs();
+    	//HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+    	//for(mStaff st: staffs)
+    	//	mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
     	
  	    List<mPapers> papersList = paperService.loadPaperListSummary(paperStaff, paperCategory, paperAcademicYear);
  	    
- 	    for(mPapers p: papersList)
- 	    	p.setPDECL_User_Code(mStaffCode2Name.get(p.getPDECL_User_Code()));
+ 	    if(papersList == null)
+ 	    	papersList = new ArrayList<mPapers>();
+ 	    	
+ 	    for(mPapers p: papersList){
+ 	    	//p.setPDECL_User_Code(mStaffCode2Name.get(p.getPDECL_User_Code()));
+ 	    	String userCodePaper = p.getPDECL_User_Code();
+ 	    	mStaff st = glb_mCode2Staff.get(p.getPDECL_User_Code());
+ 	    	if(st != null)
+ 	    		p.setPDECL_User_Code(st.getStaff_Name());
+ 	    	else{
+ 	    		System.out.println(name() + "::paperSummary, staff " + userCodePaper + " is null");
+ 	    	}
+ 	    }
  	    
  	    model.put("papersList", papersList);
  	    model.put("papers", status);

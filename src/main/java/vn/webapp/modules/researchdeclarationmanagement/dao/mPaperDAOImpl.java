@@ -67,22 +67,26 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> loadPaperListSummary(String paperStaff, String paperCategory, String paperAcademicYear) {
         try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+            
+        	//Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
+        	Criteria criteria = getSession().createCriteria(mPapers.class);
+        	
             if(paperStaff != null && (!"".equals(paperStaff))){
-            	criteria.add(Restrictions.eq("papers.PDECL_User_Code", paperStaff));
+            	criteria.add(Restrictions.eq("PDECL_User_Code", paperStaff));
             }
             if(paperCategory != null && (!"".equals(paperCategory))){
-            	criteria.add(Restrictions.eq("papers.PDECL_PaperCategory_Code", paperCategory));
+            	criteria.add(Restrictions.eq("PDECL_PaperCategory_Code", paperCategory));
             }
             if(paperAcademicYear != null && (!"".equals(paperAcademicYear))){
-            	criteria.add(Restrictions.eq("papers.PDECL_ReportingAcademicDate", paperAcademicYear));
+            	criteria.add(Restrictions.eq("PDECL_ReportingAcademicDate", paperAcademicYear));
             }
-            criteria.addOrder(Order.desc("papers.PDECL_ID"));
+            criteria.addOrder(Order.desc("PDECL_ID"));
             List<mPapers> papers = criteria.list();
             return papers;
         } catch (HibernateException e) {
-        	System.out.println(e.getMessage());
-            return null;
+        	//System.out.println(e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     
