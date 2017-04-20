@@ -122,10 +122,14 @@ public class mPaperController extends BaseWeb {
 	   //HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
 	   //for(mStaff st: staffs)
 		//   mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
-	   for(mPapers p: papersList)
+	   for(mPapers p: papersList){
 		   //p.setPDECL_User_Code(mStaffCode2Name.get(p.getPDECL_User_Code()));
-		   p.setPDECL_User_Code(glb_mCode2Staff.get(p.getPDECL_User_Code()).getStaff_Name());
-	   
+		   String staffName = p.getPDECL_User_Code();
+		   mStaff st = glb_mCode2Staff.get(p.getPDECL_User_Code());
+		   if(st != null) staffName = st.getStaff_Name();
+		   p.setPDECL_User_Code(staffName);
+		   
+	   }
 	   model.put("papersList", papersList);
 	   model.put("papers", status);
 	   return "cp.papers";
