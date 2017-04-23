@@ -40,8 +40,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public mUsers getByUsername(String userName) {
 		try {
-			Criteria criteria = sessionFactory.getCurrentSession()
-					.createCriteria(mUsers.class);
+			//Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUsers.class);
+			Criteria criteria = getSession().createCriteria(mUsers.class);
 			criteria.add(Restrictions.eq("Username", userName));
 			mUsers user = (mUsers) criteria.uniqueResult();
 			return user;
@@ -61,8 +61,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public mUsers getByUsernameAndId(String userName, int id) {
 		try {
-			Criteria criteria = sessionFactory.getCurrentSession()
-					.createCriteria(mUsers.class);
+			//Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUsers.class);
+			Criteria criteria = getSession().createCriteria(mUsers.class);
 			criteria.add(Restrictions.eq("Username", userName));
 			criteria.add(Restrictions.ne("User_ID", id));
 			mUsers user = (mUsers) criteria.uniqueResult();
@@ -82,8 +82,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public List<mUsers> list() {
 		try {
-			Criteria criteria = sessionFactory.getCurrentSession()
-					.createCriteria(mUsers.class);
+			//Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUsers.class);
+			Criteria criteria = getSession().createCriteria(mUsers.class);
 			criteria.setFirstResult(0);
 			criteria.addOrder(Order.desc("User_ID"));
 			List<mUsers> users = criteria.list();
@@ -103,8 +103,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public mUsers viewDetail(int id) {
 		try {
-			Criteria criteria = sessionFactory.getCurrentSession()
-					.createCriteria(mUsers.class, "user");
+			//Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUsers.class, "user");
+			Criteria criteria = getSession().createCriteria(mUsers.class, "user");
 			criteria.add(Restrictions.eq("user.User_ID", id));
 			mUsers user = (mUsers) criteria.uniqueResult();
 			return user;
@@ -123,8 +123,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public mUserRoles viewDetailUserRole(String userName) {
 		try {
-			Criteria criteria = sessionFactory.getCurrentSession()
-					.createCriteria(mUserRoles.class, "userRole");
+			//Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUserRoles.class, "userRole");
+			Criteria criteria = getSession().createCriteria(mUserRoles.class, "userRole");
 			criteria.add(Restrictions.eq("userRole.Username", userName));
 			mUserRoles userRole = (mUserRoles) criteria.uniqueResult();
 			return userRole;
@@ -143,8 +143,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public mUserRoles viewDetailUserRoleId(int userRoleId) {
 		try {
-			Criteria criteria = sessionFactory.getCurrentSession()
-					.createCriteria(mUserRoles.class, "userRole");
+			//Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUserRoles.class, "userRole");
+			Criteria criteria = getSession().createCriteria(mUserRoles.class, "userRole");
 			criteria.add(Restrictions.eq("userRole.UserRole_ID", userRoleId));
 			mUserRoles userRole = (mUserRoles) criteria.uniqueResult();
 			return userRole;
@@ -167,7 +167,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 		try {
 			if ("ROLE_ADMIN".equals(loginUserRole)
 					|| "SUPER_ADMIN".equals(loginUserRole)) {
-				sessionFactory.getCurrentSession().delete(user);
+				//sessionFactory.getCurrentSession().delete(user);
+				getSession().delete(user);
 				return 1;
 			}
 			return 0;
@@ -183,7 +184,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public int removeAnUserRole(mUserRoles userRole) {
 		try {
-			sessionFactory.getCurrentSession().delete(userRole);
+			//sessionFactory.getCurrentSession().delete(userRole);
+			getSession().delete(userRole);
 			return 1;
 		} catch (HibernateException e) {
 			e.printStackTrace();
@@ -200,7 +202,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public int saveAUser(mUsers user) {
 		try {
-			int id = (int) sessionFactory.getCurrentSession().save(user);
+			//int id = (int) sessionFactory.getCurrentSession().save(user);
+			int id = (int)getSession().save(user);
 			return id;
 		} catch (HibernateException e) {
 			e.printStackTrace();
@@ -217,7 +220,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public int saveAUserRole(mUserRoles userRole) {
 		try {
-			int id = (int) sessionFactory.getCurrentSession().save(userRole);
+			//int id = (int) sessionFactory.getCurrentSession().save(userRole);
+			int id = (int) getSession().save(userRole);
 			return id;
 		} catch (HibernateException e) {
 			e.printStackTrace();
@@ -234,7 +238,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public void editAnUser(mUsers user) {
 		try {
-			sessionFactory.getCurrentSession().update(user);
+			//sessionFactory.getCurrentSession().update(user);
+			getSession().update(user);
 		} catch (HibernateException e) {
 			e.printStackTrace();
 		}
@@ -249,7 +254,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public void editAnUserRole(mUserRoles userRole) {
 		try {
-            sessionFactory.getCurrentSession().update(userRole);
+            //sessionFactory.getCurrentSession().update(userRole);
+			getSession().update(userRole);
          } catch (HibernateException e) {
              e.printStackTrace();	            
          }
@@ -264,7 +270,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public mUsers loadUserById(int userId) {
 		try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUsers.class);
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUsers.class);
+			Criteria criteria = getSession().createCriteria(mUsers.class);
             criteria.add(Restrictions.eq("User_ID", userId));
             mUsers user = (mUsers) criteria.uniqueResult();
             return user;
@@ -283,7 +290,8 @@ public class mUserDAOImpl extends BaseDao implements mUserDAO {
 	@Override
 	public int count() {
 		try {
-            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUsers.class);
+            //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mUsers.class);
+			Criteria criteria = getSession().createCriteria(mUsers.class);
             List<mUsers> users = criteria.list();
             return users.size();
         } catch (HibernateException e) {

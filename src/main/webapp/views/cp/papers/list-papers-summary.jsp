@@ -57,7 +57,11 @@
 							<tbody>
 								<c:forEach items="${papersList}" var="paper">
 									<tr class="gradeX">
-										<td><c:out value="${paper.PDECL_User_Code}"/></td>
+										
+										<td><c:out value="${paper.staff.staff_Name}"/></td>
+										<%-- 
+										 <td><c:out value="${paper.userFullName}"/></td>
+										 --%> 
 										<td><c:out value="${paper.PDECL_ReportingAcademicDate}"/></td>
 										
 										<td><c:out value="${paper.PDECL_AuthorList}"/></td>
@@ -73,11 +77,11 @@
 										<td><c:out value="${paper.PDECL_AuthorConvertedHours}"/></td>
 										<td class="center">
 										 
-											<button type="button" onclick="v_fViewDetailAPaper(${paper.PDECL_ID});" class="btn btn-info btn-xs" title="Edit">Chi tiết</button>
+											<%-- <button type="button" onclick="v_fViewDetailAPaper(${paper.PDECL_ID});" class="btn btn-info btn-xs" title="Edit">Chi tiết</button>
 											<br>
 											<button type="button" id="removePaper" onclick="v_fRemoveAPaper(${paper.PDECL_ID});" class="btn btn-danger btn-xs" title="Remove">Xoá</button>
-											
 											<br>
+											 --%>
 											<c:choose>
 					                            <c:when test="${paper.PDECL_SourceFile != '' && paper.PDECL_SourceFile != null}">
 					                                <a href="<c:url value="${baseUrl}/cp/download-paper/${paper.PDECL_ID}.html"/>" title="Download file xác thực" class="btn btn-success btn-xs">Download</a>

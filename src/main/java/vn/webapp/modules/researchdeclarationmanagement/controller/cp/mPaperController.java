@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -40,6 +41,7 @@ import vn.webapp.modules.researchdeclarationmanagement.model.PaperStaffs;
 import vn.webapp.modules.researchdeclarationmanagement.model.mAcademicYear;
 import vn.webapp.modules.researchdeclarationmanagement.model.mJournal;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPaperCategory;
+import vn.webapp.modules.researchdeclarationmanagement.model.mPaperFullInfo;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPapers;
 import vn.webapp.modules.researchdeclarationmanagement.model.mPapersCategoryHourBudget;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopicCategory;
@@ -98,6 +100,7 @@ public class mPaperController extends BaseWeb {
     private mFacultyService facultyService;
     
     static final String status = "active";
+    static final Logger log = Logger.getLogger(mPaperController.class);
     
     /**
      * Size of a byte buffer to read/write file
@@ -114,14 +117,21 @@ public class mPaperController extends BaseWeb {
     */
    @RequestMapping(value = "/papers", method = RequestMethod.GET)
    public String paperList(ModelMap model, HttpSession session) {
+	   System.out.println(name() + "::paperList, requetsMapping /papers");
+	   
 	   String userCode = session.getAttribute("currentUserCode").toString();
 	   String userRole = session.getAttribute("currentUserRole").toString();
+	   
+	   System.out.println(name() + "::paperList, userCode = " + userCode);
+	   
 	   
 	   List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
 	   List<mStaff> staffs = glb_staffs;//staffService.listStaffs();
 	   //HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
 	   //for(mStaff st: staffs)
 		//   mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+	   
+	   /*
 	   for(mPapers p: papersList){
 		   //p.setPDECL_User_Code(mStaffCode2Name.get(p.getPDECL_User_Code()));
 		   String staffName = p.getPDECL_User_Code();
@@ -130,7 +140,12 @@ public class mPaperController extends BaseWeb {
 		   p.setPDECL_User_Code(staffName);
 		   
 	   }
+	   */
+	   
+	   //List<mPaperFullInfo> papersInfo = create(papersList);
+	   
 	   model.put("papersList", papersList);
+	   //model.put("papersList", papersInfo);
 	   model.put("papers", status);
 	   return "cp.papers";
    }
@@ -270,16 +285,18 @@ public class mPaperController extends BaseWeb {
 	   
 	   //Get list of paper category and journalList
 	   String userCode = session.getAttribute("currentUserCode").toString();
+	   String userRole = session.getAttribute("currentUserRole").toString();
 	   
-	   List<mPaperCategory> paperCategory = paperCategoryService.list();
-	   List<mJournal> journalList = journalService.list();
-	   List<mPapersCategoryHourBudget> papersCategoryHourBudget = paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
+	   
+	   List<mPaperCategory> paperCategory = glb_paperCategories;//paperCategoryService.list();
+	   List<mJournal> journalList = glb_journalList;//journalService.list();
+	   List<mPapersCategoryHourBudget> papersCategoryHourBudget = glb_papersCategoryHourBudget;//paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
 	   
 	   // Get list reportingYear
-	   List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
+	   List<mAcademicYear> patentReportingAcademicDateList = glb_academicYear;//academicYearService.list();
 	   String paperConvertedHours = this.setJsonByListPaperCategory(papersCategoryHourBudget, patentReportingAcademicDateList);
-	   List<mFaculty> listFaculty = facultyService.loadFacultyList();
-	   List<mStaff> staffList = staffService.listStaffs();
+	   List<mFaculty> listFaculty = glb_faculties;//facultyService.loadFacultyList();
+	   List<mStaff> staffList = glb_staffs;//staffService.listStaffs();
 	   
 	   //Put data back to view
 	   model.put("patentReportingAcademicDateList", patentReportingAcademicDateList);
@@ -373,25 +390,35 @@ public class mPaperController extends BaseWeb {
 		    	   String paperISSN 		= paperValid.getPaperISSN();
 		    	   String paperJIndexCode 	= paperCate.getPCAT_Journal();
 		    	   
-		    	   int paperPubConHours 	= paperValid.getPaperPubConHours();
+		    	   int paperPubConHours 	= 0;//paperValid.getPaperPubConHours();
 		    	   if(papersCateHourBudget != null && !"".equals(papersCateHourBudget.getPCAHOBUD_Hour()))
 		    	   {
 		    		   paperPubConHours = papersCateHourBudget.getPCAHOBUD_Hour();
+		    		   System.out.println(name() + "::saveAPaper, converted hours of the paper = " + paperPubConHours);
 		    	   }
 		    	   int paperAutConHours 	= (!numberOfAuthors.equals(0)) ? (int) Math.round(paperPubConHours/numberOfAuthors) : 0;
 		    	   int paperYear 			= paperValid.getPaperYear();
 		    	   String paperMonth		= paperValid.getPaperMonth();
 		    	   String paperVolumn 		= paperValid.getPaperVolumn();
 		    	   
+		    	   log.info(userCode + " : saveAPaper, userCode = " + userCode + 
+		    			   ", paperName = " + paperPubName);
+		    	   System.out.println(name() + "::saveAPaper, userCode = " + userCode + 
+		    			   ", paperName = " + paperPubName);
+		    	   
 		    	   int i_InsertAPaper = paperService.saveAPaper(userCode, paperCatCode, paperPubName, paperJConfName, paperISSN, paperPubConHours, paperAutConHours, 
 		    			   											paperYear, paperJIndexCode, paperVolumn, paperAuthors, 
 		    			   											paperReportingAcademicDate, paperSourceUploadFileSrc, projectMembers,
 		    			   											mPaperController.APPROVE_STATUS_PENDING, paperMonth);
 		    	   if(i_InsertAPaper > 0){
+		    		   System.out.println(name() + "::saveAPaper, successfully, i_InsertAPaper = " + i_InsertAPaper + " --> redirect to mapping /cp/papers.html");
+		    		   List<mPapers> papers = paperService.loadPaperListByStaff(userRole, userCode);
+		    		   model.put("papersList", papers);
 		    		   return "redirect:" + this.baseUrl + "/cp/papers.html";
 		    	   }
 	    	   }catch (Exception e) {
-	    		   System.out.println(e.getStackTrace());
+	    		   //System.out.println(e.getStackTrace());
+	    		   e.printStackTrace();
 	    		   model.put("status", "You failed to upload " + fileName + " => " + e.getMessage());
 	           }
     	   }else{
@@ -477,9 +504,9 @@ public class mPaperController extends BaseWeb {
 	   if(papers != null)
 	   {
 		   List<PaperStaffs> listPaperStaffs = paperStaffsService.loadPaperListByPaperCode(papers.getPDECL_Code());
-		   List<mPaperCategory> paperCategory = paperCategoryService.list();
-		   List<mJournal> journalList = journalService.list();
-		   List<mPapersCategoryHourBudget> papersCategoryHourBudget = paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
+		   List<mPaperCategory> paperCategory = glb_paperCategories;//paperCategoryService.list();
+		   List<mJournal> journalList = glb_journalList;//journalService.list();
+		   List<mPapersCategoryHourBudget> papersCategoryHourBudget = glb_papersCategoryHourBudget;//paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
 		   String paperConvertedHours = this.setJsonByListPaperCategory(papersCategoryHourBudget, patentReportingAcademicDateList);
 		   String fileUploadName = papers.getPDECL_SourceFile();
 
@@ -518,18 +545,22 @@ public class mPaperController extends BaseWeb {
    public String updateAPaper(HttpServletRequest request, @Valid @ModelAttribute("paperFormEdit") mPaperValidation paperFormEdit, BindingResult result, Map model, HttpSession session) {
 	   String userRole = session.getAttribute("currentUserRole").toString();
    	   String userCode = session.getAttribute("currentUserCode").toString();
-	   List<mPaperCategory> paperCategories = paperCategoryService.list();
-	   List<mJournal> journalList = journalService.list();
-	   List<mPapersCategoryHourBudget> papersCategoryHourBudget = paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
+	   
+   	   List<mPaperCategory> paperCategories = glb_paperCategories;//paperCategoryService.list();
+	   List<mJournal> journalList = glb_journalList;//journalService.list();
+	   List<mPapersCategoryHourBudget> papersCategoryHourBudget = glb_papersCategoryHourBudget;//paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
 	   
 	   // Get list reportingYear
-	   List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
+	   List<mAcademicYear> patentReportingAcademicDateList = glb_academicYear;//academicYearService.list();
 	   String paperConvertedHours = this.setJsonByListPaperCategory(papersCategoryHourBudget, patentReportingAcademicDateList);
-	   List<mFaculty> listFaculty = facultyService.loadFacultyList();
-	   List<mStaff> staffList = staffService.listStaffs();
+	   List<mFaculty> listFaculty = glb_faculties;//facultyService.loadFacultyList();
+	   List<mStaff> staffList = glb_staffs;//staffService.listStaffs();
 	   int paperId = paperFormEdit.getPaperId();
 	   mPapers paper = paperService.loadAPaperById(paperId);
 	   List<PaperStaffs> listPaperStaffs = new ArrayList();
+	   
+	   System.out.println(name() + "::updateAPaper, user " + userCode + " updates paper Id = " + paperId);
+	   
 	   if(paper != null){
 		   listPaperStaffs = paperStaffsService.loadPaperListByPaperCode(paper.getPDECL_Code());
 	   }
@@ -632,9 +663,28 @@ public class mPaperController extends BaseWeb {
 		   	   		String volumn 				= paperFormEdit.getPaperVolumn();
 		   	   		String journalIndex = paperCategory.getPCAT_Journal();
 		   	   		
+		   	   		String memberStr = "";
+		   	   		for(int i = 0; i < projectMembers.length; i++)
+		   	   			memberStr += projectMembers[i];
+		   	   		log.info(userCode + " : updateAPaper, paperId = " + paperId + 
+		   	   				", paperCategory = " + paperCate + 
+		   	   				", publicationName = " + publicationName + 
+		   	   				", journalName = " + journalName + 
+		   	   				", ISSN = " + ISSN + 
+		   	   				", publicationConvertedHours = " + publicConvertedHours + 
+		   	   				", authorConvertedHour = " + authorConvertedHours +
+		   	   				", paperYear = " + paperYear + 
+		   	   				", volumn = " + volumn + 
+		   	   				", authors = " + authors + 
+		   	   				", journalIndex = " + journalIndex + 
+		   	   				", reportingAcademicDate = " + paperReportingAcademicDate +
+		   	   				", sourceFile = " + paperSourceUploadFileSrc +
+		   	   				", members = " + memberStr + 
+		   	   				", month = " + paperMonth);
 		   	   		paperService.editAPaper(paperId, paperCate, publicationName, 
 								journalName, ISSN, publicConvertedHours, authorConvertedHours, paperYear, volumn, 
-								authors, journalIndex, paperReportingAcademicDate, paperSourceUploadFileSrc, projectMembers, paperMonth);
+								authors, journalIndex, paperReportingAcademicDate, paperSourceUploadFileSrc, 
+								projectMembers, paperMonth);
 		
 		   	   		return "redirect:" + this.baseUrl + "/cp/papers.html";
 	    	   }else{
@@ -658,6 +708,8 @@ public class mPaperController extends BaseWeb {
 	   String userRole = session.getAttribute("currentUserRole").toString();
 	   model.put("papers", status);
 	   mPapers paper = paperService.loadAPaperById(paperId);
+	   log.info(userCode + " : removeAPaper, paperId = " + paperId);
+	   System.out.println(name() + "::removeAPaper, user " + userCode + " removes paper Id = " + paperId);
 	   if(paper != null){
 		   paperService.removeAPaper(paperId);
 		   List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
@@ -686,10 +738,14 @@ public class mPaperController extends BaseWeb {
 	   model.put("papers", status);
 	   mPapers paper = paperService.loadAPaperById(paperId);
 	   String auth_user_code = paper.getPDECL_User_Code();
+	   
 	   if(paper.getPDECL_SourceFile() != null){
 		   ServletContext context = request.getServletContext();
 		   
 		   String fullfilename = establishFullFileNameForDownload(paper.getPDECL_SourceFile(), auth_user_code, request);
+		   log.info(userCode + " : downloadPaper, fullname = " + fullfilename);
+		   System.out.println(name() + "::downloadPaper  " + fullfilename);
+		   
 		   File downloadFile = new File(fullfilename);
 		   
 		   if(downloadFile.exists()){
@@ -742,7 +798,7 @@ public class mPaperController extends BaseWeb {
 		
 		List<mFaculty> threadFaculties = new ArrayList<mFaculty>();
 		if ("ROLE_ADMIN".equals(userRole) || "SUPER_ADMIN".equals(userRole)){
-			threadFaculties = facultyService.loadFacultyList();
+			threadFaculties = glb_faculties;//facultyService.loadFacultyList();
 		}else if (mUserController.ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY.equals(userRole)) {
 			mFaculty faculty = facultyService.loadAFacultyByCode(facultyCode);
 			if (faculty != null){
@@ -750,10 +806,10 @@ public class mPaperController extends BaseWeb {
 			}
 		}
 		
-		List<mPaperCategory> paperCategory = paperCategoryService.list();
+		List<mPaperCategory> paperCategory = glb_paperCategories;//paperCategoryService.list();
 		// Get list reportingYear
-		List<mAcademicYear> paperReportingAcademicYearList = academicYearService.list();
-		   
+		List<mAcademicYear> paperReportingAcademicYearList = glb_academicYear;//academicYearService.list();
+		
 		// Put data back to view
 		model.put("paperSummaryForm", new mPaperSummaryValidation());
 		model.put("paperReportingAcademicYearList", paperReportingAcademicYearList);
@@ -771,6 +827,40 @@ public class mPaperController extends BaseWeb {
      * @param session
      * @return
      */
+    public List<mPaperFullInfo> create(List<mPapers> papers){
+    	List<mPaperFullInfo> papersListInfo = new ArrayList<mPaperFullInfo>();
+    	for(mPapers p: papers){
+    		mPaperFullInfo pi = new mPaperFullInfo();
+    		pi.setPaperCategory(p.getPaperCategory());
+    		pi.setPDECL_Approve_UserCode(p.getPDECL_Approve_UserCode());
+    		pi.setPDECL_ApproveStatus(p.getPDECL_ApproveStatus());
+    		pi.setPDECL_AuthorConvertedHours(p.getPDECL_AuthorConvertedHours());
+    		pi.setPDECL_AuthorList(p.getPDECL_AuthorList());
+    		pi.setPDECL_Code(p.getPDECL_Code());
+    		pi.setPDECL_ID(p.getPDECL_ID());
+    		pi.setPDECL_IndexCode(p.getPDECL_IndexCode());
+    		pi.setPDECL_ISSN(p.getPDECL_ISSN());
+    		pi.setPDECL_JournalConferenceName(p.getPDECL_JournalConferenceName());
+    		pi.setPDECL_Month(p.getPDECL_Month());
+    		pi.setPDECL_PaperCategory_Code(p.getPDECL_PaperCategory_Code());
+    		pi.setPDECL_PublicationConvertedHours(p.getPDECL_PublicationConvertedHours());
+    		pi.setPDECL_PublicationName(p.getPDECL_PublicationName());
+    		pi.setPDECL_ReportingAcademicDate(p.getPDECL_ReportingAcademicDate());
+    		pi.setPDECL_SourceFile(p.getPDECL_SourceFile());
+    		pi.setPDECL_User_Code(p.getPDECL_User_Code());
+    		pi.setPDECL_Volumn(p.getPDECL_Volumn());
+    		pi.setPDECL_Year(p.getPDECL_Year());
+    		
+    		String name = p.getPDECL_User_Code();
+    		mStaff st = glb_mCode2Staff.get(p.getPDECL_User_Code());
+    		if(st != null) name = st.getStaff_Name();
+    		pi.setUserFullName(name);
+    		
+    		papersListInfo.add(pi);
+    	}
+ 	    return papersListInfo;
+    }
+    
     @RequestMapping(value = "/papersSummary", method = RequestMethod.POST)
 	public String papersSummary(@Valid @ModelAttribute("paperSummaryForm") mPaperSummaryValidation paperSummaryValidation, BindingResult result, Map model, HttpSession session){
 		
@@ -789,21 +879,31 @@ public class mPaperController extends BaseWeb {
     	
  	    List<mPapers> papersList = paperService.loadPaperListSummary(paperStaff, paperCategory, paperAcademicYear);
  	    
- 	    if(papersList == null)
- 	    	papersList = new ArrayList<mPapers>();
- 	    	
- 	    for(mPapers p: papersList){
+ 	    
+ 	    
+ 	    
+ 	    if(papersList == null) 	papersList = new ArrayList<mPapers>();
+ 	   
+ 	   //List<mPaperFullInfo> papersListInfo = create(papersList);
+ 	   
+ 	   /*
+ 	  for(mPapers p: papersList){
  	    	//p.setPDECL_User_Code(mStaffCode2Name.get(p.getPDECL_User_Code()));
  	    	String userCodePaper = p.getPDECL_User_Code();
  	    	mStaff st = glb_mCode2Staff.get(p.getPDECL_User_Code());
+ 	    	mPaperFullInfo pi = new mPaperFullInfo();
+ 	    	
  	    	if(st != null)
- 	    		p.setPDECL_User_Code(st.getStaff_Name());
+ 	    		//p.setPDECL_User_Code(st.getStaff_Name());
+ 	    		pi.setUserFullName(st.getStaff_Name());
  	    	else{
  	    		System.out.println(name() + "::paperSummary, staff " + userCodePaper + " is null");
  	    	}
+ 	    	//papersListInfo.add(pi);
  	    }
- 	    
+ 	  */  
  	    model.put("papersList", papersList);
+ 	    //model.put("papersList", papersListInfo);
  	    model.put("papers", status);
  	    return "cp.listPapersSummary";
 	}

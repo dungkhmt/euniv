@@ -32,13 +32,16 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> listAll() {
         try {
+        	begin();
             //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
         	Criteria criteria = getSession().createCriteria(mPapers.class, "papers");
             criteria.addOrder(Order.desc("papers.PDECL_ID"));
             List<mPapers> papers = criteria.list();
+            commit();
             return papers;
         } catch (HibernateException e) {
-        	System.out.println(e.getMessage());
+        	//System.out.println(e.getMessage());
+        	e.printStackTrace();
             return null;
         }
     }
@@ -49,6 +52,7 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> loadPaperListByStaff(String userRole, String userCode) {
         try {
+        	begin();
            // Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
         	 Criteria criteria = getSession().createCriteria(mPapers.class, "papers");
             //if(!userRole.equals("ROLE_ADMIN")){
@@ -56,9 +60,11 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
             //}
             criteria.addOrder(Order.desc("papers.PDECL_ID"));
             List<mPapers> papers = criteria.list();
+            commit();
             return papers;
         } catch (HibernateException e) {
-        	System.out.println(e.getMessage());
+        	//System.out.println(e.getMessage());
+        	e.printStackTrace();
             return null;
         }
     }
@@ -69,7 +75,7 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> loadPaperListSummary(String paperStaff, String paperCategory, String paperAcademicYear) {
         try {
-            
+            begin();
         	//Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
         	Criteria criteria = getSession().createCriteria(mPapers.class);
         	
@@ -84,6 +90,7 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
             }
             criteria.addOrder(Order.desc("PDECL_ID"));
             List<mPapers> papers = criteria.list();
+            commit();
             return papers;
         } catch (HibernateException e) {
         	//System.out.println(e.getMessage());
@@ -100,6 +107,7 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> loadPaperListByYear(String userRole, String userCode, String reportingrYear){
     	try {
+    		begin();
             //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
     		Criteria criteria = getSession().createCriteria(mPapers.class, "papers");
             if(!userRole.equals("SUPER_ADMIN")){
@@ -108,6 +116,7 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
             criteria.add(Restrictions.eq("papers.PDECL_ReportingAcademicDate", reportingrYear));
             criteria.addOrder(Order.asc("papers.PDECL_PublicationName"));
             List<mPapers> papers = criteria.list();
+            commit();
             return papers;
         } catch (HibernateException e) {
         	System.out.println(e.getMessage());
@@ -123,15 +132,18 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public List<mPapers> loadPaperSummaryListByYear(String reportingrYear){
     	try {
+    		begin();
             //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class, "papers");
     		Criteria criteria = getSession().createCriteria(mPapers.class, "papers");
             criteria.add(Restrictions.eq("papers.PDECL_ReportingAcademicDate", reportingrYear));
             criteria.addOrder(Order.asc("papers.PDECL_PublicationName"));
             List<mPapers> papers = criteria.list();
+            commit();
             return papers;
         } catch (HibernateException e) {
-        	System.out.println(e.getMessage());
-            return null;
+        	//System.out.println(e.getMessage());
+            e.printStackTrace();
+        	return null;
         }
     }
     
@@ -144,12 +156,20 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     public int saveAPaper(mPapers paper) 
     {
         try {
+        	begin();
            //int id = (int)sessionFactory.getCurrentSession().save(paper);
         	int id = (int)getSession().save(paper);
+        	commit();
            return id; 
         } catch (HibernateException e) {
-        	System.out.println(e.getMessage());
+        	//System.out.println(e.getMessage());
+        	e.printStackTrace();
+        	rollback();
+        	close();
             return 0;
+        }finally{
+        	flush();
+        	close();
         }
     }
     
@@ -161,6 +181,7 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public mPapers loadAPaperByIdAndUserCode(String userRole, String userCode, int paperId){
     	try {
+    		begin();
             //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class);
     		Criteria criteria = getSession().createCriteria(mPapers.class);
             criteria.add(Restrictions.eq("PDECL_ID", paperId));
@@ -168,10 +189,12 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
             	criteria.add(Restrictions.eq("PDECL_User_Code", userCode));
             //}
             mPapers paper = (mPapers) criteria.uniqueResult();
+            commit();
             return paper;
         } catch (HibernateException e) {
-        	System.out.println(e.getMessage());
-            return null;
+        	//System.out.println(e.getMessage());
+           e.printStackTrace();
+        	return null;
         }
     }
     
@@ -181,17 +204,23 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
     @Override
     public mPapers loadAPaperById(int paperId){
     	try {
+    		begin();
             //Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mPapers.class);
     		Criteria criteria = getSession().createCriteria(mPapers.class);
             criteria.add(Restrictions.eq("PDECL_ID", paperId));
             mPapers paper = (mPapers) criteria.uniqueResult();
+            commit();
             return paper;
         } catch (HibernateException e) {
-        	System.out.println(e.getMessage());
+        	//System.out.println(e.getMessage());
+        	e.printStackTrace();
             return null;
         }
     }
-    
+
+    public String name(){
+    	return "mPaperDAOImpl";
+    }
     /**
      * Edit a paper
      * @param object
@@ -199,12 +228,21 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
      */
     @Override
     public void editAPaper(mPapers paper){
+    	System.out.println(name() + "::editAPaper, paperId = " + paper.getPDECL_ID() + ", userCode = " + paper.getPDECL_User_Code());
         try {
+        	begin();
            //sessionFactory.getCurrentSession().update(paper);
            getSession().update(paper);
+        	commit();
         } catch (HibernateException e) {
-        	System.out.println(e.getMessage());
-        }
+        	//System.out.println(e.getMessage());
+        	e.printStackTrace();
+        	rollback();
+			close();
+		} finally {
+			flush();
+			close();
+		}
     }
     
     /**
@@ -214,15 +252,24 @@ public class mPaperDAOImpl extends BaseDao implements mPaperDAO{
      */
     @Override
     public int removeAPaper(int paperId){
-    	mPapers paper = new mPapers();
-    	paper.setPDECL_ID(paperId);    
+    	//mPapers paper = new mPapers();
+    	//paper.setPDECL_ID(paperId);
+    	mPapers paper = loadAPaperById(paperId);
         try {
+        	begin();
             //sessionFactory.getCurrentSession().delete(paper);
         	getSession().delete(paper);
+        	commit();
             return 1;
         } catch (HibernateException e) {
-        	System.out.println(e.getMessage());
-            return 0;
+        	//System.out.println(e.getMessage());
+            e.printStackTrace();
+            rollback();
+            close();
+        	return 0;
+        }finally{
+        	flush();
+        	close();
         }
     }
 }
