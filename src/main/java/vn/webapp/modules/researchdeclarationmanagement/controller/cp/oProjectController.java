@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.swing.border.Border;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.TabSettings;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import vn.webapp.controller.BaseWeb;
 import vn.webapp.libraries.DateUtil;
@@ -108,6 +123,9 @@ public class oProjectController extends BaseWeb {
     public static final String _sHTMLTemplate2 = "html/profile_template.html";
 	public static final String _sHTMLCompletedContent2 = "html/completed.html";
 	public static final String _sOutPutFile2 = "results/science-profile.pdf";
+	public static final String FONT = "fonts/vi-fonts/times.ttf";
+    private static Font titleFont = FontFactory.getFont(FONT, BaseFont.IDENTITY_H, 15);
+    private static Font contentFont = FontFactory.getFont(FONT, BaseFont.IDENTITY_H, 13);
     
     /**
     * Show list all topics
@@ -576,6 +594,302 @@ public class oProjectController extends BaseWeb {
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Generating PDF
+	 * 
+	 * @param model
+	 * @param threadId
+	 * @param session
+	 * @return
+	 * @throws DocumentException
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/profile-science-test.pdf")
+	public void generatePDFProfileProjectTest(HttpServletRequest request, HttpServletResponse response, ModelMap model, HttpSession session) throws IOException, DocumentException {
+		String userRole = session.getAttribute("currentUserRole").toString();
+		String userCode = session.getAttribute("currentUserCode").toString();
+
+		mStaff staff = staffService.loadStaffByUserCode(userCode);
+		//System.out.print(staff.getStaff_Code());
+		//List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
+		//List<mPatents> patentsList = patentService.loadPatentListByStaff(userRole, userCode);
+		//List<mBooks> booksList = bookService.loadBookListByStaff(userRole, userCode);
+		//List<mTopics> topicsList = tProjectService.loadTopicListByStaff(userRole, userCode);
+		
+		final ServletContext servletContext = request.getSession().getServletContext();
+		final File tempDirectory = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+		final String temperotyFilePath = tempDirectory.getAbsolutePath();
+		String sProjectPDFFileName = staff.getStaff_Code() + "_" + staff.getStaff_ID() + ".pdf";
+
+		List<Projects> projects = threadService.loadProjectsListByStaff(userRole,userCode);
+		
+		model.put("projects", status);
+		
+		// Put journal list and topic category to view
+		model.put("projectFormEdit", new ProjectsValidation());
+		model.put("projectId", 1);
+
+		//this.prepareContent(topicsList, staff, papersList, patentsList, booksList);
+		String title = "a";
+		
+		Document document = new Document();
+		
+		ParagraphBorder border = new ParagraphBorder();
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(temperotyFilePath + "\\"+ sProjectPDFFileName));
+		//add content
+		//writer.setPageEvent(border);
+		document.open();
+		document.setMargins(36, 72, 108, 180);
+		
+		 Paragraph preface = new Paragraph();
+	        // We add one empty lines
+			 addTitlePage(document);
+			 //border.setActive(true);
+	         addContent(document);
+
+	        document.add(preface);
+	        //border.setActive(false);
+		
+        document.close();
+		//PDFGenerator.v_fGenerator(temperotyFilePath + "\\"+ sProjectPDFFileName);
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			baos = convertPDFToByteArrayOutputStream(temperotyFilePath+ "\\" + sProjectPDFFileName);
+			OutputStream os = response.getOutputStream();
+			baos.writeTo(os);
+			os.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	private void addContent(Document document) {
+		BaseFont baseWingdings;
+		try {
+			baseWingdings = BaseFont.createFont("fonts/window/wingdings.ttf", BaseFont.IDENTITY_H, false);
+			Font font = new Font(baseWingdings, 16f, Font.BOLD);
+		    char checked='\u00FE';
+		    char unchecked='\u00A8';
+		    
+		    PdfPCell[] bodyContent = new PdfPCell[19];
+		    
+		    bodyContent[0] = createPdfPCell(new Paragraph("1. Họ và tên: "+"Lê Văn Đức", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
+		    
+		    PdfPCell[] bodyBirth = new PdfPCell[2];
+		    bodyBirth[0] = createPdfPCell(new Paragraph("2. Năm sinh: "+"10/02/1996", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+		    bodyBirth[1] = createPdfPCell(new Paragraph("3. Nam/Nữ: "+"Nam", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+		    bodyContent[1] = createPdfPCell(createTable(new float[]{1, 1},  100, new PdfPCell[0] , bodyBirth), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+		    
+		    
+		    
+			Paragraph preface = new Paragraph();
+			//Paragraph name = 
+
+//	        Paragraph birth = new Paragraph();
+//	        birth.add(new Chunk("2. Năm sinh: "+"1996", contentFont));
+//	        birth.setTabSettings(new TabSettings(300f));
+//	        birth.add(Chunk.TABBING);
+//	        birth.add(new Chunk("3. Nam/Nữ: "+"Nam", contentFont));
+	        
+	        Paragraph academicRank = new Paragraph();
+	        academicRank.add(new Chunk("4. Học hàm: "+"", contentFont));
+	        academicRank.setTabSettings(new TabSettings(300f));
+	        academicRank.add(Chunk.TABBING);
+	        academicRank.add(new Chunk("Năm được phong: "+"", contentFont));
+	        academicRank.add(Chunk.NEWLINE);
+	        academicRank.add(new Chunk("Học vị: "+"Tiến sĩ", contentFont));
+	        academicRank.setTabSettings(new TabSettings(300f));
+	        academicRank.add(Chunk.TABBING);
+	        academicRank.add(new Chunk("Năm đạt học vị: "+"2016", contentFont));
+	        
+	        Paragraph recentResearchField = new Paragraph();
+	        recentResearchField.setTabSettings(new TabSettings(200f));
+	        recentResearchField.add(new Chunk("5. Lĩnh vực nghiên cứu trong 5 năm gần đây: ", contentFont));
+	        
+	        String[] fields = {"Khoa học tự nhiên", "Khoa học Kỹ thuật và Công nghệ", "Khoa học Y dược", "Khoa học Xã hội", "Khoa học Nhân văn", "Khoa học Nông nghiệp"};
+	        Boolean[] value = {true, false, false, false, false, false};
+	        PdfPCell[] contentsRecentResearch = new PdfPCell[fields.length+value.length];
+	      
+	        for(int i = 0; i < fields.length; ++i) {
+	        	contentsRecentResearch[2*i] = createPdfPCell(new Paragraph(fields[i], contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        	contentsRecentResearch[2*i+1] = createPdfPCell(new Paragraph(value[i]?String.valueOf(checked):String.valueOf(unchecked),font), Element.ALIGN_LEFT, i==fields.length-1?Rectangle.NO_BORDER:Rectangle.RIGHT);
+	        }
+	        recentResearchField.add(createTable(new float[] {4,1,4,1,4,1}, 100, new PdfPCell[0], contentsRecentResearch));
+	        
+	        PdfPCell[] contentsResearch = new PdfPCell[3];
+	        contentsResearch[0] = createPdfPCell(new Paragraph("Mã chuyên ngành KH&CN", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        String[] code = {"1", "0", "0", "2", "9"};
+	        PdfPCell[] contentsCode = new PdfPCell[code.length];
+	        float[] widthCode = new float[code.length];
+	        for(int i = 0; i < code.length; ++i) {
+	        	contentsCode[i] = createPdfPCell(new Paragraph(code[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
+	        	widthCode[i] = 1;
+	        }
+	        contentsResearch[1] = createPdfPCell(createTable(new float[] {1,1,1,1,1}, 10, new PdfPCell[0], contentsCode), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        contentsResearch[2] = createPdfPCell(new Paragraph("Tên gọi: VẬT LÝ CÁC CHẤT CÔ ĐẶC", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        recentResearchField.add(createTable(new float[] {2,1,3}, 100, new PdfPCell[0], contentsResearch));
+	        
+	        Paragraph title = new Paragraph();
+	        title.add(new Chunk("6. Chức danh nghiên cứu: "+"", contentFont));
+	        title.add(Chunk.NEWLINE);
+	        title.add(new Chunk("Chức vụ hiện nay: "+"", contentFont));
+	        
+	        Paragraph adress = new Paragraph();
+	        adress.add(new Chunk("7. Địa chỉ nhà riêng: "+"", contentFont));
+	        String[] phoneName = {"Điện thoại NR:", "CQ:", "Mobile:"};
+	        PdfPCell[] contentsphoneName = new PdfPCell[phoneName.length*2];
+	        
+	        for(int i = 0; i < phoneName.length; ++i) {
+	        	contentsphoneName[2*i] = createPdfPCell(new Paragraph(phoneName[i], contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        	contentsphoneName[2*i+1] = createPdfPCell(new Paragraph(""), Element.ALIGN_LEFT, i==phoneName.length-1?Rectangle.NO_BORDER:Rectangle.RIGHT);
+	        }
+	        PdfPCell[] contentEmail = new PdfPCell[1];
+	        contentEmail[0] = createPdfPCell(new Paragraph("Email: " + "", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        adress.add(createTable(new float[] {1,1,1,1,1,1}, 100, new PdfPCell[0], contentsphoneName));
+	        adress.add(createTable(new float[] {1}, 100, new PdfPCell[0], contentEmail));
+	        
+	        Paragraph workingAgency = new Paragraph();
+	        workingAgency.add(new Chunk("8. Cơ quan công tác:", contentFont));
+	        PdfPCell[] contentWorkingAgency = new PdfPCell[8];
+	        contentWorkingAgency[0] = createPdfPCell(new Paragraph("Tên cơ quan:", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        contentWorkingAgency[1] = createPdfPCell(new Paragraph("", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        contentWorkingAgency[2] = createPdfPCell(new Paragraph("Tên người đứng đầu:", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        contentWorkingAgency[3] = createPdfPCell(new Paragraph("", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        contentWorkingAgency[4] = createPdfPCell(new Paragraph("Địa chỉ cơ quan:", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        contentWorkingAgency[5] = createPdfPCell(new Paragraph("", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        contentWorkingAgency[6] = createPdfPCell(new Paragraph("Điện thoại:", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        contentWorkingAgency[7] = createPdfPCell(new Paragraph("Fax:", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        workingAgency.add(createTable(new float[]{1,1}, 100, new PdfPCell[0], contentWorkingAgency));
+	        
+	        Paragraph education = new Paragraph();
+	        education.add(new Chunk("9. Quá trình đào tạo", contentFont));
+	        
+	        String[] nameHeaderEducation = {"Bậc đào tạo", "Nơi đào tạo (Trường, Viện. Nước)", "Chuyên ngành", "Ngày/Tháng/Năm tốt nghiệp (TS, Thạc sĩ, KS, CN,...)"};
+	        PdfPCell[] contentEducationHeader = new PdfPCell[nameHeaderEducation.length];
+	        
+	        String[] nameBodyEducation = {"Đại học", "", "", "", "Thạc sỹ", "", "", "", "Tiến sỹ", "", "", "", "Thực tập sinh khoa học", "", "", ""};
+	        PdfPCell[] contentEducationBody = new PdfPCell[nameBodyEducation.length];
+	        
+	        for(int i = 0; i < nameHeaderEducation.length; ++i) {
+	        	contentEducationHeader[i] = createPdfPCell(new Paragraph(nameHeaderEducation[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
+	        }
+	        
+	        for(int i = 0; i < nameBodyEducation.length; ++i) {
+	        	contentEducationBody[i] = createPdfPCell(new Paragraph(nameBodyEducation[i], contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
+	        }
+
+
+	        education.add(createTable(new float[]{3,3,2,2}, 100, contentEducationHeader, contentEducationBody));
+	        
+	        Paragraph language = new Paragraph();
+	        language.add(new Chunk("10. Trình độ ngoại ngữ (mỗi mục đề nghị ghi rõ mức độ: Tốt/Khá/TB)", contentFont));
+	        
+	        String[] nameHeaderLanguage = {"TT", "Tên ngoại ngữ", "Nghe", "Nói", "Đọc", "Viết"};
+	        PdfPCell[] contentLanguageHeader = new PdfPCell[nameHeaderLanguage.length];
+	        
+	        String[] nameBodyLanguage = {"1", "Tiếng Nga", "Tốt", "Tốt", "Tốt", "Tốt", "2", "Tiếng Anh", "", "", "", ""};
+	        PdfPCell[] contentLanguageBody = new PdfPCell[nameBodyLanguage.length];
+	        
+	        for(int i = 0; i < nameHeaderLanguage.length; ++i) {
+	        	contentLanguageHeader[i] = createPdfPCell(new Paragraph(nameHeaderLanguage[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
+	        }
+	        
+	        for(int i = 0; i < nameBodyLanguage.length; ++i) {
+	        	contentLanguageBody[i] = createPdfPCell(new Paragraph(nameBodyLanguage[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
+	        }
+
+
+	        language.add(createTable(new float[]{1,4,2,2,2,2}, 100, contentLanguageHeader, contentLanguageBody));
+	        
+	        preface.add(name);
+	        preface.add(birth);
+	        preface.add(academicRank);
+	        preface.add(recentResearchField);
+	        preface.add(adress);
+	        preface.add(workingAgency);
+	        preface.add(education);
+	        preface.add(language);
+	        
+	        document.add(preface);
+		} catch (DocumentException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	}
+	
+	private PdfPTable createTable(float[] width,float widthPercentage, PdfPCell[] headers, PdfPCell[] contents) {
+		PdfPTable table = new PdfPTable(width);
+		table.setWidthPercentage(widthPercentage);
+		
+		for(PdfPCell header: headers) {
+			table.addCell(header);
+		}
+		
+		for(PdfPCell content: contents) {
+			table.addCell(content);
+		}
+		
+		return table;
+	}
+	
+	private PdfPCell createPdfPCell(Paragraph content, int horizontalAlignment, int border) {
+		PdfPCell newPdfPCell = new PdfPCell(content);
+		
+		newPdfPCell.setHorizontalAlignment(horizontalAlignment);
+		newPdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		newPdfPCell.setBorder(border);
+		 
+        // padding
+		newPdfPCell.setPaddingLeft(3f);
+		newPdfPCell.setPaddingRight(3f);
+		newPdfPCell.setPaddingTop(3f);
+		newPdfPCell.setPaddingBottom(3f);
+		
+		newPdfPCell.setBorderWidth(1);
+ 
+        // height
+		newPdfPCell.setMinimumHeight(18f);
+
+		return newPdfPCell;
+	}
+
+	private PdfPCell createPdfPCell(PdfPTable content, int horizontalAlignment, int border) {
+		PdfPCell newPdfPCell = new PdfPCell(content);
+		
+		newPdfPCell.setHorizontalAlignment(horizontalAlignment);
+		newPdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		newPdfPCell.setBorder(border);
+		 
+        // padding
+		newPdfPCell.setPaddingLeft(5f);
+		newPdfPCell.setPaddingRight(5f);
+		newPdfPCell.setPaddingTop(5f);
+		newPdfPCell.setPaddingBottom(5f);
+		
+		newPdfPCell.setBorderWidth(1);
+ 
+        // height
+		newPdfPCell.setMinimumHeight(18f);
+
+		return newPdfPCell;
+	}
+
+	private void addTitlePage(Document document) {
+		Paragraph preface = new Paragraph();
+		Paragraph name = new Paragraph("LÝ LỊCH KHOA HỌC \n CHUYÊN GIA KHOA HỌC VÀ CÔNG NGHỆ", titleFont);
+        name.setAlignment(Element.ALIGN_CENTER);
+        preface.add(name);
+        try {
+			document.add(preface);
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 	}
