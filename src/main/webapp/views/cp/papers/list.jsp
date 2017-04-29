@@ -56,7 +56,12 @@
 							<tbody>
 								<c:forEach items="${papersList}" var="paper">
 									<tr class="gradeX">
-										<td><c:out value="${paper.PDECL_User_Code}"/></td>
+										 
+										<td><c:out value="${paper.staff.staff_Name}"/></td>
+										 
+										<%-- 
+										<td><c:out value="${paper.userFullName}"/></td>
+										 --%>
 										<td><c:out value="${paper.PDECL_ReportingAcademicDate}"/></td>
 										
 										<td><c:out value="${paper.PDECL_AuthorList}"/></td>

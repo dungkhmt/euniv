@@ -48,7 +48,7 @@ public class mEducationController extends BaseWeb {
 	@Autowired
     private mFuncsPermissionService funcsPermissionService;
 	
-	String name(){
+	public String name(){
 		return "mEducationController";
 	}
 	

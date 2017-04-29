@@ -57,7 +57,9 @@ public class mBookController extends BaseWeb {
 	private mPaperService	paperStaffsSrv;
 	@Autowired
 	private BookStaffsService bookStaffsService;
-	String name(){
+	
+	
+	public String name(){
 		return "mBookController";
 	}
     /**

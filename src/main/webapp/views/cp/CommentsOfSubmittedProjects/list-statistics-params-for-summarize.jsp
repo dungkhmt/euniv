@@ -16,7 +16,7 @@
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">Tiêu chí lọc: Kết quả đánh giá, phản biện thuyết minh đề tài</h1>
+			<h1 class="page-header">Chọn tiêu chí lọc danh sách đề tài để tổng hợp đánh giá phản biện</h1>
 			<p>
 				<!-- <button type="button" class="btn btn-primary btn-xs gen">Kết xuất danh sách</button> -->
 			</p>
@@ -189,7 +189,8 @@ $(document).ready(function () {
 
 function v_fSubmitFilter(){
 	//var sAction = "${baseUrl}/cp/list-projects-statisitcs";
-	var sAction = "${baseUrl}/cp/submitted-projects-result-summary.html";
+	//var sAction = "${baseUrl}/cp/submitted-projects-result-summary.html";
+	var sAction = "${baseUrl}/cp/list-submitted-projects-for-summarize.html";
 	//alert(sAction);
 	// Reset action url
 	$("form#formSubmit").attr("action",sAction);

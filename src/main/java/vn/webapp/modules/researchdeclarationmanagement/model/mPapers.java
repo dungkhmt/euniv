@@ -1,12 +1,15 @@
 package vn.webapp.modules.researchdeclarationmanagement.model;
 
 import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import vn.webapp.modules.usermanagement.model.mStaff;
 
 @Entity
 @Table(name = "tblpapersdeclaration")
@@ -31,9 +34,27 @@ public class mPapers implements Serializable{
     private String PDECL_SourceFile;
     private String PDECL_ApproveStatus;
     private String PDECL_Approve_UserCode;
-    
-    
-    public String getPDECL_ApproveStatus() {
+
+	@ManyToOne
+    @JoinColumn(name="PDECL_PaperCategory_Code", referencedColumnName = "PCAT_Code", insertable = false, updatable = false)
+    public mPaperCategory paperCategory;
+
+
+	@ManyToOne
+	@JoinColumn(name="PDECL_User_Code", referencedColumnName = "Staff_Code", insertable=false, updatable=false)
+	public mStaff staff;
+	
+	
+	
+    public mStaff getStaff() {
+		return staff;
+	}
+
+	public void setStaff(mStaff staff) {
+		this.staff = staff;
+	}
+
+	public String getPDECL_ApproveStatus() {
 		return PDECL_ApproveStatus;
 	}
 
@@ -49,9 +70,8 @@ public class mPapers implements Serializable{
 		PDECL_Approve_UserCode = pDECL_Approve_UserCode;
 	}
 
-	@ManyToOne
-    @JoinColumn(name="PDECL_PaperCategory_Code", referencedColumnName = "PCAT_Code", insertable = false, updatable = false)
-    public mPaperCategory paperCategory;
+	
+	
 
 	public String getPDECL_Code() {
 		return PDECL_Code;

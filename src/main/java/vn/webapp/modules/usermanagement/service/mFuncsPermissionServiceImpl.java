@@ -87,7 +87,8 @@ public class mFuncsPermissionServiceImpl implements mFuncsPermissionService {
 		try {
 			return functionsDAO.loadFunctionsList();
 		} catch (Exception e) {
-			System.out.println("Exception: " + e.getMessage());
+			//System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -102,7 +103,8 @@ public class mFuncsPermissionServiceImpl implements mFuncsPermissionService {
 			return functionsDAO.loadFunctionsParentHierachyList();
 
 		} catch (Exception e) {
-			System.out.println("Exception: " + e.getMessage());
+			//System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -117,7 +119,8 @@ public class mFuncsPermissionServiceImpl implements mFuncsPermissionService {
 			return functionsDAO.loadFunctionsChildHierachyList();
 
 		} catch (Exception e) {
-			System.out.println("Exception: " + e.getMessage());
+			//System.out.println("Exception: " + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}

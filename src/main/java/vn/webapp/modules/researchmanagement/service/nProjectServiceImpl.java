@@ -103,6 +103,9 @@ public class nProjectServiceImpl implements nProjectService {
 	 * @return object
 	 */
 	
+	public List<Projects> getSubmittedProjects(String projectCallCode, String facultyCode){
+		return projectDAO.getSubmittedProjects(projectCallCode, facultyCode);
+	}
 	public int saveAThread(mThreads thread){
 		return projectDAO.saveAThread(thread);
 	}
@@ -779,6 +782,7 @@ public class nProjectServiceImpl implements nProjectService {
 			beInsertedProject.setPROJ_ProjCat_Code(projectCategory);
 			beInsertedProject.setPROJ_ResearchFieldCode(projectResearchFieldCode);
 			beInsertedProject.setPROJ_SourceFile(sourceFile);
+			beInsertedProject.setPROJ_Status_Code("PREPARE_SAVE");
 			int iInsertedProjectId = threadDAO.saveAProject(beInsertedProject);
 			if(iInsertedProjectId > 0 )
 			{
@@ -1233,17 +1237,17 @@ public class nProjectServiceImpl implements nProjectService {
 		for(int i = 0; i < projects.size(); i++){
 			Projects p = projects.get(i);
 			// tblprojecttasks
-			List<ProjectTasks> projectTasks = projectTasksDAO.loadAProjectTaskByProjectCode(p.getPROJ_Code());
+			//List<ProjectTasks> projectTasks = projectTasksDAO.loadAProjectTaskByProjectCode(p.getPROJ_Code());
 			
 			// tblcommentssubmittedprojects
-			List<mStaffJuryOfSubmittedProject> staffJuryProjects = staffJurySubmittedProjectDAO.
-					loadListStaffJuryOfSubmittedProjectByProjectCode(p.getPROJ_Code());
+			//List<mStaffJuryOfSubmittedProject> staffJuryProjects = staffJurySubmittedProjectDAO.
+			//		loadListStaffJuryOfSubmittedProjectByProjectCode(p.getPROJ_Code());
 			
 			// tblstaffjurysubmittedprojects
-			List<mCommentsOfSubmittedProjects> commentsProject = commentSubmittedProjectDAO.
-					loadCommentsOfSubmittedProjectByProjectCode(p.getPROJ_Code());
+			//List<mCommentsOfSubmittedProjects> commentsProject = commentSubmittedProjectDAO.
+			//		loadCommentsOfSubmittedProjectByProjectCode(p.getPROJ_Code());
 			
-			List<DetailCommentSubmittedProjects> detailComments = detailCommentsSubmittedProjectDAO.loadByProjectCode(p.getPROJ_Code());
+			//List<DetailCommentSubmittedProjects> detailComments = detailCommentsSubmittedProjectDAO.loadByProjectCode(p.getPROJ_Code());
 			
 			int ID = i+1;
 			String sID = "";
@@ -1257,9 +1261,11 @@ public class nProjectServiceImpl implements nProjectService {
 			
 			System.out.println(name() + "::generateProjectCodes, oldCode = " + p.getPROJ_Code() + ", new Code = " + newCode);
 			
-			p.setPROJ_Code(newCode);
+			//p.setPROJ_Code(newCode);
+			p.setPROJ_PublicCode(newCode);
 			threadDAO.editAProject(p);
 			
+			/* no long need to update code of the project in other tables, because we set public code instead of code
 			for(ProjectTasks pt: projectTasks){
 				pt.setPRJTSK_Proj_Code(newCode);
 				projectTasksDAO.editAProjectTask(pt);
@@ -1284,6 +1290,7 @@ public class nProjectServiceImpl implements nProjectService {
 				detailCommentsSubmittedProjectDAO.editDetailsCommentsOfSubmittedProjects(dcp);
 				System.out.println(name() + "::generateProjectCodes update detailCommentsSubmittedProject newCode = " + newCode);
 			}
+			*/
 		}
 	}
 	

@@ -92,11 +92,12 @@ public class mSummaryController extends BaseWeb {
 	 */
 	@RequestMapping(value = "/summaryExcel", method = RequestMethod.POST)
 	public ModelAndView downloadSummaryExcel(@Valid @ModelAttribute("summaryExcelForm") mSummaryExcelValidation summaryValidExcell, BindingResult result, Map model, HttpSession session) {
-		List<mAcademicYear> patentReportingAcademicDateList = academicYearService.list();
-		List<mDepartment> departmentList = departmentService.loadDepartmentList();
+		List<mAcademicYear> patentReportingAcademicDateList = glb_academicYear;// academicYearService.list();
+		List<mDepartment> departmentList = glb_departments;//departmentService.loadDepartmentList();
 		/**
 	    * Put back to a suitable view
 	    */
+		
 	    model.put("reportingAcademicDate", patentReportingAcademicDateList);
 	    model.put("departmentList", departmentList);
 		 
@@ -111,6 +112,8 @@ public class mSummaryController extends BaseWeb {
 			String yearForGenerating = summaryValidExcell.getReportingAcademicDate();
 			String departmentCode = summaryValidExcell.getDepartment();
 			
+			System.out.println(name() + "::downloadSummaryExcel, start load DATA");
+			
 			mDepartment department = departmentService.loadADepartmentByCodes(departmentCode, "SOICT");
 			String currentUserName = session.getAttribute("currentUserName").toString();
 			String currentUserCode = session.getAttribute("currentUserCode").toString();
@@ -120,6 +123,7 @@ public class mSummaryController extends BaseWeb {
 		    List<mTopics> topicsList = tProjectService.loadTopicSummaryListByYear(yearForGenerating);
 		    List<mPapers> papersList = paperService.loadPaperSummaryListByYear(yearForGenerating);
 		    
+		    System.out.println(name() + "::downloadSummaryExcel, load DATA OK");
 		    /**
 		     * Preparing data for papers summary view 
 		     */
@@ -162,6 +166,7 @@ public class mSummaryController extends BaseWeb {
 		    		for(mPapers paper : papersList)
 		    		{
 		    			List<PaperStaffs> paperStaffs = paperStaffsService.loadPaperListByPaperCode(paper.getPDECL_Code());
+		    			
 		    			for(PaperStaffs ps: paperStaffs){
 		    				if(ps.getPPSTF_StaffCode().equals(staff.getStaff_Code())){
 		    					iTotalPaperConvertedHours += paper.getPDECL_AuthorConvertedHours();

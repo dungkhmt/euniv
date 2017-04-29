@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+//import java.util.logging.Logger;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -56,6 +58,8 @@ import vn.webapp.modules.researchmanagement.validation.mJuryOfAnnouncedProjectCa
 import vn.webapp.modules.researchmanagement.validation.mJuryResearchProjectValidation;
 import vn.webapp.modules.researchmanagement.validation.mProjectCallsValidation;
 
+import org.apache.log4j.Logger;
+
 @Controller("cpmJuryOfAnnouncedProjectCall")
 @RequestMapping(value = { "/cp" })
 public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
@@ -80,6 +84,9 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 
 	static final String status = "active";
 
+	static final Logger log = Logger.getLogger(mJuryOfAnnouncedProjectCallController.class);
+	
+	
 	/**
 	 * Show list all threads
 	 * 
@@ -92,6 +99,7 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 			@Valid @ModelAttribute("juryResearchProjectFormEdit") mJuryResearchProjectValidation juryResearchProjectValid,
 			BindingResult result, Map model, HttpSession session) {
 		String userCode = (String) session.getAttribute("currentUserCode");
+		
 		System.out.println(name() + "::updateAJuryResearchProject, userCode = "
 				+ userCode + ", juryID = "
 				+ juryResearchProjectValid.getJuryResearchProjectID());
@@ -99,6 +107,9 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 		mJuryResearchProject jury = juryResearchProjectService
 				.listAJuryByID(juryID);
 
+		log.info(userCode + " : Edit a jury-reasearch-project Id = " + juryID + ",(" + juryResearchProjectValid.getJuryResearchProjectName() + 
+				"," + juryResearchProjectValid.getProjectCallCode());
+		
 		if (jury != null) {
 			jury.setJURPRJ_Name(juryResearchProjectValid
 					.getJuryResearchProjectName());
@@ -106,9 +117,9 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 					.getProjectCallCode());
 			juryResearchProjectService.editAJury(jury);
 
-			List<mJuryResearchProject> juries = juryResearchProjectService
-					.listAllJuries();
-
+			//List<mJuryResearchProject> juries = juryResearchProjectService.listAllJuries();
+			List<mJuryResearchProject> juries = listJuryResearchProjectsView(userCode);
+			
 			// Put data back to view
 			model.put("juries", juries);
 			return "cp.juryOfResearchProjectManagement";
@@ -154,14 +165,16 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 				+ userCode);
 		mJuryResearchProject jury = juryResearchProjectService
 				.listAJuryByID(id);
+		
+		log.info(userCode + " : remove a jury-submitted-projects Id = " + id);
+		
 		// Return value to view
 		model.put("projectcalls", status);
 		if (jury != null) {
 			juryResearchProjectService.removeAJuryResearchProject(jury);
 			// Get topic's category
-			List<mJuryResearchProject> juries = juryResearchProjectService
-					.listAllJuries();
-
+			//List<mJuryResearchProject> juries = juryResearchProjectService.listAllJuries();
+			List<mJuryResearchProject> juries = listJuryResearchProjectsView(userCode);
 			// Put data back to view
 			model.put("juries", juries);
 			return "cp.juryOfResearchProjectManagement";
@@ -182,6 +195,9 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 		System.out.println(name() + "::saveAJuryResearchProject, userCode = "
 				+ userCode + ", juryName = " + juryName
 				+ ", projectCallCode = " + projectCallCode);
+		
+		log.info(userCode + " : add a new jury-research-project");
+		
 		mJuryResearchProject jury = new mJuryResearchProject();
 		jury.setJURPRJ_Name(juryName);
 		jury.setJURPRJ_PROJCall_Code(projectCallCode);
@@ -193,8 +209,18 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 
 		juryResearchProjectService.editAJury(jury);
 
-		List<mJuryResearchProject> juries = juryResearchProjectService
-				.listAllJuries();
+		List<mJuryResearchProject> juries = juryResearchProjectService.listAllJuriesByUserCode(userCode);// juryResearchProjectService.listAllJuries();
+		
+		
+		List<mProjectCalls> projectCalls = projectCallsService.loadProjectCallsList();
+		HashMap<String, mProjectCalls> mCode2ProjectCall = new HashMap<String, mProjectCalls>();
+		for(mProjectCalls pc: projectCalls){
+			mCode2ProjectCall.put(pc.getPROJCALL_CODE(), pc);
+		}
+		for(mJuryResearchProject J: juries){
+			J.setJURPRJ_PROJCall_Code(mCode2ProjectCall.get(J.getJURPRJ_PROJCall_Code()).getPROJCALL_NAME());
+			J.setJURPRJ_UserCode(glb_mCode2Staff.get(J.getJURPRJ_UserCode()).getStaff_Name());
+		}
 		model.put("juries", juries);
 		return "cp.juryOfResearchProjectManagement";
 	}
@@ -213,28 +239,35 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 		return "cp.addAJuryOfResearchProject";
 	}
 
+	private List<mJuryResearchProject> listJuryResearchProjectsView(String userCode){
+		//List<mStaff> staffs = staffService.listStaffs();
+		List<mProjectCalls> projectCalls = projectCallsService.loadProjectCallsList();
+		//HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
+		//for(mStaff st: staffs){
+		//	mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+		//}
+		for(mProjectCalls pc: projectCalls){
+			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(), pc.getPROJCALL_NAME());
+		}
+		
+		//List<mJuryResearchProject> juries = juryResearchProjectService.listAllJuries();
+		List<mJuryResearchProject> juries = juryResearchProjectService.listAllJuriesByUserCode(userCode);
+		
+		for(mJuryResearchProject jury: juries){
+			jury.setJURPRJ_PROJCall_Code(mProjectCallCode2Name.get(jury.getJURPRJ_PROJCall_Code()));
+			jury.setJURPRJ_UserCode(glb_mCode2Staff.get(jury.getJURPRJ_UserCode()).getStaff_Name());
+		}
+		return juries;
+	}
 	@RequestMapping(value = "/jury-of-research-project-management.html", method = RequestMethod.GET)
 	public String juryOfReserchProjectManagement(ModelMap model,
 			HttpSession session) {
 		String userCode = session.getAttribute("currentUserCode").toString();
 		String userRole = session.getAttribute("currentUserRole").toString();
-		List<mStaff> staffs = staffService.listStaffs();
-		List<mProjectCalls> projectCalls = projectCallsService.loadProjectCallsList();
-		HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
-		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
-		for(mStaff st: staffs){
-			mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
-		}
-		for(mProjectCalls pc: projectCalls){
-			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(), pc.getPROJCALL_NAME());
-		}
+		log.info(userCode + "get jury of research project management");
 		
-		List<mJuryResearchProject> juries = juryResearchProjectService
-				.listAllJuries();
-		for(mJuryResearchProject jury: juries){
-			jury.setJURPRJ_PROJCall_Code(mProjectCallCode2Name.get(jury.getJURPRJ_PROJCall_Code()));
-			jury.setJURPRJ_UserCode(mStaffCode2Name.get(jury.getJURPRJ_UserCode()));
-		}
+		List<mJuryResearchProject> juries = listJuryResearchProjectsView(userCode);
 		model.put("juries", juries);
 
 		return "cp.juryOfResearchProjectManagement";
@@ -333,15 +366,17 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 		String userRole = (String)session.getAttribute("currentUserRole");
 		System.out.println(name() + "::addJuryOfSubmittedProjects, userCode = " + userCode + ", userRole = " + userRole);
 		
+		log.info(userRole + " add jury of submitted project");
+		
 		// Get project call list
 		List<mProjectCalls> projectCallList = projectCallsService
 				.loadProjectCallsList();
 		
 		List<mJuryResearchProject> juries = null;
-		if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
-			juries = juryResearchProjectService.listAllJuries();
-		else
-			juries = juryResearchProjectService.listAllJuriesByUserCode(userCode);
+		//if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
+		//	juries = juryResearchProjectService.listAllJuries();
+		//else
+		juries = juryResearchProjectService.listAllJuriesByUserCode(userCode);
 		
 		model.put("projectCallList", projectCallList);
 		model.put("juries", juries);
@@ -590,13 +625,15 @@ public class mJuryOfAnnouncedProjectCallController extends BaseWeb {
 			@PathVariable("id") int juryOfAnnouncedProjectCallId,
 			HttpSession session) {
 
+		String userCode = (String)session.getAttribute("currentUserCode");
+		
 		mJuryOfAnnouncedProjectCall juryOfAnnouncedProjectCall = juryOfAnnouncedProjectCallService
 				.loadAJuryOfAnnouncedProjectCallById(juryOfAnnouncedProjectCallId);
 
 		mJuryResearchProject jury = juryResearchProjectService.listAJuryByCode(juryOfAnnouncedProjectCall.getJUSUPRJ_JURYRESEARCHPROJECTCODE());
 		mProjectCalls projectCall = projectCallsService.loadAProjectCallByCode(juryOfAnnouncedProjectCall.getJUSUPRJ_PRJCALLCODE());
 		
-		
+		log.info(userCode + " : delete a member of jury-submitted-project id = " + juryOfAnnouncedProjectCallId);
 		
 		String projectCallCode = "";
 		if (juryOfAnnouncedProjectCall != null) {

@@ -183,6 +183,9 @@ public class mUserController extends BaseWeb {
    	   String staffPhone = "0";
    	   staffService.saveAStaff(staffName, staffEmail, staffPhone, staffDepartment, userCode, staffCatCode, staffFaculty);
    	   
+   	   //update global glb_staffs
+   	   loadStaffs();
+   	   
           //model.put("status", "Successfully saved user: " + username);
           return "redirect:" + this.baseUrl + "/cp/users.html";
       }
@@ -299,6 +302,11 @@ public class mUserController extends BaseWeb {
 	   mUsers user = userService.loadUserById(userId);
 	   if(user != null){
 		   userService.removeAnUser(userRole, user.getUser_ID(), user.getUser_Code());
+		   
+		   //update global glb_staffs
+		   loadStaffs();
+		   
+		   
 		   return "redirect:" + this.baseUrl + "/cp/users.html";
 	   }
 	   return "cp.notFound404";

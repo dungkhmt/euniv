@@ -237,6 +237,8 @@ public class mPaperServiceImpl implements mPaperService{
      * @param int
      * @return null
      */
+    
+    /*
     @Override
     @Transactional
     public void editAPaper(String userRole, String userCode, int paperId, String paperCate, String publicationName, String journalName, String ISSN, int publicConvertedHours, int authorConvertedHours, int paperYear, 
@@ -292,10 +294,16 @@ public class mPaperServiceImpl implements mPaperService{
 	    	}
     	}
     }
-
+	*/
+    
+    public String name(){
+    	return "mPaperService";
+    }
     /**
      * 
      */
+    
+    
     @Override
     @Transactional
     public void editAPaper(int paperId, String paperCate, String publicationName, String journalName, String ISSN, int publicConvertedHours, int authorConvertedHours, int paperYear, 
@@ -333,10 +341,13 @@ public class mPaperServiceImpl implements mPaperService{
 	    		String PPSTF_PaperCode = paper.getPDECL_Code();
 	    		String PPSTF_Code = "";
 	    		List<PaperStaffs> oldPaperStaffsList = paperStaffsDAO.loadPaperListByPaperCode(PPSTF_PaperCode);
+	    		System.out.println(name() + "::editAPaper, paperCode = " + PPSTF_PaperCode + 
+	    				", list of related staffs = " + oldPaperStaffsList.size() + ", projectMembers.length = " + projectMembers.length);
 	    		if(oldPaperStaffsList != null && oldPaperStaffsList.size() > 0)
 	    		{
 	    			for (PaperStaffs paperStaff : oldPaperStaffsList) {
 	    				paperStaffsDAO.removeAPaperStaff(paperStaff);
+	    				System.out.println(name() + "::editAPaper, remove paperStaff " + paperStaff.getPPSTF_Code() + ", paperCode = " + paperStaff.getPPSTF_PaperCode());
 					}
 	    		}
 		    	PaperStaffs paperStaffs = new PaperStaffs();
@@ -346,6 +357,8 @@ public class mPaperServiceImpl implements mPaperService{
 	            	paperStaffs.setPPSTF_PaperCode(PPSTF_PaperCode);
 	            	paperStaffs.setPPSTF_StaffCode(projectMember);
 		    	    paperStaffsDAO.saveAPaperStaff(paperStaffs);
+		    	    System.out.println(name() + "::editAPaper, member " + projectMember + ", addPaperStaff with paperCode " + paperStaffs.getPPSTF_PaperCode() + 
+		    	    		", staff = " + paperStaffs.getPPSTF_StaffCode()); 
 		    	}
 	    	}
     	}

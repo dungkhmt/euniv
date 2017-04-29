@@ -16,7 +16,7 @@
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">Đánh giá thuyết minh đề tài</h1>
+			<h1 class="page-header">Kết quả đánh giá thuyết minh đề tài</h1>
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>
@@ -37,6 +37,7 @@
 									<th>Chủ nhiệm</th>
 									<th>Điểm trung bình</th>
 									<th>Ý kiến đánh giá</th>
+									<th>Tình trạng</th>
 									<th>Chi tiết</th>
 								</tr>
 							</thead>
@@ -50,6 +51,7 @@
 										<td><c:out value="${project[1]}"/></td>
 										<td><c:out value="${project[2]}"/></td>
 										<td><c:out value="${project[3] != '' ? project[3] : 'N/A'}"/></td>
+										<td><c:out value="${project[5]}"/></td>
 										<%-- <td><c:out value="${project[4]}"/></td> --%>
 										<td class="center">
 											<button type="button" onclick="v_fViewDetailASumittedProject(${project[4]});" class="btn btn-info"}/>Chi tiết</button>

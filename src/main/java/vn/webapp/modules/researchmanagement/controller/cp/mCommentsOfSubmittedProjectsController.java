@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -137,6 +138,8 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 
 	static final String status = "active";
 	 
+	static Logger log = Logger.getLogger(mCommentsOfSubmittedProjectsController.class);
+	
 	/**
 	 * 
 	 * @param model
@@ -285,6 +288,8 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		String userCode = session.getAttribute("currentUserCode").toString();
 		String userRole = session.getAttribute("currentUserRole").toString();
 		
+		log.info(userCode);
+		
 		//List of staff juries of submitted projects whose reviewer is the current user
 		List<mStaffJuryOfSubmittedProject> staffJuryOfSubmittedProjectList = staffJuryOfSubmittedProjectService.loadListStaffJuryOfSubmittedProjectByStaffCode(userCode);
 		
@@ -294,6 +299,9 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 			projectList.addAll(projectService.loadListProjectsByCode(staffJuryOfSubmittedProjectList.get(i).getSTFJUPRJ_PRJCODE()));
 		}
 		
+		for(Projects p: projectList){
+			p.setPROJ_PRJCall_Code(glb_mCode2ProjectCall.get(p.getPROJ_PRJCall_Code()).getPROJCALL_NAME());
+		}
 		// Put data back to view
 		model.put("projectList", projectList);
 		 
@@ -311,7 +319,11 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 	public String addADetailCommentProject(ModelMap model, @PathVariable("id") int projectId, HttpSession session) {
 		String userCode = session.getAttribute("currentUserCode").toString();
 		String userRole = session.getAttribute("currentUserRole").toString(); 
+		log.info(userCode);
+		
 		Projects project = projectService.loadAProjectByIdAndUserCode("ROLE_ADMIN", userCode, projectId);
+		
+		
 		DetailCommentSubmittedProjects detailCommentSubmittedProjects = new DetailCommentSubmittedProjects();
 		if(project != null)
 		{
@@ -402,15 +414,15 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 						+ "::getListProjectsStatisticsParams, userCode = "
 						+ userCode + ", userRole = " + userRole
 						+ ", facultyCode = " + facultyCode);
-		List<mThreads> threadsList = threadService.loadThreadsListByStaff(userRole, userCode);
+		//List<mThreads> threadsList = threadService.loadThreadsListByStaff(userRole, userCode);
 		// Get topic's category
-		List<mTopicCategory> threadCategory = tProjectCategoryService.list();
+		List<mTopicCategory> threadCategory = glb_projectCategories;// tProjectCategoryService.list();
 		// Get list project statuses
-		List<mProjectStatus> threadStatuses = projectStatusService.list();
+		List<mProjectStatus> threadStatuses = glb_projectStatus;//projectStatusService.list();
 		//List<mFaculty> threadFaculties = facultyService.loadFacultyList();
 		List<mFaculty> threadFaculties = new ArrayList<mFaculty>();
 		if (userRole.equals("ROLE_ADMIN") || userRole.equals("SUPER_ADMIN"))
-			threadFaculties = facultyService.loadFacultyList();
+			threadFaculties = glb_faculties;//facultyService.loadFacultyList();
 		else if (userRole
 				.equals(mUserController.ROLE_ADMIN_RESEARCH_MANAGEMENT_FACULTY)) {
 			// threadFaculties = new ArrayList<mFaculty>();
@@ -423,12 +435,12 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 						+ facultyCode + " NOT EXIST!!!");
 			}
 		}
-		List<mDepartment> threadDepartments = departmentService.loadDepartmentList();
-		List<mStaff> threadStaffs = staffService.listStaffs();
-		List<mProjectCalls> projectCallsList = projectCallsService.loadProjectCallsList();
+		List<mDepartment> threadDepartments = glb_departments;// departmentService.loadDepartmentList();
+		List<mStaff> threadStaffs = glb_staffs;//staffService.listStaffs();
+		List<mProjectCalls> projectCallsList = glb_projectCalls;//projectCallsService.loadProjectCallsList();
 				
 		model.put("threadExcellForm", new mThreadExcellValidation());
-		model.put("threadsList", threadsList);
+		//model.put("threadsList", threadsList);
 		model.put("threadCategory", threadCategory);
 		model.put("threadStatuses", threadStatuses);
 		model.put("projectCallsList", projectCallsList);
@@ -436,7 +448,9 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		model.put("threadDepartments", threadDepartments);
 		model.put("threadStaffs", threadStaffs);
 		model.put("threads", status);
-
+		
+		System.out.println(name() + "::::getListProjectsStatisticsParams RETURN view");
+		
 		return "cp.projectsListCommentsStatisiticsParams";
 	}
 	public String name(){
@@ -448,6 +462,7 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 			HttpServletRequest request, 
 			@Valid @ModelAttribute("threadExcellForm") mThreadExcellValidation threadExcellForm
 			) {
+		System.out.println(name() + "::CommentsOfSubmittedProjectsResultSummaryList, BEGIN");
 		
 		// Get current user name and role
 		String userCode = session.getAttribute("currentUserCode").toString();
@@ -465,24 +480,25 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		System.out.println(name() + "::CommentsOfSubmittedProjectsResultSummaryList departmentCode : " + departmentCode);
 		System.out.println(name() + "::CommentsOfSubmittedProjectsResultSummaryList staffCode : " + staffCode);
 
-		List<mStaff> staffs = staffService.listStaffs();
-		HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
-		for(mStaff st: staffs){
-			mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
-		}
-		List<mProjectCalls> prjCalls = projectCallsService.loadProjectCallsList();
-		HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
-		for(mProjectCalls pc: prjCalls){
-			mProjectCallCode2Name.put(pc.getPROJCALL_CODE(), pc.getPROJCALL_NAME());
-		}
+		List<mStaff> staffs = glb_staffs;//staffService.listStaffs();
+		//HashMap<String, String> mStaffCode2Name = new HashMap<String, String>();
+		//for(mStaff st: staffs){
+		//	mStaffCode2Name.put(st.getStaff_Code(), st.getStaff_Name());
+		//}
 		
-		List<mProjectStatus> status = projectStatusService.list();
-		HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
-		for(mProjectStatus ps: status){
-			mStatusCode2Name.put(ps.getPROJSTAT_Code(), ps.getPROJSTAT_Description());
-		}
+		List<mProjectCalls> prjCalls = glb_projectCalls;//projectCallsService.loadProjectCallsList();
+		//HashMap<String, String> mProjectCallCode2Name = new HashMap<String, String>();
+		//for(mProjectCalls pc: prjCalls){
+		//	mProjectCallCode2Name.put(pc.getPROJCALL_CODE(), pc.getPROJCALL_NAME());
+		//}
 		
-		List<mFaculty> faculties = facultyService.loadFacultyList();
+		List<mProjectStatus> status = glb_projectStatus;//projectStatusService.list();
+		//HashMap<String, String> mStatusCode2Name = new HashMap<String, String>();
+		//for(mProjectStatus ps: status){
+		//	mStatusCode2Name.put(ps.getPROJSTAT_Code(), ps.getPROJSTAT_Description());
+		//}
+		
+		List<mFaculty> faculties = glb_faculties;//facultyService.loadFacultyList();
 		
 		HashSet<String> setProjectCallCode = new HashSet<String>();
 		HashSet<String> setStaffCode = new HashSet<String>();
@@ -529,7 +545,7 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		
 		
 		//List of staff juries of submitted projects whose reviewer is the current user
-		List<mStaffJuryOfSubmittedProject> staffJuryOfSubmittedProjectList = staffJuryOfSubmittedProjectService.loadListStaffJuryOfSubmittedProjectByStaffCode(userCode);
+		//List<mStaffJuryOfSubmittedProject> staffJuryOfSubmittedProjectList = staffJuryOfSubmittedProjectService.loadListStaffJuryOfSubmittedProjectByStaffCode(userCode);
 		
 		//List<xProjects> xProjects = projectService.loadListSubmittedProjectsForSummary();
 		List<xProjects> allxProjects = projectService.loadListSubmittedProjectsForSummary();
@@ -586,6 +602,8 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 				}
 				listTemp.add(sCommentTemp); // Comment
 				listTemp.add(oPrj.getPROJ_ID() + "");
+				listTemp.add(glb_mCode2ProjectStatus.get(oPrj.getPROJ_Status_Code()).getPROJSTAT_Description());
+				
 				// Add element to the list
 				listProjectSummary.add(listTemp);
 				i++;
@@ -598,13 +616,15 @@ public class mCommentsOfSubmittedProjectsController extends BaseWeb {
 		}
 		
 		//List of projects 
-		List<Projects> projectList = new ArrayList<Projects>();
-		for(int i = 0; i < staffJuryOfSubmittedProjectList.size(); i++){
-			projectList.addAll(projectService.loadListProjectsByCode(staffJuryOfSubmittedProjectList.get(i).getSTFJUPRJ_PRJCODE()));
-		}
+		//List<Projects> projectList = new ArrayList<Projects>();
+		//for(int i = 0; i < staffJuryOfSubmittedProjectList.size(); i++){
+		//	projectList.addAll(projectService.loadListProjectsByCode(staffJuryOfSubmittedProjectList.get(i).getSTFJUPRJ_PRJCODE()));
+		//}
 		
 		// Put data back to view
 		model.put("projectList", listProjectSummary);
+		
+		System.out.println(name() + "::CommentsOfSubmittedProjectsResultSummaryList, RETURN a view");
 		return "cp.commentsSubmittedProjectsResultSummary";
 	}
  

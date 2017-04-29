@@ -10,6 +10,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -35,10 +36,13 @@ public class mFunctionsDAOImpl extends BaseDao implements mFunctionsDAO{
     @Override
     public List<mFunction> loadFunctionsList(){
         try {
+        	System.out.println(name() + "::loadFunctionList");
             begin();
             Criteria criteria = getSession().createCriteria(mFunction.class);
             List<mFunction> funcsList = criteria.list();
+            System.out.println(name() + "::loadFunctionList, list OK");
             commit();
+            System.out.println(name() + "::loadFunctionList, OK");
             return funcsList;
         } catch (HibernateException e) {
             e.printStackTrace();
@@ -56,14 +60,23 @@ public class mFunctionsDAOImpl extends BaseDao implements mFunctionsDAO{
      * @param null
      * @return List
      */
+    public String name(){
+    	return "mFunctionDAOImpl";
+    }
     @Override
     public List<mFunction> loadFunctionsParentHierachyList(){
         try {
+        	System.out.println(name() + "::loadFunctionParentHierachyList");
             begin();
             Criteria criteria = getSession().createCriteria(mFunction.class);
+            System.out.println(name() + "::loadFunctionParentHierachyList, criteria OK");
             criteria.add(Restrictions.eq("FUNC_PARENTID", 0));
+            criteria.addOrder(Order.asc("FUNC_INDEX"));
+            
             List<mFunction> funcsList = criteria.list();
+            System.out.println(name() + "::loadFunctionParentHierachyList, list OK");
             commit();
+            System.out.println(name() + "::loadFunctionParentHierachyList, finished");
             return funcsList;
         } catch (HibernateException e) {
             e.printStackTrace();
@@ -87,6 +100,7 @@ public class mFunctionsDAOImpl extends BaseDao implements mFunctionsDAO{
             begin();
             Criteria criteria = getSession().createCriteria(mFunction.class);
             criteria.add(Restrictions.gt("FUNC_PARENTID", 0));
+            criteria.addOrder(Order.asc("FUNC_INDEX"));
             List<mFunction> funcsList = criteria.list();
             commit();
             return funcsList;

@@ -74,12 +74,20 @@
 	                        <div class="col-lg-6">
 		                        <div class="form-group">
 	                                 <label>Trạng thái*</label>
+	                                 <!-- 
 	                                 <form:select path="projectCallStatus" class="form-control" name="projectCallStatus">
 	                                      <option value="OPEN_FOR_SUBMISSION" <c:if test="${'OPEN_FOR_SUBMISSION' == projectCalls.PROJCALL_STATUS}">selected</c:if>  >Mở cho phép đăng ký mới</option>
 	                                      <option value="SUBMISSION_CLOSED" <c:if test="${'SUBMISSION_CLOSED' == projectCalls.PROJCALL_STATUS}">selected</c:if>  >Đóng, không thể đăng ký mới</option>
 	                                      <option value="OPEN_FOR_REVISE" <c:if test="${'OPEN_FOR_REVISE' == projectCalls.PROJCALL_STATUS}">selected</c:if>  >Mở, cho phép chủ nhiệm đề tài chỉnh sửa</option>
 	                                      <option value="REVISE_CLOSED" <c:if test="${'REVISE_CLOSED' == projectCalls.PROJCALL_STATUS}">selected</c:if>  >Đóng, không cho phép chủ nhiệm đề tài chỉnh sửa đề tài</option>
 	                                 </form:select>
+	                                  -->
+	                                 <form:select path="projectCallStatus" class="form-control" name="projectCallStatus">
+	                                 <c:forEach items="${projectCallStatus}" var="projCallStatus">
+	                                 	<option value="${projCallStatus.PROJCALLSTAT_Code}" <c:if test="${currentProjectCallStatusCode == projCallStatus.PROJCALLSTAT_Code}">selected</c:if> >${projCallStatus.PROJCALLSTAT_Name}</option>
+	                                 </c:forEach>     
+	                                 </form:select>
+	                                 
 	                                 <form:errors path="projectCallStatus" class="alert-danger"></form:errors>
 	                             </div>
                              </div>

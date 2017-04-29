@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -87,6 +88,8 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 	private mFuncsPermissionService funcsPermissionService;
 	
 	static final String status = "active";
+	
+	static Logger log = Logger.getLogger(mStaffJuryOfSubmittedProjectController.class);
 	
 	/**
 	 * 
@@ -179,14 +182,16 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 		String userCode = session.getAttribute("currentUserCode").toString();
 		String userRole = session.getAttribute("currentUserRole").toString();
 		
+		log.info(userCode + " : add jury of submitted project");
+		
 		// Get project call list
 		List<mProjectCalls> projectCallList = projectCallsService.loadProjectCallsList();
 		List<mJuryResearchProject> juries = null;
 		
-		if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
-			juries = juryResearchProjectService.listAllJuries();
-		else
-			juries = juryResearchProjectService.listAllJuriesByUserCode(userCode);
+		//if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
+		//	juries = juryResearchProjectService.listAllJuries();
+		//else
+		juries = juryResearchProjectService.listAllJuriesByUserCode(userCode);
 		
 		model.put("projectCallList", projectCallList);
 		
@@ -211,6 +216,8 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 		
 		System.out.println(name() + "::listJuryOfSubmittedProjects, userCode = " + userCode + ", userRole = " + 
 		userRole + ", facultyCode = " + facultyCode);
+		
+		log.info(userCode + " : "+ userRole + " : get list of submitted projects for assigning reviewers");
 		
 		String juryCode = request.getParameter("JURPRJ_Code");
 		mJuryResearchProject jury = juryResearchProjectService.listAJuryByCode(juryCode);
@@ -250,15 +257,17 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 		
 		//List<mThreads> projects = projectService.listAll();
 		List<Projects> projects = null;
-		if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
-			projects = projectService.loadProjectByProjectCallId(projectCallCode);
-		else
-			projects = projectService.loadProjectByProjectCallAndFaculty(projectCallCode, facultyCode);
+		//if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
+		//	projects = projectService.loadProjectByProjectCallId(projectCallCode);
+		//else
+		//	projects = projectService.loadProjectByProjectCallAndFaculty(projectCallCode, facultyCode);
+		projects = projectService.getSubmittedProjects(projectCallCode, facultyCode);// only project that were submitted (not prepared)
 		
 		
 		HashMap<String, String> mProjectCode2Name = new HashMap<String, String>();
 		for(Projects prj: projects){
-			mProjectCode2Name.put(prj.getPROJ_Code(), prj.getPROJ_Name());
+			String proj_leader = glb_mCode2Staff.get(prj.getPROJ_User_Code()).getStaff_Name();
+			mProjectCode2Name.put(prj.getPROJ_Code(), prj.getPROJ_Name() + " (Chủ nhiệm : " + proj_leader + ")");
 		}
 		
 		List<mStaffJuryOfSubmittedProject> staffJuryOfSubmittedProjectList;
@@ -274,6 +283,10 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 		for(mStaffJuryOfSubmittedProject sjsp: staffJuryOfSubmittedProjectList){
 			sjsp.setSTFJUPRJ_PRJCODE(mProjectCode2Name.get(sjsp.getSTFJUPRJ_PRJCODE()));
 			sjsp.setSTFJUPRJ_STAFFJURCODE(mStaffCode2Name.get(sjsp.getSTFJUPRJ_STAFFJURCODE()));
+		}
+		
+		for(Projects p: projects){
+			p.setPROJ_Name(mProjectCode2Name.get(p.getPROJ_Code()));
 		}
 		
 		// Return to view
@@ -307,6 +320,7 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 		String userRole = session.getAttribute("currentUserRole").toString();
 		String facultyCode = (String)session.getAttribute("facultyCode");
 		
+		
 		System.out.println(name() + "::saveJuryOfAnnouncedProjectCall, userCode = " + userCode + ", userRole = " + 
 		userRole + ", facultyCode = " + facultyCode);
 
@@ -332,10 +346,13 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 		List<mStaff> juries = juryOfAnnouncedProjectCall.loadStaffsOfJuryOfAJuryResearchProjec(juryCode);
 
 		List<Projects> projects = null;
-		if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
-			projects = projectService.loadProjectByProjectCallId(selectedProjectCallCode);
-		else
-			projects = projectService.loadProjectByProjectCallAndFaculty(selectedProjectCallCode, facultyCode);
+		
+		//if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
+		//	projects = projectService.loadProjectByProjectCallId(selectedProjectCallCode);
+		//else
+		//	projects = projectService.loadProjectByProjectCallAndFaculty(selectedProjectCallCode, facultyCode);
+		
+		projects = projectService.getSubmittedProjects(selectedProjectCallCode, facultyCode);// only project that were submitted (not prepared)
 		
 		
 		mProjectCalls projectCall = projectCallsService.loadAProjectCallByCode(selectedProjectCallCode);
@@ -439,10 +456,16 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 			String userRole = session.getAttribute("currentUserRole").toString();
 			String facultyCode = (String)session.getAttribute("facultyCode");
 		
+			
 			mStaffJuryOfSubmittedProject staffJurySubmittedProject = staffJuryOfSubmittedProjectService.loadAStaffJuryOfSubmittedProjectById(staffJuryOfSubmittedProjectId);
 			String juryCode = staffJurySubmittedProject.getSTFJUPRJ_JURY_CODE();
+			String staffCode = staffJurySubmittedProject.getSTFJUPRJ_STAFFJURCODE();
+			String projectCode = staffJurySubmittedProject.getSTFJUPRJ_PRJCODE();
 			
-			System.out.println(name() + "::removeAStaffJurySubmittedProject, userCode = " + userCode + ", juryCode = " + juryCode);
+			log.info(userCode + " : remove a staff-assigned-jury staff " + staffCode + ", project " + projectCode);
+			
+			System.out.println(name() + "::removeAStaffJurySubmittedProject, userCode = " + userCode + ", juryCode = " + 
+			juryCode + ", staff = " + staffCode + ", project = " + projectCode);
 
 			mJuryResearchProject jury = juryResearchProjectService.listAJuryByCode(juryCode);
 			
@@ -452,10 +475,12 @@ public class mStaffJuryOfSubmittedProjectController extends BaseWeb {
 				//List<Projects> projects = projectService.loadProjectByProjectCallId(projectCallCode);
 				
 				List<Projects> projects = null;
-				if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
-					projects = projectService.loadProjectByProjectCallId(projectCallCode);
-				else
-					projects = projectService.loadProjectByProjectCallAndFaculty(projectCallCode, facultyCode);
+				//if(userRole.equals(mUserController.SUPER_ADMIN) || userRole.equals(mUserController.ROLE_ADMIN))
+				//	projects = projectService.loadProjectByProjectCallId(projectCallCode);
+				//else
+				//	projects = projectService.loadProjectByProjectCallAndFaculty(projectCallCode, facultyCode);
+				
+				projects = projectService.getSubmittedProjects(projectCallCode, facultyCode);
 				
 				mProjectCalls projectCall = projectCallsService.loadAProjectCallByCode(projectCallCode);
 				List<mProjectCalls> projectCallList = projectCallsService.loadProjectCallsList();
