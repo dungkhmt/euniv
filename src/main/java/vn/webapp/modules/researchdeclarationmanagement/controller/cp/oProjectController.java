@@ -747,7 +747,7 @@ public class oProjectController extends BaseWeb {
 		    char unchecked='\u00A8';
 		    PdfPCell[] bodyContent = new PdfPCell[18];
 		    
-		    bodyContent[0] = createPdfPCell(new Paragraph("1. Họ và tên: "+"Lê Văn Đức", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
+		    bodyContent[0] = createPdfPCell(new Paragraph("1. Họ và tên: "+"Lê Văn Đức", contentFontBold), Element.ALIGN_LEFT, Rectangle.BOX);
 		    
 		    PdfPCell[] bodyBirth = new PdfPCell[2];
 		    bodyBirth[0] = createPdfPCell(new Paragraph("2. Năm sinh: "+"10/02/1996", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
@@ -774,7 +774,7 @@ public class oProjectController extends BaseWeb {
 		    
 		    
 		    PdfPCell[] bodyRecentResearchField = new PdfPCell[3];
-		    bodyRecentResearchField[0] = createPdfPCell(new Paragraph("5. Lĩnh vực nghiên cứu trong 5 năm gần đây: ", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+		    bodyRecentResearchField[0] = createPdfPCell(new Paragraph("5. Lĩnh vực nghiên cứu trong 5 năm gần đây: ", contentFontBold), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 		    bodyRecentResearchField[0].setCellEvent(new DottedBorder(PdfPCell.BOTTOM));
 	        String[] fields = {"Khoa học tự nhiên", "Khoa học Kỹ thuật và Công nghệ", "Khoa học Y dược", "Khoa học Xã hội", "Khoa học Nhân văn", "Khoa học Nông nghiệp"};
 	        Boolean[] value = {true, false, false, false, false, false};
@@ -805,9 +805,9 @@ public class oProjectController extends BaseWeb {
 		    bodyContent[3].setCellEvent(new SolidBorder(PdfPCell.LEFT|PdfPCell.RIGHT));
 
 		    PdfPCell[] bodyTitle = new PdfPCell[4];
-		    bodyTitle[0] = createPdfPCell(new Paragraph("6. Chức danh nghiên cứu:", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+		    bodyTitle[0] = createPdfPCell(new Paragraph("6. Chức danh nghiên cứu:", contentFontBold), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 		    bodyTitle[1] = createPdfPCell(new Paragraph("", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-		    bodyTitle[2] = createPdfPCell(new Paragraph("Chức vụ hiện nay:"+"", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+		    bodyTitle[2] = createPdfPCell(new Paragraph("Chức vụ hiện nay:"+"", contentFontBold), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 		    bodyTitle[3] = createPdfPCell(new Paragraph("", contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 		    
 		    bodyContent[4] = createPdfPCellNoPadding(createTable(new float[]{2, 1},  100, new PdfPCell[0] , bodyTitle), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
@@ -816,7 +816,7 @@ public class oProjectController extends BaseWeb {
 		    
 		    
 		    PdfPCell[] contentsAdress = new PdfPCell[3];
-		    contentsAdress[0] = createPdfPCell(new Paragraph("7. Địa chỉ nhà riêng:", contentFont), Element.ALIGN_LEFT, Rectangle.LEFT);
+		    contentsAdress[0] = createPdfPCell(new Paragraph("7. Địa chỉ nhà riêng:", contentFontBold), Element.ALIGN_LEFT, Rectangle.LEFT);
 		    contentsAdress[0].setCellEvent(new DottedBorder(PdfPCell.BOTTOM));
 		    String[] phoneName = {"Điện thoại NR:", "CQ:", "Mobile:"};
 	        PdfPCell[] contentsphoneName = new PdfPCell[phoneName.length*2];
@@ -834,7 +834,7 @@ public class oProjectController extends BaseWeb {
 	        bodyContent[5].setCellEvent(new SolidBorder(PdfPCell.LEFT|PdfPCell.RIGHT|PdfPCell.BOTTOM));
 
 	        PdfPCell[] contentsWorkingAgency = new PdfPCell[2];
-	        contentsWorkingAgency[0] = createPdfPCell(new Paragraph("8. Cơ quan công tác:", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
+	        contentsWorkingAgency[0] = createPdfPCell(new Paragraph("8. Cơ quan công tác:", contentFontBold), Element.ALIGN_LEFT, Rectangle.BOX);
 		    
 	        PdfPCell[] bodyWorkingAgency = new PdfPCell[8];
 	        bodyWorkingAgency[0] = createPdfPCell(new Paragraph("Tên cơ quan:", contentFont), Element.ALIGN_LEFT, Rectangle.LEFT);
@@ -850,74 +850,31 @@ public class oProjectController extends BaseWeb {
 	        bodyContent[6].setCellEvent(new SolidBorder(PdfPCell.LEFT|PdfPCell.RIGHT|PdfPCell.BOTTOM));
 	        
 	        PdfPCell[] contentsEducation = new PdfPCell[2];
-	        contentsEducation[0] = createPdfPCell(new Paragraph("9. Quá trình đào tạo", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
 	        
 	        String[] nameHeaderEducation = {"Bậc đào tạo", "Nơi đào tạo (Trường, Viện. Nước)", "Chuyên ngành", "Ngày/Tháng/Năm tốt nghiệp (TS, Thạc sĩ, KS, CN,...)"};
-	        PdfPCell[] contentEducationHeader = new PdfPCell[nameHeaderEducation.length];
 	        
 	        String[] nameBodyEducation = {"Đại học", "", "", "", "Thạc sỹ", "", "", "", "Tiến sỹ", "", "", "", "Thực tập sinh khoa học", "", "", ""};
-	        PdfPCell[] contentEducationBody = new PdfPCell[nameBodyEducation.length];
-	        
-	        for(int i = 0; i < nameHeaderEducation.length; ++i) {
-	        	contentEducationHeader[i] = createPdfPCell(new Paragraph(nameHeaderEducation[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-	        for(int i = 0; i < nameBodyEducation.length; ++i) {
-	        	contentEducationBody[i] = createPdfPCell(new Paragraph(nameBodyEducation[i], contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
-	        }
-	        
-	        contentsEducation[1] = createPdfPCellNoPadding(createTable(new float[]{3,3,2,2}, 100, contentEducationHeader, contentEducationBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[7] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsEducation), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+
+	        bodyContent[7] = createPdfPCellNoPadding(createTable("9. Quá trình đào tạo", "", nameHeaderEducation, nameBodyEducation, 4, 5, new float[] {3,3,2,2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 			
 	        
-	        PdfPCell[] contentsLanguage = new PdfPCell[2];
-	        contentsLanguage[0] = createPdfPCell(new Paragraph("10. Trình độ ngoại ngữ (mỗi mục đề nghị ghi rõ mức độ: Tốt/Khá/TB)", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
-	        
+	        //10
 	        String[] nameHeaderLanguage = {"TT", "Tên ngoại ngữ", "Nghe", "Nói", "Đọc", "Viết"};
-	        PdfPCell[] contentLanguageHeader = new PdfPCell[nameHeaderLanguage.length];
 	        
 	        String[] nameBodyLanguage = {"1", "Tiếng Nga", "Tốt", "Tốt", "Tốt", "Tốt", "2", "Tiếng Anh", "", "", "", ""};
-	        PdfPCell[] contentLanguageBody = new PdfPCell[nameBodyLanguage.length];
 	        
-	        for(int i = 0; i < nameHeaderLanguage.length; ++i) {
-	        	contentLanguageHeader[i] = createPdfPCell(new Paragraph(nameHeaderLanguage[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
+	        bodyContent[8] = createPdfPCellNoPadding(createTable("10. Trình độ ngoại ngữ", "(mỗi mục đề nghị ghi rõ mức độ: Tốt/Khá/TB)", nameHeaderLanguage, nameBodyLanguage, 6, 3, new float[]{1,4,2,2,2,2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+			
 	        
-	        for(int i = 0; i < nameBodyLanguage.length; ++i) {
-	        	contentLanguageBody[i] = createPdfPCell(new Paragraph(nameBodyLanguage[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-
-	        contentsLanguage[1] = createPdfPCellNoPadding(createTable(new float[]{1,4,2,2,2,2}, 100, contentLanguageHeader, contentLanguageBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[8] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsLanguage), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
-	        PdfPCell[] contentsWorkProgress = new PdfPCell[2];
-	        contentsWorkProgress[0] = createPdfPCell(new Paragraph("11. Quá trình công tác", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
-	        
+	        // 11
 	        String[] nameHeaderWorkProgress = {"Thời gian \n (từ năm ... đến năm...)", "Vị trí công tác", "Lĩnh vực chuyên môn", "Cơ quan công tác"};
-	        PdfPCell[] contentWorkProgressHeader = new PdfPCell[nameHeaderWorkProgress.length];
 	        
 	        String[] nameBodyWorkProgress = {"", "", "", ""};
-	        PdfPCell[] contentWorkProgressBody = new PdfPCell[nameBodyWorkProgress.length];
 	        
-	        for(int i = 0; i < nameHeaderWorkProgress.length; ++i) {
-	        	contentWorkProgressHeader[i] = createPdfPCell(new Paragraph(nameHeaderWorkProgress[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-	        for(int i = 0; i < nameBodyWorkProgress.length; ++i) {
-	        	contentWorkProgressBody[i] = createPdfPCell(new Paragraph(nameBodyWorkProgress[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-
-	        contentsWorkProgress[1] = createPdfPCellNoPadding(createTable(new float[]{2,3,3,3}, 100, contentWorkProgressHeader, contentWorkProgressBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[9] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsWorkProgress), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
-	        
-	        PdfPCell[] contentsPapers = new PdfPCell[2];
-	        contentsPapers[0] = createPdfPCell(new Paragraph("12. Các công trình KH&CN chủ yếu được công bố, sách chuyên khảo \n (liệt kê công trình tiêu biểu đã công bố trong 5 năm gần nhất)", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
+	        bodyContent[9] = createPdfPCellNoPadding(createTable("11. Quá trình công tác", "", nameHeaderWorkProgress, nameBodyWorkProgress, 4, 2, new float[]{2,3,3,3}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+			
 	        
 	        String[] nameHeaderPapers = {"TT", "Tên công trình \n(bài báo, công trình...) ", "Là tác giả hoặc là đồng tác giả công trình", "Nơi công bố \n(tên tạp chí đã đăng/ nhà xuất bản )", "Năm công bố"};
-	        PdfPCell[] contentPapersHeader = new PdfPCell[nameHeaderPapers.length];
 	        
 	        String[] nameBodyPapers = {"1", "Tạp chí Quốc tế trong danh mục ISI", "", "", "",
 	        							"2", "Tạp chí Quốc tế trong danh mục Scopus", "", "", "",
@@ -926,193 +883,64 @@ public class oProjectController extends BaseWeb {
 								        "5", "Kỷ yếu HN/HT quốc tế", "", "", "",
 								        "6", "Kỷ yếu HN/HT trong nước", "", "", "",};
 	        PdfPCell[] contentPapers = new PdfPCell[nameBodyPapers.length];
-	        
-	        for(int i = 0; i < nameHeaderPapers.length; ++i) {
-	        	contentPapersHeader[i] = createPdfPCell(new Paragraph(nameHeaderPapers[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-	        for(int i = 0; i < nameBodyPapers.length; ++i) {
-	        	contentPapers[i] = createPdfPCell(new Paragraph(nameBodyPapers[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
+	        bodyContent[10] = createPdfPCellNoPadding(createTable("12. Các công trình KH&CN chủ yếu được công bố, sách chuyên khảo", "(liệt kê công trình tiêu biểu đã công bố trong 5 năm gần nhất)", nameHeaderPapers, nameBodyPapers, 5, 7, new float[]{1,4,2,2,2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 
-	        contentsPapers[1] = createPdfPCellNoPadding(createTable(new float[]{1,4,2,2,2}, 100, contentPapersHeader, contentPapers), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[10] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsPapers), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
 	        PdfPCell[] contentsLicenseOfInvention = new PdfPCell[2];
-	        contentsLicenseOfInvention[0] = createPdfPCell(new Paragraph("13. Số lượng văn bằng độc quyền sáng chế/ giải pháp hữu ích/ văn bằng bảo hộ giống cây trồng/ thiết kế bố trí mạch tích hợp đã được cấp (nếu có)", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
+	        contentsLicenseOfInvention[0] = createPdfPCell(new Paragraph("", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
 	        
+	        // 13
 	        String[] nameHeaderLicenseOfInvention = {"TT", "Tên và nội dung văn bằng", "Năm cấp văn bằng"};
-	        PdfPCell[] contentLicenseOfInventionHeader = new PdfPCell[nameHeaderLicenseOfInvention.length];
 	        
 	        String[] nameBodyLicenseOfInvention = {"1", "", ""};
-	        PdfPCell[] contentLicenseOfInventionBody = new PdfPCell[nameBodyLicenseOfInvention.length];
-	        
-	        for(int i = 0; i < nameHeaderLicenseOfInvention.length; ++i) {
-	        	contentLicenseOfInventionHeader[i] = createPdfPCell(new Paragraph(nameHeaderLicenseOfInvention[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-	        for(int i = 0; i < nameBodyLicenseOfInvention.length; ++i) {
-	        	contentLicenseOfInventionBody[i] = createPdfPCell(new Paragraph(nameBodyLicenseOfInvention[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-
-	        contentsLicenseOfInvention[1] = createPdfPCellNoPadding(createTable(new float[]{1, 4, 2}, 100, contentLicenseOfInventionHeader, contentLicenseOfInventionBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[11] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsLicenseOfInvention), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
-	        
-	        
-	        PdfPCell[] contentsAppliedprojects = new PdfPCell[2];
-	        contentsAppliedprojects[0] = createPdfPCell(new Paragraph("14. Số lượng công trình, kết quả nghiên cứu được áp dụng trong thực tiễn (nếu có)", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
-	        
+	        bodyContent[11] = createPdfPCellNoPadding(createTable("13. Số lượng văn bằng độc quyền sáng chế/ giải pháp hữu ích/ văn bằng bảo hộ giống cây trồng/ thiết kế bố trí mạch tích hợp đã được cấp", "(nếu có)", nameHeaderLicenseOfInvention, nameBodyLicenseOfInvention, 3, 1, new float[]{1, 4, 2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	     
+	        // 14
 	        String[] nameHeaderAppliedprojects = {"TT", "Tên công trình", "Hình thức, quy mô, địa chỉ áp dụng", "Thời gian"};
-	        PdfPCell[] contentAppliedprojectsHeader = new PdfPCell[nameHeaderAppliedprojects.length];
 	        
 	        String[] nameBodyAppliedprojects = {"1", "", "", ""};
-	        PdfPCell[] contentAppliedprojectsBody = new PdfPCell[nameBodyAppliedprojects.length];
-	        
-	        for(int i = 0; i < nameHeaderAppliedprojects.length; ++i) {
-	        	contentAppliedprojectsHeader[i] = createPdfPCell(new Paragraph(nameHeaderAppliedprojects[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-	        for(int i = 0; i < nameBodyAppliedprojects.length; ++i) {
-	        	contentAppliedprojectsBody[i] = createPdfPCell(new Paragraph(nameBodyAppliedprojects[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
 
-	        contentsAppliedprojects[1] = createPdfPCellNoPadding(createTable(new float[]{1, 3, 3, 2}, 100, contentAppliedprojectsHeader, contentAppliedprojectsBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[12] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsAppliedprojects), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+	        bodyContent[11] = createPdfPCellNoPadding(createTable("14. Số lượng công trình, kết quả nghiên cứu được áp dụng trong thực tiễn", "(nếu có)", nameHeaderAppliedprojects, nameBodyAppliedprojects, 4, 2, new float[]{1, 3, 3, 2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 	        
-	        
-	        
-	        
-	        PdfPCell[] contentsScientific = new PdfPCell[3];
-	        contentsScientific[0] = createPdfPCell(new Paragraph("15. Các đề tài, dự án, nhiệm vụ KH&CN đã chủ trì hoặc tham gia trong 5 năm gần đây", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
-	        
+	        // 15
 	        String[] nameHeaderScientificJoin = {"Tên đề tài, dự án, nhiệm vụ \n KH&CN đã chủ trì", "Thời gian (bắt đầu - kết thúc)", "Thuộc Chương trình (nếu có)","Tình trạng (đã nghiệm thu-xếp loại, chưa nghiệm thu)"};
-	        PdfPCell[] contentScientificJoinHeader = new PdfPCell[nameHeaderScientificJoin.length];
 	        
 	        String[] nameBodyScientificJoin = {"", "", "", ""};
-	        PdfPCell[] contentScientificJoinBody = new PdfPCell[nameBodyScientificJoin.length];
 	        
-	        for(int i = 0; i < nameHeaderScientificJoin.length; ++i) {
-	        	contentScientificJoinHeader[i] = createPdfPCell(new Paragraph(nameHeaderScientificJoin[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
+	        bodyContent[12] = createPdfPCellNoPadding(createTable("15. Các đề tài, dự án, nhiệm vụ KH&CN đã chủ trì hoặc tham gia trong 5 năm gần đây", "", nameHeaderScientificJoin, nameBodyScientificJoin, 4, 2, new float[]{3, 2, 2, 2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 	        
-	        for(int i = 0; i < nameBodyScientificJoin.length; ++i) {
-	        	contentScientificJoinBody[i] = createPdfPCell(new Paragraph(nameBodyScientificJoin[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-
-	        contentsScientific[1] = createPdfPCellNoPadding(createTable(new float[]{3, 2, 2, 2}, 100, contentScientificJoinHeader, contentScientificJoinBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 	        
 	        String[] nameHeaderScientificChair = {"Tên đề tài, dự án, nhiệm vụ \n KH&CN đã tham gia", "Thời gian (bắt đầu - kết thúc)", "Thuộc Chương trình (nếu có)","Tình trạng (đã nghiệm thu-xếp loại, chưa nghiệm thu)"};
-	        PdfPCell[] contentScientificChairHeader = new PdfPCell[nameHeaderScientificChair.length];
 	        
 	        String[] nameBodyScientificChair = {"", "", "", ""};
-	        PdfPCell[] contentScientificChairBody = new PdfPCell[nameBodyScientificChair.length];
+	        bodyContent[13] = createPdfPCellNoPadding(createTable("", "", nameHeaderScientificChair, nameBodyScientificChair, 4, 2, new float[]{3, 2, 2, 2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 	        
-	        for(int i = 0; i < nameHeaderScientificChair.length; ++i) {
-	        	contentScientificChairHeader[i] = createPdfPCell(new Paragraph(nameHeaderScientificChair[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-	        for(int i = 0; i < nameBodyScientificChair.length; ++i) {
-	        	contentScientificChairBody[i] = createPdfPCell(new Paragraph(nameBodyScientificChair[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-
-	        contentsScientific[2] = createPdfPCellNoPadding(createTable(new float[]{3, 2, 2, 2}, 100, contentScientificChairHeader, contentScientificChairBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
-	        bodyContent[13] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsScientific), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
-	        
-	        PdfPCell[] contentsPrize = new PdfPCell[2];
-	        contentsPrize[0] = createPdfPCell(new Paragraph("16. Giải thưởng (về KH&CN, về chất lượng sản phẩm, ...)", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
-	        
+	        // 16
 	        String[] nameHeaderPrize = {"TT", "Hình thức và nội dung giải thưởng", "Năm tặng thưởng"};
-	        PdfPCell[] contentPrizerHeader = new PdfPCell[nameHeaderPrize.length];
-	        
+	       
 	        String[] nameBodyPrize = {"1", "", ""};
-	        PdfPCell[] contentPrizeBody = new PdfPCell[nameBodyPrize.length];
 	        
-	        for(int i = 0; i < nameHeaderPrize.length; ++i) {
-	        	contentPrizerHeader[i] = createPdfPCell(new Paragraph(nameHeaderPrize[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
+	        bodyContent[14] = createPdfPCellNoPadding(createTable("16. Giải thưởng", "(về KH&CN, về chất lượng sản phẩm, ...)", nameHeaderPrize, nameBodyPrize, 3, 2, new float[]{1, 4, 2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 	        
-	        for(int i = 0; i < nameBodyPrize.length; ++i) {
-	        	contentPrizeBody[i] = createPdfPCell(new Paragraph(nameBodyPrize[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-
-	        contentsPrize[1] = createPdfPCellNoPadding(createTable(new float[]{1, 4, 2}, 100, contentPrizerHeader, contentPrizeBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[14] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsPrize), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
-	        PdfPCell[] contentsScientificservice = new PdfPCell[2];
-	        contentsScientificservice[0] = createPdfPCell(new Paragraph("17. Kinh nghiệm về quản lý, đánh giá KH&CN (số lượng các Hội đồng tư vấn, xét duyệt, nghiệm thu, đánh giá  các chương trình, đề tài, dự án KH&CN cấp quốc gia hoặc tương đương trong và ngoài nước đã tham gia trong 5 năm gần đây)", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
-	        
+	        // 17
 	        String[] nameHeaderScientificservice = {"TT", "Hình thức Hội đồng", "Số lần"};
-	        PdfPCell[] contentScientificserviceHeader = new PdfPCell[nameHeaderScientificservice.length];
-	        
+	       
 	        String[] nameBodyScientificservice = {"1", "", ""};
-	        PdfPCell[] contentScientificserviceBody = new PdfPCell[nameBodyScientificservice.length];
 	        
-	        for(int i = 0; i < nameHeaderScientificservice.length; ++i) {
-	        	contentScientificserviceHeader[i] = createPdfPCell(new Paragraph(nameHeaderScientificservice[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
+	        bodyContent[15] = createPdfPCellNoPadding(createTable("17. Kinh nghiệm về quản lý, đánh giá KH&CN", "(số lượng các Hội đồng tư vấn, xét duyệt, nghiệm thu, đánh giá  các chương trình, đề tài, dự án KH&CN cấp quốc gia hoặc tương đương trong và ngoài nước đã tham gia trong 5 năm gần đây)", nameHeaderScientificservice, nameBodyScientificservice, 3, 2, new float[]{1, 4, 2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 	        
-	        for(int i = 0; i < nameBodyScientificservice.length; ++i) {
-	        	contentScientificserviceBody[i] = createPdfPCell(new Paragraph(nameBodyScientificservice[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-
-	        contentsScientificservice[1] = createPdfPCellNoPadding(createTable(new float[]{1, 4, 2}, 100, contentScientificserviceHeader, contentScientificserviceBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[15] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsScientificservice), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
-	        
-	        PdfPCell[] contentsPHDCompleteStudents = new PdfPCell[2];
-	        contentsPHDCompleteStudents[0] = createPdfPCell(new Paragraph("18. Nghiên cứu sinh đã hướng dẫn bảo vệ thành công (nếu có)", contentFont), Element.ALIGN_LEFT, Rectangle.BOX);
-	        
+	        // 18
 	        String[] nameHeaderPHDCompleteStudents = {"TT", "Họ và tên", "Hướng dẫn hoặc đồng hướng dẫn", "Đơn vị công tác", "Năm bảo vệ thành công"};
-	        PdfPCell[] contentPHDCompleteStudentsHeader = new PdfPCell[nameHeaderPHDCompleteStudents.length];
 	        
 	        String[] nameBodyPHDCompleteStudents = {"1", "", "", "", ""};
-	        PdfPCell[] contentPHDCompleteStudentsBody = new PdfPCell[nameBodyPHDCompleteStudents.length];
 	        
-	        for(int i = 0; i < nameHeaderPHDCompleteStudents.length; ++i) {
-	        	contentPHDCompleteStudentsHeader[i] = createPdfPCell(new Paragraph(nameHeaderPHDCompleteStudents[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
+	        bodyContent[16] = createPdfPCellNoPadding(createTable("18. Nghiên cứu sinh đã hướng dẫn bảo vệ thành công", "(nếu có)", nameHeaderPHDCompleteStudents, nameBodyPHDCompleteStudents, 5, 2, new float[]{1, 3, 3, 4, 2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 	        
-	        for(int i = 0; i < nameBodyPHDCompleteStudents.length; ++i) {
-	        	contentPHDCompleteStudentsBody[i] = createPdfPCell(new Paragraph(nameBodyPHDCompleteStudents[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-
-	        contentsPHDCompleteStudents[1] = createPdfPCellNoPadding(createTable(new float[]{1, 3, 3, 4, 2}, 100, contentPHDCompleteStudentsHeader, contentPHDCompleteStudentsBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[16] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsPHDCompleteStudents), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
-	        PdfPCell[] contentsMasterPHDStudents = new PdfPCell[2];
-	        Paragraph titleMasterPHDStudents = new Paragraph();
-	        titleMasterPHDStudents.add(new Chunk("19. Nghiên cứu sinh và học viên cao học đang hướng dẫn", contentFontBold));
-	        contentsMasterPHDStudents[0] = createPdfPCell(titleMasterPHDStudents, Element.ALIGN_LEFT, Rectangle.BOX);
-	        
+	        //19
 	        String[] nameHeaderMasterPHDStudents = {"TT", "Họ và tên học viên/NCS", "Hướng dẫn chính/ HD phụ", "Tên đề tài", "Chuyên ngành/mã chuyên ngành", "Thời gian đào tạo"};
-	        PdfPCell[] contentMasterPHDStudentsHeader = new PdfPCell[nameHeaderMasterPHDStudents.length];
 	        
 	        String[] nameBodyMasterPHDStudents = {"1", "", "", "", "", ""};
-	        PdfPCell[] contentMasterPHDStudentsBody = new PdfPCell[nameBodyMasterPHDStudents.length];
 	        
-	        for(int i = 0; i < nameHeaderMasterPHDStudents.length; ++i) {
-	        	contentMasterPHDStudentsHeader[i] = createPdfPCell(new Paragraph(nameHeaderMasterPHDStudents[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-	        for(int i = 0; i < nameBodyMasterPHDStudents.length; ++i) {
-	        	contentMasterPHDStudentsBody[i] = createPdfPCell(new Paragraph(nameBodyMasterPHDStudents[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
-	        }
-	        
-
-	        contentsMasterPHDStudents[1] = createPdfPCellNoPadding(createTable(new float[]{1, 3, 3, 3, 2, 2}, 100, contentMasterPHDStudentsHeader, contentMasterPHDStudentsBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        bodyContent[17] = createPdfPCellNoPadding(createTable(new float[]{1},  100, new PdfPCell[0] , contentsMasterPHDStudents), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
-	        
+	        bodyContent[17] = createPdfPCellNoPadding(createTable("19. Nghiên cứu sinh và học viên cao học đang hướng dẫn", "", nameHeaderMasterPHDStudents, nameBodyMasterPHDStudents, 6, 2, new float[]{1, 3, 3, 3, 2, 2}), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
 	        
 	        
 	        document.add(createTable(new float[]{1}, 100, new PdfPCell[0], bodyContent));
@@ -1209,6 +1037,63 @@ public class oProjectController extends BaseWeb {
 		newPdfPCell.setMinimumHeight(18f);
 
 		return newPdfPCell;
+	}
+	
+	private PdfPTable createTable(String sTitle, String sSubtitle, String[] nameHeader, String[] nameBody, int column, int rows, float[] width) {
+		PdfPCell[] contents;
+        if(sTitle.equals("")&&sSubtitle.equals("")) {
+        	contents = new PdfPCell[1];
+            
+            PdfPCell[] cellHeader = new PdfPCell[column];
+            
+            PdfPCell[] cellBody = new PdfPCell[column*(rows-1)];
+            
+            for(int i = 0; i < cellHeader.length; ++i) {
+            	cellHeader[i] = createPdfPCell(new Paragraph(nameHeader[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
+            }
+            
+            for(int i = 0; i < cellBody.length; ++i) {
+            	cellBody[i] = createPdfPCell(new Paragraph(nameBody[i], contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            	cellBody[i].setCellEvent(new SolidBorder(PdfPCell.LEFT|PdfPCell.RIGHT));
+            	if(i >= cellBody.length-column) {	        		       		
+            		cellBody[i].setCellEvent(new SolidBorder(PdfPCell.BOTTOM));
+            	} else {
+            		cellBody[i].setCellEvent(new DottedBorder(PdfPCell.BOTTOM));	 
+            	}
+            }
+            
+            contents[0] = createPdfPCellNoPadding(createTable(width, 100, cellHeader, cellBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+        } else {
+        	contents = new PdfPCell[2];
+        	Paragraph title = new Paragraph();
+            title.add(new Chunk(sTitle, contentFontBold));
+            title.add(new Chunk(" "+sSubtitle, contentFont));
+            
+            contents[0] = createPdfPCell(title, Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            contents[0].setCellEvent(new SolidBorder(PdfPCell.LEFT|PdfPCell.RIGHT|PdfPCell.TOP));
+            
+            PdfPCell[] cellHeader = new PdfPCell[column];
+            
+            PdfPCell[] cellBody = new PdfPCell[column*(rows-1)];
+            
+            for(int i = 0; i < cellHeader.length; ++i) {
+            	cellHeader[i] = createPdfPCell(new Paragraph(nameHeader[i], contentFont), Element.ALIGN_CENTER, Rectangle.BOX);
+            }
+            
+            for(int i = 0; i < cellBody.length; ++i) {
+            	cellBody[i] = createPdfPCell(new Paragraph(nameBody[i], contentFont), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+            	cellBody[i].setCellEvent(new SolidBorder(PdfPCell.LEFT|PdfPCell.RIGHT));
+            	if(i >= cellBody.length-column) {	        		       		
+            		cellBody[i].setCellEvent(new SolidBorder(PdfPCell.BOTTOM));
+            	} else {
+            		cellBody[i].setCellEvent(new DottedBorder(PdfPCell.BOTTOM));	 
+            	}
+            }
+            
+            contents[1] = createPdfPCellNoPadding(createTable(width, 100, cellHeader, cellBody), Element.ALIGN_LEFT, Rectangle.NO_BORDER);
+        }
+		
+        return createTable(new float[]{1},  100, new PdfPCell[0] , contents);
 	}
 
 	private void addTitlePage(Document document) {
