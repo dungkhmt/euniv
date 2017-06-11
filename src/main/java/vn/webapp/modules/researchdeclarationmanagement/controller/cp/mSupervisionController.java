@@ -111,8 +111,6 @@ public class mSupervisionController extends BaseWeb {
 				List<mSupervision> check = mSupervisionService.getListByField(fields);
 				System.out.print(check.size());
 				if(check.size() == 1) {
-					System.out.print("Tooi day");
-					System.out.print(supervison.get("SUP_ID").toString());
 					if(mSupervisionService.changeSupervision(Integer.valueOf(supervison.get("SUP_ID").toString()), supervison.get("SUP_StudentName").toString(), supervison.get("SUP_Cosupervision").toString(), supervison.get("SUP_Institution").toString(), supervison.get("SUP_ThesisTitle").toString(), supervison.get("SUP_SpecializationCode").toString(), supervison.get("SUP_TraingPeriod").toString(), supervison.get("SUP_DefensedDate").toString())) {
 						return new ResponseEntity<>(HttpStatus.ACCEPTED);
 					} else {

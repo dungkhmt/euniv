@@ -449,54 +449,54 @@ public class oProjectController extends BaseWeb {
 	   return "cp.notFound404";
    }
    
-   /**
-	 * Generating PDF
-	 * 
-	 * @param model
-	 * @param threadId
-	 * @param session
-	 * @return
-	 * @throws DocumentException
-	 * @throws IOException
-	 */
-	@RequestMapping("/profile-science")
-	public String generatePDFProfileProject(HttpServletRequest request, HttpServletResponse response, ModelMap model, HttpSession session) throws IOException, DocumentException {
-		String userRole = session.getAttribute("currentUserRole").toString();
-		String userCode = session.getAttribute("currentUserCode").toString();
-
-		mStaff staff = staffService.loadStaffByUserCode(userCode);
-		List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
-		List<mPatents> patentsList = patentService.loadPatentListByStaff(userRole, userCode);
-		List<mBooks> booksList = bookService.loadBookListByStaff(userRole, userCode);
-		List<mTopics> topicsList = tProjectService.loadTopicListByStaff(userRole, userCode);
-		
-		final ServletContext servletContext = request.getSession().getServletContext();
-		final File tempDirectory = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-		final String temperotyFilePath = tempDirectory.getAbsolutePath();
-		String sProjectPDFFileName = staff.getStaff_Code() + "_" + staff.getStaff_ID() + ".pdf";
-
-		List<Projects> projects = threadService.loadProjectsListByStaff(userRole,userCode);
-		
-		model.put("projects", status);
-		
-		// Put journal list and topic category to view
-		model.put("projectFormEdit", new ProjectsValidation());
-		model.put("projectId", 1);
-
-		this.prepareContent(topicsList, staff, papersList, patentsList, booksList);
-		PDFGenerator.v_fGenerator(temperotyFilePath + "\\"+ sProjectPDFFileName);
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			baos = convertPDFToByteArrayOutputStream(temperotyFilePath+ "\\" + sProjectPDFFileName);
-			OutputStream os = response.getOutputStream();
-			baos.writeTo(os);
-			os.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return "cp.editAProject";
-	}
+//   /**
+//	 * Generating PDF
+//	 * 
+//	 * @param model
+//	 * @param threadId
+//	 * @param session
+//	 * @return
+//	 * @throws DocumentException
+//	 * @throws IOException
+//	 */
+//	@RequestMapping("/profile-science")
+//	public String generatePDFProfileProject(HttpServletRequest request, HttpServletResponse response, ModelMap model, HttpSession session) throws IOException, DocumentException {
+//		String userRole = session.getAttribute("currentUserRole").toString();
+//		String userCode = session.getAttribute("currentUserCode").toString();
+//
+//		mStaff staff = staffService.loadStaffByUserCode(userCode);
+//		List<mPapers> papersList = paperService.loadPaperListByStaff(userRole, userCode);
+//		List<mPatents> patentsList = patentService.loadPatentListByStaff(userRole, userCode);
+//		List<mBooks> booksList = bookService.loadBookListByStaff(userRole, userCode);
+//		List<mTopics> topicsList = tProjectService.loadTopicListByStaff(userRole, userCode);
+//		
+//		final ServletContext servletContext = request.getSession().getServletContext();
+//		final File tempDirectory = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+//		final String temperotyFilePath = tempDirectory.getAbsolutePath();
+//		String sProjectPDFFileName = staff.getStaff_Code() + "_" + staff.getStaff_ID() + ".pdf";
+//
+//		List<Projects> projects = threadService.loadProjectsListByStaff(userRole,userCode);
+//		
+//		model.put("projects", status);
+//		
+//		// Put journal list and topic category to view
+//		model.put("projectFormEdit", new ProjectsValidation());
+//		model.put("projectId", 1);
+//
+//		this.prepareContent(topicsList, staff, papersList, patentsList, booksList);
+//		PDFGenerator.v_fGenerator(temperotyFilePath + "\\"+ sProjectPDFFileName);
+//		try {
+//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//			baos = convertPDFToByteArrayOutputStream(temperotyFilePath+ "\\" + sProjectPDFFileName);
+//			OutputStream os = response.getOutputStream();
+//			baos.writeTo(os);
+//			os.flush();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return "cp.editAProject";
+//	}
 
 	/**
 	 * 
@@ -664,7 +664,7 @@ public class oProjectController extends BaseWeb {
 	 * @throws DocumentException
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/profile-science-test.pdf")
+	@RequestMapping(value = "/profile-science.pdf")
 	public void generatePDFProfileProjectTest(HttpServletRequest request, HttpServletResponse response, ModelMap model, HttpSession session) throws IOException, DocumentException {
 		String userRole = session.getAttribute("currentUserRole").toString();
 		String userCode = session.getAttribute("currentUserCode").toString();

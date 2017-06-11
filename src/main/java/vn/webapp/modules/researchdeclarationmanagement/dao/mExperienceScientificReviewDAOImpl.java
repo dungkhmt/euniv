@@ -8,7 +8,6 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +16,13 @@ import org.springframework.stereotype.Repository;
 import vn.webapp.dao.BaseDao;
 import vn.webapp.modules.researchdeclarationmanagement.model.field;
 import vn.webapp.modules.researchdeclarationmanagement.model.mEducations;
+import vn.webapp.modules.researchdeclarationmanagement.model.mExperienceScientificReview;
 import vn.webapp.modules.researchdeclarationmanagement.model.mSupervision;
 
-@Repository("mEducationDAO")
+@Repository("mExperienceScientificReviewDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
+public class mExperienceScientificReviewDAOImpl extends BaseDao implements mExperienceScientificReviewDAO {
+
 	@Autowired
     private SessionFactory sessionFactory;
 
@@ -29,16 +30,16 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
         this.sessionFactory = sessionFactory;
     }
     String name(){
-    	return "mBookDAOImpl";
+    	return "mExperienceScientificReviewDAOImpl";
     }
+	
 	@Override
-	public List<mEducations> getList() {
+	public List<mExperienceScientificReview> getList() {
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(mEducations.class);
-			//criteria.createAlias("O_BatchCode", "O_BatchCode");
-			//criteria.addOrder(Order.asc("O_BatchCode.value"));
-			List<mEducations> list = criteria.list();
+			Criteria criteria = getSession().createCriteria(mExperienceScientificReview.class);
+			
+			List<mExperienceScientificReview> list = criteria.list();
 			commit();
 			return list;
 		}catch(HibernateException e){
@@ -51,16 +52,17 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 			close();
 		}
 	}
+
 	@Override
-	public List<mEducations> getListByField(List<field> fields) {
+	public List<mExperienceScientificReview> getListByField(List<field> fields) {
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(mEducations.class);
+			Criteria criteria = getSession().createCriteria(mExperienceScientificReview.class);
 			
 			for(field field: fields) {
 				Junction conditionGroup = Restrictions.disjunction();
 				List<String> values = field.getValues();
-				Type typeField = mEducations.class.getDeclaredField(field.getFieldName()).getGenericType();
+				Type typeField = mExperienceScientificReview.class.getDeclaredField(field.getFieldName()).getGenericType();
 				for(String value: values) {
 					if(typeField.toString().equals("int")) {
 						conditionGroup.add(Restrictions.eq(field.getFieldName(), Integer.valueOf(value)));
@@ -72,13 +74,10 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 				criteria.add(conditionGroup);
 			}
 			
-			List<mEducations> list= criteria.list();
-			for(int i = 0 ; i < list.size(); ++i) {
-				System.out.print(list.get(i).getEDU_UserCode());
-			}
+			List<mExperienceScientificReview> list= criteria.list();
 			commit();
 			return list;
-		} catch (HibernateException | NoSuchFieldException | SecurityException e){
+		} catch (Exception e){
 			e.printStackTrace();
 			rollback();
 			close();
@@ -88,69 +87,64 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 			close();
 		}
 	}
+
 	@Override
-	public Boolean deleteEducation(int EDU_ID) {
-		mEducations education = new mEducations();
-		education.setEDU_ID(EDU_ID);
-		try{
+	public Boolean deleteExperienceScientificReview(int ESV_ID) {
+		mExperienceScientificReview experienceScientificReview = new mExperienceScientificReview();
+		experienceScientificReview.setESV_ID(ESV_ID);
+		try {
 			begin();
-			getSession().delete(education);
+			getSession().delete(experienceScientificReview);
 			commit();
+			
 			return true;
-		}catch(HibernateException e){
+			
+			} catch (Exception e) {
 			e.printStackTrace();
 			rollback();
 			close();
-			return false;
-		}finally{
-			flush();
-			close();
 		}
+		return null;
 	}
+
 	@Override
-	public mEducations addEducation(mEducations newEducation) {
-		try{
+	public mExperienceScientificReview addExperienceScientificReview(
+			mExperienceScientificReview newExperienceScientificReview) {
+		try {
 			begin();
 			int id = 0;
-			id = (Integer)getSession().save(newEducation);
+			id = (Integer)getSession().save(newExperienceScientificReview);
 			commit();
-			newEducation.setEDU_ID(id);
+			newExperienceScientificReview.setESV_ID(id);
 			NumberFormat nf = new DecimalFormat("000000");
-			newEducation.setEDU_Code("EDU"+newEducation.getEDU_UserCode()+nf.format(id));
-			return newEducation;
-		}catch(HibernateException e){
+			newExperienceScientificReview.setESV_CODE("ESV"+nf.format(id));
+			return newExperienceScientificReview;
+		} catch (Exception e) {
 			e.printStackTrace();
 			rollback();
 			close();
-			return null;
-		}finally{
-			flush();
-			close();
 		}
+		return null;
 	}
+
 	@Override
-	public Boolean changeEducation(int EDU_ID, String EDU_Level,
-			String EDU_Institution, String EDU_Major, String EDU_CompleteDate) {
-		
+	public Boolean changeExperienceScientificReview(int ESV_ID,
+			String ESV_Name, int ESV_NumberTimes) {
 		try {
-           begin();
-           mEducations education = (mEducations) getSession().get(mEducations.class, EDU_ID);
-           	education.setEDU_Level(EDU_Level);
-	   		education.setEDU_Institution(EDU_Institution);
-	   		education.setEDU_Major(EDU_Major);
-	   		education.setEDU_CompleteDate(EDU_CompleteDate);
-           getSession().update(education);
-           commit();
-           return true;
-        } catch (HibernateException e) {
-            e.printStackTrace();
+			begin();
+			mExperienceScientificReview experienceScientificReview = (mExperienceScientificReview) getSession().get(mExperienceScientificReview.class, ESV_ID);
+			experienceScientificReview.setESV_ID(ESV_ID);
+			experienceScientificReview.setESV_Name(ESV_Name);
+			experienceScientificReview.setESV_NumberTimes(ESV_NumberTimes);
+			getSession().update(experienceScientificReview);
+		   commit();
+		   return true;
+		} catch (Exception e) {
+			e.printStackTrace();
             rollback();
             close();
             return false;
-        } finally {
-            flush();
-            close();
-        }
+		}
 	}
-}
 	
+}
