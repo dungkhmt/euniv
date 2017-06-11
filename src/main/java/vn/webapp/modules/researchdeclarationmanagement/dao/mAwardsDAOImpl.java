@@ -15,11 +15,11 @@ import org.springframework.stereotype.Repository;
 
 import vn.webapp.dao.BaseDao;
 import vn.webapp.modules.researchdeclarationmanagement.model.field;
-import vn.webapp.modules.researchdeclarationmanagement.model.mEducations;
+import vn.webapp.modules.researchdeclarationmanagement.model.mAwards;
 
-@Repository("mEducationDAO")
+@Repository("mAwardsDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
+public class mAwardsDAOImpl extends BaseDao implements mAwardsDAO {
 	@Autowired
     private SessionFactory sessionFactory;
 
@@ -27,16 +27,16 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
         this.sessionFactory = sessionFactory;
     }
     String name(){
-    	return "mEducationDAOImpl";
+    	return "mAwardsDAOImpl";
     }
 	@Override
-	public List<mEducations> getList() {
+	public List<mAwards> getList() {
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(mEducations.class);
+			Criteria criteria = getSession().createCriteria(mAwards.class);
 			//criteria.createAlias("O_BatchCode", "O_BatchCode");
 			//criteria.addOrder(Order.asc("O_BatchCode.value"));
-			List<mEducations> list = criteria.list();
+			List<mAwards> list = criteria.list();
 			commit();
 			return list;
 		}catch(HibernateException e){
@@ -50,27 +50,22 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public List<mEducations> getListByField(List<field> fields) {
+	public List<mAwards> getListByField(List<field> fields) {
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(mEducations.class);
-			System.out.print(9);
-			Junction conditionGroup = Restrictions.disjunction();
+			Criteria criteria = getSession().createCriteria(mAwards.class);
+			
 			for(field field: fields) {
+				Junction conditionGroup = Restrictions.disjunction();
 				List<String> values = field.getValues();
 				for(String value: values) {
 					conditionGroup.add(Restrictions.eq(field.getFieldName(), value));
 				}
+				criteria.add(conditionGroup);
 			}
-			criteria.add(conditionGroup);
-			System.out.print(10);
-			List<mEducations> list= criteria.list();
-			for(int i = 0 ; i < list.size(); ++i) {
-				System.out.print(list.get(i).getEDU_UserCode());
-			}
-			System.out.print(11);
+			List<mAwards> list= criteria.list();
+
 			commit();
-			System.out.print(12);
 			return list;
 		} catch (HibernateException e){
 			e.printStackTrace();
@@ -83,12 +78,12 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public Boolean deleteEducation(int EDU_ID) {
-		mEducations education = new mEducations();
-		education.setEDU_ID(EDU_ID);
+	public Boolean deleteAwards(int AW_ID) {
+		mAwards awards = new mAwards();
+		awards.setAW_ID(AW_ID);
 		try{
 			begin();
-			getSession().delete(education);
+			getSession().delete(awards);
 			commit();
 			return true;
 		}catch(HibernateException e){
@@ -102,19 +97,19 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public mEducations addEducation(mEducations newEducation) {
+	public mAwards addAwards(mAwards newAwards) {
 		try{
 			begin();
 			int id = 0;
-			System.out.print(18);
-			id = (Integer)getSession().save(newEducation);
-			System.out.print(19);
+			
+			id = (Integer)getSession().save(newAwards);
+			
 			commit();
-			System.out.print(20);
-			newEducation.setEDU_ID(id);
+			
+			newAwards.setAW_ID(id);
 			NumberFormat nf = new DecimalFormat("000000");
-			newEducation.setEDU_Code("EDU"+newEducation.getEDU_UserCode()+nf.format(id));
-			return newEducation;
+			newAwards.setAW_Code("AW" + newAwards.getAW_StaffCode()+ nf.format(id));
+			return newAwards;
 		}catch(HibernateException e){
 			e.printStackTrace();
 			rollback();
@@ -126,21 +121,18 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public Boolean changeEducation(int EDU_ID, String EDU_Level,
-			String EDU_Institution, String EDU_Major, String EDU_CompleteDate) {
+	public Boolean changeAwards(int AW_ID, String AW_Name, String AW_Date) {
 		
 		try {
            begin();
-           mEducations education = (mEducations) getSession().get(mEducations.class, EDU_ID);
-           	education.setEDU_Level(EDU_Level);
-	   		education.setEDU_Institution(EDU_Institution);
-	   		education.setEDU_Major(EDU_Major);
-	   		education.setEDU_CompleteDate(EDU_CompleteDate);
-           System.out.print(EDU_ID);
-           getSession().update(education);
-           System.out.print(13);
+           mAwards awards = (mAwards) getSession().get(mAwards.class, AW_ID);
+           awards.setAW_Name(AW_Name);
+           awards.setAW_Date(AW_Date);
+          // System.out.print(AP_ID);
+           getSession().update(awards);
+          
            commit();
-           System.out.print(14);
+            
            return true;
         } catch (HibernateException e) {
             e.printStackTrace();

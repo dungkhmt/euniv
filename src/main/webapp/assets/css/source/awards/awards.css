@@ -1,4 +1,4 @@
-#editEducation {
+#editAwards {
 	color: green;
 	cursor: pointer;
 	display: initial;
@@ -6,12 +6,12 @@
 }
 
 
-#changeEducation {
+#changeAwards {
 	display: block;
 }
 
 
-#deleteEducation {
+#deleteAwards {
 	display: initial;
 	padding: 1px;
 	color: red; 
@@ -34,6 +34,6 @@
     width: 70%;
 }
 
-#edit-education > .modal-dialog > .modal-content {
+#edit-awards > .modal-dialog > .modal-content {
 	margin-top: 15%;
 }

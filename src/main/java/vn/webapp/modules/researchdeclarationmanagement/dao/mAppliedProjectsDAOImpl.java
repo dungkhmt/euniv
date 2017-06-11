@@ -15,11 +15,11 @@ import org.springframework.stereotype.Repository;
 
 import vn.webapp.dao.BaseDao;
 import vn.webapp.modules.researchdeclarationmanagement.model.field;
-import vn.webapp.modules.researchdeclarationmanagement.model.mEducations;
+import vn.webapp.modules.researchdeclarationmanagement.model.mAppliedProjects;
 
-@Repository("mEducationDAO")
+@Repository("mAppliedProjectsDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
+public class mAppliedProjectsDAOImpl extends BaseDao implements mAppliedProjectsDAO {
 	@Autowired
     private SessionFactory sessionFactory;
 
@@ -27,16 +27,16 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
         this.sessionFactory = sessionFactory;
     }
     String name(){
-    	return "mEducationDAOImpl";
+    	return "mAppliedProjectsDAOImpl";
     }
 	@Override
-	public List<mEducations> getList() {
+	public List<mAppliedProjects> getList() {
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(mEducations.class);
+			Criteria criteria = getSession().createCriteria(mAppliedProjects.class);
 			//criteria.createAlias("O_BatchCode", "O_BatchCode");
 			//criteria.addOrder(Order.asc("O_BatchCode.value"));
-			List<mEducations> list = criteria.list();
+			List<mAppliedProjects> list = criteria.list();
 			commit();
 			return list;
 		}catch(HibernateException e){
@@ -50,27 +50,22 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public List<mEducations> getListByField(List<field> fields) {
+	public List<mAppliedProjects> getListByField(List<field> fields) {
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(mEducations.class);
-			System.out.print(9);
-			Junction conditionGroup = Restrictions.disjunction();
+			Criteria criteria = getSession().createCriteria(mAppliedProjects.class);
+			
 			for(field field: fields) {
+				Junction conditionGroup = Restrictions.disjunction();
 				List<String> values = field.getValues();
 				for(String value: values) {
 					conditionGroup.add(Restrictions.eq(field.getFieldName(), value));
 				}
+				criteria.add(conditionGroup);
 			}
-			criteria.add(conditionGroup);
-			System.out.print(10);
-			List<mEducations> list= criteria.list();
-			for(int i = 0 ; i < list.size(); ++i) {
-				System.out.print(list.get(i).getEDU_UserCode());
-			}
-			System.out.print(11);
+			List<mAppliedProjects> list= criteria.list();
+
 			commit();
-			System.out.print(12);
 			return list;
 		} catch (HibernateException e){
 			e.printStackTrace();
@@ -83,12 +78,12 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public Boolean deleteEducation(int EDU_ID) {
-		mEducations education = new mEducations();
-		education.setEDU_ID(EDU_ID);
+	public Boolean deleteAppliedProjects(int AP_ID) {
+		mAppliedProjects appliedprojects = new mAppliedProjects();
+		appliedprojects.setAP_ID(AP_ID);
 		try{
 			begin();
-			getSession().delete(education);
+			getSession().delete(appliedprojects);
 			commit();
 			return true;
 		}catch(HibernateException e){
@@ -102,19 +97,19 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public mEducations addEducation(mEducations newEducation) {
+	public mAppliedProjects addAppliedProjects(mAppliedProjects newAppliedProjects) {
 		try{
 			begin();
 			int id = 0;
-			System.out.print(18);
-			id = (Integer)getSession().save(newEducation);
-			System.out.print(19);
+			
+			id = (Integer)getSession().save(newAppliedProjects);
+			
 			commit();
-			System.out.print(20);
-			newEducation.setEDU_ID(id);
+			
+			newAppliedProjects.setAP_ID(id);
 			NumberFormat nf = new DecimalFormat("000000");
-			newEducation.setEDU_Code("EDU"+newEducation.getEDU_UserCode()+nf.format(id));
-			return newEducation;
+			newAppliedProjects.setAP_Code("AP" + newAppliedProjects.getAP_StaffCode()+ nf.format(id));
+			return newAppliedProjects;
 		}catch(HibernateException e){
 			e.printStackTrace();
 			rollback();
@@ -126,21 +121,20 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public Boolean changeEducation(int EDU_ID, String EDU_Level,
-			String EDU_Institution, String EDU_Major, String EDU_CompleteDate) {
+	public Boolean changeAppliedProjects(int AP_ID, String AP_Name,
+			String AP_Scope, String AP_Date) {
 		
 		try {
            begin();
-           mEducations education = (mEducations) getSession().get(mEducations.class, EDU_ID);
-           	education.setEDU_Level(EDU_Level);
-	   		education.setEDU_Institution(EDU_Institution);
-	   		education.setEDU_Major(EDU_Major);
-	   		education.setEDU_CompleteDate(EDU_CompleteDate);
-           System.out.print(EDU_ID);
-           getSession().update(education);
-           System.out.print(13);
+           mAppliedProjects appliedprojects = (mAppliedProjects) getSession().get(mAppliedProjects.class, AP_ID);
+           appliedprojects.setAP_Name(AP_Name);
+           appliedprojects.setAP_Scope(AP_Scope);
+           appliedprojects.setAP_Date(AP_Date);
+          // System.out.print(AP_ID);
+           getSession().update(appliedprojects);
+          
            commit();
-           System.out.print(14);
+            
            return true;
         } catch (HibernateException e) {
             e.printStackTrace();

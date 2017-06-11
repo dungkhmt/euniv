@@ -1,4 +1,4 @@
-#editEducation {
+#editWorkExperiences {
 	color: green;
 	cursor: pointer;
 	display: initial;
@@ -6,16 +6,17 @@
 }
 
 
-#changeEducation {
+#changeWorkExperiences {
 	display: block;
 }
 
 
-#deleteEducation {
-	display: initial;
-	padding: 1px;
+#deleteWorkExperiences {
 	color: red; 
 	cursor: pointer;
+	display: initial;
+	padding: 1px;
+	
 }
 
 .inline-box {
@@ -34,6 +35,6 @@
     width: 70%;
 }
 
-#edit-education > .modal-dialog > .modal-content {
+#edit-WorkExperiences> .modal-dialog > .modal-content {
 	margin-top: 15%;
 }

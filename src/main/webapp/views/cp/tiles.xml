@@ -622,5 +622,31 @@
         <put-attribute name="title" value="Manage education" />                                 
         <put-attribute name="content" value="/views/cp/education/manageEducations.jsp" />
     </definition>
+    
 
+	 <!--  foreignlanguages Modules -->
+    <definition name="cp.foreignLanguages" extends="layout.base">
+        <put-attribute name="title" value="foreign languages" />                                 
+        <put-attribute name="content" value="/views/cp/foreignlanguages/foreignlanguages.jsp" />
+    </definition>
+    
+    
+     <!--  workexperiences Modules -->
+    <definition name="cp.workexperiences" extends="layout.base">
+        <put-attribute name="title" value="work experiences" />                                 
+        <put-attribute name="content" value="/views/cp/workexperiences/workexperiences.jsp" />
+    </definition>
+    
+    <!--  appliedprojects Modules -->
+    <definition name="cp.appliedprojects" extends="layout.base">
+        <put-attribute name="title" value="applied projects" />                                 
+        <put-attribute name="content" value="/views/cp/appliedprojects/appliedprojects.jsp" />
+    </definition>
+    
+     <!--  awards Modules -->
+    <definition name="cp.awards" extends="layout.base">
+        <put-attribute name="title" value="awards" />                                 
+        <put-attribute name="content" value="/views/cp/awards/awards.jsp" />
+    </definition>
+    
 </tiles-definitions>

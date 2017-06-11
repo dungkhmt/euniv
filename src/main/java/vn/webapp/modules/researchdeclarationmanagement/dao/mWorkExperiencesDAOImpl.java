@@ -15,11 +15,11 @@ import org.springframework.stereotype.Repository;
 
 import vn.webapp.dao.BaseDao;
 import vn.webapp.modules.researchdeclarationmanagement.model.field;
-import vn.webapp.modules.researchdeclarationmanagement.model.mEducations;
+import vn.webapp.modules.researchdeclarationmanagement.model.mWorkExperiences;
 
-@Repository("mEducationDAO")
+@Repository("mWorkExperiencesDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
+public class mWorkExperiencesDAOImpl extends BaseDao implements mWorkExperiencesDAO {
 	@Autowired
     private SessionFactory sessionFactory;
 
@@ -27,16 +27,16 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
         this.sessionFactory = sessionFactory;
     }
     String name(){
-    	return "mEducationDAOImpl";
+    	return "mWorkExperiencesDAOImpl";
     }
 	@Override
-	public List<mEducations> getList() {
+	public List<mWorkExperiences> getList() {
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(mEducations.class);
+			Criteria criteria = getSession().createCriteria(mWorkExperiences.class);
 			//criteria.createAlias("O_BatchCode", "O_BatchCode");
 			//criteria.addOrder(Order.asc("O_BatchCode.value"));
-			List<mEducations> list = criteria.list();
+			List<mWorkExperiences> list = criteria.list();
 			commit();
 			return list;
 		}catch(HibernateException e){
@@ -50,10 +50,10 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public List<mEducations> getListByField(List<field> fields) {
+	public List<mWorkExperiences> getListByField(List<field> fields) {
 		try{
 			begin();
-			Criteria criteria = getSession().createCriteria(mEducations.class);
+			Criteria criteria = getSession().createCriteria(mWorkExperiences.class);
 			System.out.print(9);
 			Junction conditionGroup = Restrictions.disjunction();
 			for(field field: fields) {
@@ -64,9 +64,9 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 			}
 			criteria.add(conditionGroup);
 			System.out.print(10);
-			List<mEducations> list= criteria.list();
+			List<mWorkExperiences> list= criteria.list();
 			for(int i = 0 ; i < list.size(); ++i) {
-				System.out.print(list.get(i).getEDU_UserCode());
+				System.out.print(list.get(i).getWE_StaffCode());
 			}
 			System.out.print(11);
 			commit();
@@ -83,12 +83,12 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public Boolean deleteEducation(int EDU_ID) {
-		mEducations education = new mEducations();
-		education.setEDU_ID(EDU_ID);
+	public Boolean deleteWorkExperiences(int WE_ID) {
+		mWorkExperiences workexperiences = new mWorkExperiences();
+		workexperiences.setWE_ID(WE_ID);
 		try{
 			begin();
-			getSession().delete(education);
+			getSession().delete(workexperiences);
 			commit();
 			return true;
 		}catch(HibernateException e){
@@ -102,19 +102,19 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public mEducations addEducation(mEducations newEducation) {
+	public mWorkExperiences addWorkExperiences(mWorkExperiences newWorkExperiences) {
 		try{
 			begin();
 			int id = 0;
 			System.out.print(18);
-			id = (Integer)getSession().save(newEducation);
+			id = (Integer)getSession().save(newWorkExperiences);
 			System.out.print(19);
 			commit();
 			System.out.print(20);
-			newEducation.setEDU_ID(id);
+			newWorkExperiences.setWE_ID(id);
 			NumberFormat nf = new DecimalFormat("000000");
-			newEducation.setEDU_Code("EDU"+newEducation.getEDU_UserCode()+nf.format(id));
-			return newEducation;
+			newWorkExperiences.setWE_CODE("WE"+nf.format(id));
+			return newWorkExperiences;
 		}catch(HibernateException e){
 			e.printStackTrace();
 			rollback();
@@ -126,18 +126,17 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		}
 	}
 	@Override
-	public Boolean changeEducation(int EDU_ID, String EDU_Level,
-			String EDU_Institution, String EDU_Major, String EDU_CompleteDate) {
+	public Boolean changeWorkExperiences(int WE_ID, String WE_Position, 
+			String WE_Domain, String WE_Institution) {
 		
 		try {
            begin();
-           mEducations education = (mEducations) getSession().get(mEducations.class, EDU_ID);
-           	education.setEDU_Level(EDU_Level);
-	   		education.setEDU_Institution(EDU_Institution);
-	   		education.setEDU_Major(EDU_Major);
-	   		education.setEDU_CompleteDate(EDU_CompleteDate);
-           System.out.print(EDU_ID);
-           getSession().update(education);
+           mWorkExperiences workexperiences = (mWorkExperiences) getSession().get(mWorkExperiences.class, WE_ID);
+           workexperiences.setWE_Position(WE_Position);
+           workexperiences.setWE_Domain(WE_Domain);
+           workexperiences.setWE_Institution(WE_Institution);
+           System.out.print(WE_ID);
+           getSession().update(workexperiences);
            System.out.print(13);
            commit();
            System.out.print(14);

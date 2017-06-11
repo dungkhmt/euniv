@@ -10,7 +10,7 @@ public interface mEducationService {
 	public List<mEducations>  getList();
 	public List<mEducations>  getListByField(List<field> fields);
 	public Boolean deleteEducation(int EDU_ID);
-	public mEducations  addEducation(mEducations newEducation);
+	public mEducations addEducation(mEducations newEducation);
 	public Boolean changeEducation(int EDU_ID, String EDU_Level, String EDU_Institution, String EDU_Major, String EDU_CompleteDate);
 
 
