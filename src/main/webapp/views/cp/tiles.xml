@@ -623,6 +623,17 @@
         <put-attribute name="content" value="/views/cp/education/manageEducations.jsp" />
     </definition>
     
+    <!--  Supervision Modules -->
+    <definition name="cp.manageSupervisions" extends="layout.base">
+        <put-attribute name="title" value="Manage supervision" />                                 
+        <put-attribute name="content" value="/views/cp/supervision/manageSupervision.jsp" />
+    </definition>
+    
+    <!--  ExperienceScientificReview Modules -->
+    <definition name="cp.manageExperienceScientificReview" extends="layout.base">
+        <put-attribute name="title" value="Manage ExperienceScientificReview" />                                 
+        <put-attribute name="content" value="/views/cp/experiencescientificreview/experiencescientificreview.jsp" />
+    </definition>
 
 	 <!--  foreignlanguages Modules -->
     <definition name="cp.foreignLanguages" extends="layout.base">

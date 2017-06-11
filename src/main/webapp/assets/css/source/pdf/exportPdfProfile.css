@@ -1,0 +1,34 @@
+.viewPDF {
+    position: inherit;
+    float: right;
+    top: 0;
+    width: 100%;
+}
+
+.row {
+	font-family: "Times New Roman";
+}
+
+#html-profile {
+	font-family: "Times New Roman";
+}
+
+.title {
+	font-size: 14px;
+	font-family: "Times New Roman";
+    text-align: center;
+}
+
+.helvetica65medium{
+  font-size: 14px;
+	font-family: "Times New Roman";
+}
+
+.helvetica45light{
+  font-size: 14px;
+	font-family: "Times New Roman";
+}
+
+#html-profile{
+	background: #fff;
+}

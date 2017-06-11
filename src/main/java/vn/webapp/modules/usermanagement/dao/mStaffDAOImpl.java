@@ -113,12 +113,24 @@ public class mStaffDAOImpl extends BaseDao implements mStaffDAO{
      * @param staffname
      * @return object
      */
+    public String name(){
+    	return "mStaffDAOImpl";
+    }
     @Override
     public mStaff getByUserCode(String userCode) {
     	try {
+    		System.out.println(name() + "::getByUserCode");
             Criteria criteria = getSession().createCriteria(mStaff.class);
+            System.out.println(name() + "::getByUserCode, create criteria OK");
             criteria.add(Restrictions.eq("Staff_User_Code", userCode));
-            mStaff staff = (mStaff) criteria.uniqueResult();
+            
+            //mStaff staff = (mStaff) criteria.uniqueResult();
+            List<mStaff> staffs = criteria.list();
+            mStaff staff = null;
+            if(staffs != null && staffs.size() > 0)
+            	staff = staffs.get(0);
+            
+            System.out.println(name() + "::getByUserCode, uniqueResult OK");
             return staff;
         } catch (HibernateException e) {
             e.printStackTrace();

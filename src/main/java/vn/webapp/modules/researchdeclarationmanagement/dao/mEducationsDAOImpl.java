@@ -1,5 +1,6 @@
 package vn.webapp.modules.researchdeclarationmanagement.dao;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import vn.webapp.dao.BaseDao;
 import vn.webapp.modules.researchdeclarationmanagement.model.field;
 import vn.webapp.modules.researchdeclarationmanagement.model.mEducations;
+import vn.webapp.modules.researchdeclarationmanagement.model.mSupervision;
 
 @Repository("mEducationDAO")
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -54,25 +56,29 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		try{
 			begin();
 			Criteria criteria = getSession().createCriteria(mEducations.class);
-			System.out.print(9);
-			Junction conditionGroup = Restrictions.disjunction();
+			
 			for(field field: fields) {
+				Junction conditionGroup = Restrictions.disjunction();
 				List<String> values = field.getValues();
+				Type typeField = mEducations.class.getDeclaredField(field.getFieldName()).getGenericType();
 				for(String value: values) {
-					conditionGroup.add(Restrictions.eq(field.getFieldName(), value));
+					if(typeField.toString().equals("int")) {
+						conditionGroup.add(Restrictions.eq(field.getFieldName(), Integer.valueOf(value)));
+					} else {
+						conditionGroup.add(Restrictions.eq(field.getFieldName(), value));
+					}
+					
 				}
+				criteria.add(conditionGroup);
 			}
-			criteria.add(conditionGroup);
-			System.out.print(10);
+			
 			List<mEducations> list= criteria.list();
 			for(int i = 0 ; i < list.size(); ++i) {
 				System.out.print(list.get(i).getEDU_UserCode());
 			}
-			System.out.print(11);
 			commit();
-			System.out.print(12);
 			return list;
-		} catch (HibernateException e){
+		} catch (HibernateException | NoSuchFieldException | SecurityException e){
 			e.printStackTrace();
 			rollback();
 			close();
@@ -106,11 +112,8 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 		try{
 			begin();
 			int id = 0;
-			System.out.print(18);
 			id = (Integer)getSession().save(newEducation);
-			System.out.print(19);
 			commit();
-			System.out.print(20);
 			newEducation.setEDU_ID(id);
 			NumberFormat nf = new DecimalFormat("000000");
 			newEducation.setEDU_Code("EDU"+newEducation.getEDU_UserCode()+nf.format(id));
@@ -136,11 +139,8 @@ public class mEducationsDAOImpl extends BaseDao implements mEducationsDAO {
 	   		education.setEDU_Institution(EDU_Institution);
 	   		education.setEDU_Major(EDU_Major);
 	   		education.setEDU_CompleteDate(EDU_CompleteDate);
-           System.out.print(EDU_ID);
            getSession().update(education);
-           System.out.print(13);
            commit();
-           System.out.print(14);
            return true;
         } catch (HibernateException e) {
             e.printStackTrace();

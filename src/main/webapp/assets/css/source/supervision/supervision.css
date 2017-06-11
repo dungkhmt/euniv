@@ -1,0 +1,38 @@
+#editSupervision {
+	color: green;
+	cursor: pointer;
+	display: initial;
+	padding: 1px;
+}
+
+
+#changeSupervision {
+	display: block;
+}
+
+#deleteSupervision {
+	display: initial;
+	padding: 1px;
+	color: red; 
+	cursor: pointer;
+}
+
+.inline-box {
+	display: -webkit-box;
+}
+
+.th {
+	width: 30%;
+}
+
+.container-fluid > .row {
+	padding: 3px;
+}
+
+.container-fluid > .row > input {
+    width: 70%;
+}
+
+#edit-supervision > .modal-dialog > .modal-content {
+	margin-top: 15%;
+}

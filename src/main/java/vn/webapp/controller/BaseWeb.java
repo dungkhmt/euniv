@@ -23,8 +23,14 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import vn.webapp.modules.researchdeclarationmanagement.model.mAcademicYear;
+import vn.webapp.modules.researchdeclarationmanagement.model.mJournal;
+import vn.webapp.modules.researchdeclarationmanagement.model.mPaperCategory;
+import vn.webapp.modules.researchdeclarationmanagement.model.mPapersCategoryHourBudget;
 import vn.webapp.modules.researchdeclarationmanagement.model.mTopicCategory;
 import vn.webapp.modules.researchdeclarationmanagement.service.mAcademicYearService;
+import vn.webapp.modules.researchdeclarationmanagement.service.mJournalService;
+import vn.webapp.modules.researchdeclarationmanagement.service.mPaperCategoryHourBudgetService;
+import vn.webapp.modules.researchdeclarationmanagement.service.mPaperCategoryService;
 import vn.webapp.modules.researchdeclarationmanagement.service.tProjectCategoryService;
 import vn.webapp.modules.researchmanagement.model.ProjectParticipationRoles;
 import vn.webapp.modules.researchmanagement.model.ProjectResearchField;
@@ -55,9 +61,9 @@ public class BaseWeb {
 	protected static String sUserName;
 	protected static String sUserRole;
 	protected static String facultyCode;
-	public static List<mFunction> mFuncsPermissionList;
-	public static List<mFunction> mFuncsChildrenPermissionList;
-	public static List<mFunction> mFuncsParentsPermissionList;
+	public static List<mFunction> mFuncsPermissionList = null;
+	public static List<mFunction> mFuncsChildrenPermissionList = null;
+	public static List<mFunction> mFuncsParentsPermissionList = null;
 
 	public static List<mStaff> glb_staffs = null;
 	public static HashMap<String, mStaff> glb_mCode2Staff = null;
@@ -87,6 +93,13 @@ public class BaseWeb {
 	public static List<mAcademicYear> glb_academicYear = null;
 	public static HashMap<String, mAcademicYear> glb_mCode2AcademicYear = null;
 	
+	public static List<mPaperCategory> glb_paperCategories = null;
+	
+	public static List<mJournal> glb_journalList = null;
+	
+	public static List<mPapersCategoryHourBudget> glb_papersCategoryHourBudget = null;
+	   
+	   
 	public static final String PROJECT_ROOT_DIR = "C:/euniv-deploy/";
 
     @Autowired
@@ -119,8 +132,31 @@ public class BaseWeb {
 	@Autowired
 	private ProjectParticipationRolesService projectParticipationRolesService;
 
+    @Autowired
+    private mPaperCategoryService paperCategoryService;
+    
+    @Autowired
+    private mJournalService journalService;
+
+    @Autowired
+    private mPaperCategoryHourBudgetService paperCategoryHourBudgetService;
+
+    
 	public String name(){
 		return "BaseWeb";
+	}
+	
+	public void loadPaperCategoryHourBudget(){
+		System.out.println(name() + "::loadPaperCategoryHourBudget");
+		glb_papersCategoryHourBudget = paperCategoryHourBudgetService.loadPaperCategoryHourBudgets();
+	}
+	public void loadJournalList(){
+		System.out.println(name() + "::loadJournalList");
+		glb_journalList = journalService.list();
+	}
+	public void loadPaperCategories(){
+		System.out.println(name() + "::loadPaperCategories");
+		glb_paperCategories = paperCategoryService.list();
 	}
 	
 	public void loadAcademicYears(){
@@ -213,21 +249,37 @@ public class BaseWeb {
 	 * @throws Exception
 	 */
 	public void setPermission(HttpSession session) {
+		System.out.println(name() + "::setPermission");
+		
 		// set UserCode
 		BaseWeb.sUserCode = session.getAttribute("currentUserCode").toString();
+		System.out.println(name() + "::setPermission, sUserCode = " + sUserCode);
+		
 		// set User Role
 		BaseWeb.sUserRole = session.getAttribute("currentUserRole").toString();
+		System.out.println(name() + "::setPermission, sUserRole = " + sUserRole);
+				
 		// set User name
 		BaseWeb.sUserName = session.getAttribute("currentUserName").toString();
+		System.out.println(name() + "::setPermission, sUserName = " + sUserName);
+		
+		if(mFuncsPermissionList == null){// PQD
 		// set User permissions
 		BaseWeb.mFuncsPermissionList = funcsPermissionService
 				.loadFunctionsList();
+		System.out.println(name() + "::setPermission, loadFunctionList OK");
+		
 		// set User permissions
 		BaseWeb.mFuncsChildrenPermissionList = funcsPermissionService
 				.loadFunctionsChildHierachyList();
+		System.out.println(name() + "::setPermission, loadFunctionChildHierachyList OK");
+		
 		// set User permissions
 		BaseWeb.mFuncsParentsPermissionList = funcsPermissionService
 				.loadFunctionsParentHierachyList();
+		System.out.println(name() + "::setPermission, loadFunctionParentHierachyList OK");
+		}
+		
 	}
 
 	/**
@@ -237,9 +289,12 @@ public class BaseWeb {
 	 */
 	@ModelAttribute
 	public void addGlobalAttr(ModelMap map, HttpSession session) {
+		System.out.println("BaseWeb::addGlobalAttr");
+
+		
 		// set permission
 		this.setPermission(session);
-
+		System.out.println("BaseWeb::addGlobalAttr, setPermission OK");
 		// set base url
 		switch (request.getRequestURI()) {
 		case "/":
@@ -263,14 +318,17 @@ public class BaseWeb {
 
 		System.out.println("BaseWeb::addGlobalAttr, username = " + username);
 
+
 		mStaff staff = staffService.loadStaffByUserCode(username);
 		if (staff == null) {
 			System.out
 					.println("BaseWeb::addGlobalAttr, NO Staff corresponding to username "
 							+ username);
 		}
+		System.out.println("BaseWeb::addGlobalAttr, get staff OK");
+		
 		String facultyCode = staff.getStaff_Faculty_Code();
-
+		
 		session.setAttribute("facultyCode", facultyCode);
 		map.put("facultyCode", facultyCode);
 		// System.out.println("BaseWeb::addGlobalAttr, facultyCode = " +
@@ -287,6 +345,8 @@ public class BaseWeb {
 		List<mFuncsPermission> mCurrentUserFuncsPermissionList = funcsPermissionService
 				.loadFunctionsPermissionByUserList(BaseWeb.sUserCode);
 
+		System.out.println("BaseWeb::addGlobalAttr, loadFunctionsPermissionByUserList OK");
+		
 		for (mFunction mFunction : funcsChildrenPermissionList) {
 			mEditFunctions temp = new mEditFunctions();
 			temp.setFUNC_ID(mFunction.getFUNC_ID());
@@ -352,6 +412,9 @@ public class BaseWeb {
 			loadProjectCategories();
 		}
 		
+		if(glb_academicYear == null){
+			loadAcademicYears();
+		}
 		if(glb_projectResearchFields == null){
 			loadProjectResearchFields();
 		}
@@ -359,7 +422,22 @@ public class BaseWeb {
 		if(glb_projectParticipationRoles == null){
 			loadProjectParticipationRoles();
 		}
+		
+		if(glb_paperCategories == null){
+			loadPaperCategories();
+		}
+		
+		if(glb_papersCategoryHourBudget == null){
+			loadPaperCategoryHourBudget();
+		}
+		
+		if(glb_journalList == null){
+			loadJournalList();
+		}
+		
 		map.put("funcsChildrenList", funcsEditChildrenList);
 		map.put("funcsParentsList", funcsEditParentsList);
+		
+		System.out.println("BaseWeb::addGlobalAttr --> OK");
 	}
 }

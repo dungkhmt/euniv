@@ -204,7 +204,10 @@
 				                                    	<c:forEach items="${listPaperStaffs}" var="paperStaff">
 				                                    		<tr>
 					                                            <td>
+					                                            	<%-- 
 					                                            	<c:out value="${paperStaff.PPSTF_StaffCode}"/>
+					                                            	 --%>
+					                                            	 <c:out value="${paperStaff.staff.staff_Name}"/>
 					                                            	<input name='projectMembers' type='hidden' value="${paperStaff.PPSTF_StaffCode}" />
 					                                            </td>
 					                                            <td><button type='button' onclick='v_fClearMember(this);' class='btn btn-warning btn-xs' title='Hủy' >Xóa</button></td>
